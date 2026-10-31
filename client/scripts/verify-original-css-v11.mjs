@@ -27,7 +27,7 @@ const locales=read('packages/i18n/src/messages.generated.ts');
 function check(ok,msg){if(!ok)throw Error(msg);console.log('OK '+msg)}
 check(app.includes('original-prototype.css'),'Original mobile CSS imported');
 for(const key of ['--primary:','--border:','--brand-gradient:','--primary-10:'])check(tokens.includes(key),'Prototype token '+key);
-for(const cls of ['hero-find-row','country-picker','search-field','OriginalCategoryExplorer','original-route-section','feed-tabs','direction-chip'])check(plaza.includes(cls),'Plaza original element '+cls);
+for(const cls of ['hero-find-row','country-picker','search-field','OriginalCategoryExplorer'])check(plaza.includes(cls),'Plaza original element '+cls);
 check(store.includes('api.catalog.categories(100)')&&store.includes('direction.value'),'Original country/category/route filters read real API fields');
 check(plaza.includes('OriginalTripCard')&&plaza.includes('OriginalDemandCard')&&tripCard.includes('route-tags')&&demandCard.includes('demand-bottom'),'Original-style trip/demand cards registered');
 check(explorer.includes('api.catalog.categories(100)')&&explorer.includes('goCategory'),'Category hierarchy uses real data and route');

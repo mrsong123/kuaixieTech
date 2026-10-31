@@ -1,17 +1,17 @@
 /* KX Design System v1 · single source for PC, admin and UniApp H5 */
 :root {
   --kx-font: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", "Segoe UI", system-ui, sans-serif;
-  --kx-ink: #203a32;
-  --kx-muted: #667d74;
-  --kx-primary: #28664b;
-  --kx-primary-hover: #1f523c;
+  --kx-ink: #0f172a;
+  --kx-muted: #64748b;
+  --kx-primary: #0ea5e9;
+  --kx-primary-hover: #0284c7;
   --kx-surface: #ffffff;
-  --kx-surface-alt: #f6f9f6;
-  --kx-border: #dfebe3;
+  --kx-surface-alt: #f8fafc;
+  --kx-border: #e2e8f0;
   --kx-radius-sm: 10px;
   --kx-radius-md: 16px;
   --kx-radius-lg: 24px;
-  --kx-shadow: 0 12px 40px rgba(28,58,46,.075);
+  --kx-shadow: 0 12px 40px rgba(15,23,42,.06);
   --kx-gutter: clamp(16px, 3.5vw, 56px);
   --kx-content-max: 1280px;
   --kx-text-xs: 12px;
@@ -22,13 +22,13 @@
   --kx-line: 1.55;
 }
 :root[data-theme="dark"] {
-  --kx-ink: #e2ece7;
-  --kx-muted: #afc1b7;
-  --kx-primary: #84c7a3;
-  --kx-primary-hover: #9edebc;
-  --kx-surface: #21382f;
-  --kx-surface-alt: #192d26;
-  --kx-border: #385546;
+  --kx-ink: #f8fafc;
+  --kx-muted: #94a3b8;
+  --kx-primary: #38bdf8;
+  --kx-primary-hover: #7dd3fc;
+  --kx-surface: #0f172a;
+  --kx-surface-alt: #020617;
+  --kx-border: #334155;
 }
 html {font-size: 14px; text-size-adjust: 100%; -webkit-text-size-adjust: 100%;}
 body {font-family: var(--kx-font); font-size: var(--kx-text-base); line-height: var(--kx-line); font-synthesis:none; -webkit-font-smoothing:antialiased; text-rendering: optimizeLegibility;}

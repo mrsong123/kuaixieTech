@@ -1,6 +1,6 @@
 @import "./original-prototype.css";
 
-page{--kx-ink:#0f172a;--kx-muted:#64748b;--kx-primary:var(--kx-accent,#0ea5e9);--kx-surface:#ffffff;--kx-border:#e2e8f0;--kx-user-scale:1;background:#f8fafc;color:var(--kx-ink);font-family:Inter,'Noto Sans SC','PingFang SC','Microsoft YaHei UI',system-ui,sans-serif;font-size:28rpx;line-height:1.55;-webkit-font-smoothing:antialiased}
+page{--kx-ink:#0f172a;--kx-muted:#64748b;--kx-primary:var(--kx-accent,#0ea5e9);--kx-surface:#ffffff;--kx-border:#e2e8f0;--kx-user-scale:1;background:#ffffff;color:var(--kx-ink);font-family:Inter,'Noto Sans SC','PingFang SC','Microsoft YaHei UI',system-ui,sans-serif;font-size:28rpx;line-height:1.55;-webkit-font-smoothing:antialiased}
 /* #ifndef MP */
 page{font-size:calc(28rpx * var(--kx-user-scale,1))}
 /* #endif */
@@ -8,7 +8,7 @@ view,text,button,input,textarea{box-sizing:border-box}button::after{border:none}
 /* #ifdef H5 || APP-PLUS */
 .app-page{min-height:100vh}
 /* #endif */
-.muted{color:#93a69a}.page-heading{font-size:46rpx;font-weight:800;letter-spacing:-1rpx;margin:16rpx 0}.subline{color:#8aa193;font-size:23rpx;line-height:1.9}.white-card{background:#fff;border:1rpx solid #e7eee8;border-radius:26rpx;padding:29rpx;margin-top:22rpx}.row-between{display:flex;align-items:center;justify-content:space-between;gap:14rpx}.mini-title{font-weight:750;font-size:30rpx}.tag{padding:8rpx 14rpx;background:#e4f2e8;color:#4b8663;font-size:22rpx;border-radius:20rpx}.primary-btn{background:var(--kx-accent,#42575f);color:var(--kx-accent-text,#fff)!important;border-radius:18rpx;font-weight:700;font-size:27rpx;line-height:1.2;padding:25rpx 30rpx;text-align:center}.secondary-btn{border:1rpx solid #c7ddcc;background:#fff;color:#3c7855;border-radius:17rpx;font-size:24rpx;padding:18rpx 18rpx;line-height:1.3}.form-label{font-size:23rpx;color:#557663;display:block;margin-top:25rpx;margin-bottom:12rpx;font-weight:650}.form-input{background:#f6faf7;border:1rpx solid #dce9de;border-radius:14rpx;padding:20rpx 19rpx;font-size:26rpx;width:100%;height:82rpx;color:#284e3a}.form-textarea{height:140rpx;padding:17rpx;line-height:1.6}.error-box{font-size:23rpx;line-height:1.8;color:#a46843;background:#fff5e9;border-radius:15rpx;padding:20rpx;margin-top:20rpx;word-break:break-all}.empty-box{text-align:center;color:#8ea799;background:#eef4ef;border-radius:20rpx;padding:48rpx 30rpx;font-size:24rpx;line-height:1.8;margin-top:22rpx}.break-text{word-break:break-all;white-space:pre-wrap;font-size:22rpx;line-height:1.65}.spacer{height:35rpx}
+.muted{color:#94a3b8}.page-heading{font-size:46rpx;font-weight:800;letter-spacing:-1rpx;margin:16rpx 0}.subline{color:#64748b;font-size:23rpx;line-height:1.9}.white-card{background:#fff;border:1rpx solid #e2e8f0;border-radius:26rpx;padding:29rpx;margin-top:22rpx}.row-between{display:flex;align-items:center;justify-content:space-between;gap:14rpx}.mini-title{font-weight:750;font-size:30rpx}.tag{padding:8rpx 14rpx;background:#e0f2fe;color:#0284c7;font-size:22rpx;border-radius:20rpx}.primary-btn{background:var(--kx-accent,#0ea5e9);color:var(--kx-accent-text,#fff)!important;border-radius:18rpx;font-weight:700;font-size:27rpx;line-height:1.2;padding:25rpx 30rpx;text-align:center}.secondary-btn{border:1rpx solid #e2e8f0;background:#fff;color:#0284c7;border-radius:17rpx;font-size:24rpx;padding:18rpx 18rpx;line-height:1.3}.form-label{font-size:23rpx;color:#475569;display:block;margin-top:25rpx;margin-bottom:12rpx;font-weight:650}.form-input{background:#f8fafc;border:1rpx solid #e2e8f0;border-radius:14rpx;padding:20rpx 19rpx;font-size:26rpx;width:100%;height:82rpx;color:#0f172a}.form-textarea{height:140rpx;padding:17rpx;line-height:1.6}.error-box{font-size:23rpx;line-height:1.8;color:#a46843;background:#fff5e9;border-radius:15rpx;padding:20rpx;margin-top:20rpx;word-break:break-all}.empty-box{text-align:center;color:#94a3b8;background:#f8fafc;border-radius:20rpx;padding:48rpx 30rpx;font-size:24rpx;line-height:1.8;margin-top:22rpx}.break-text{word-break:break-all;white-space:pre-wrap;font-size:22rpx;line-height:1.65}.spacer{height:35rpx}
 
 /* Mobile display contract: 750rpx canvas with safe-area padding and 14px-equivalent body text. */
 .app-page{max-width:1100rpx;margin:0 auto;padding-bottom:calc(100rpx + env(safe-area-inset-bottom));}
@@ -40,7 +40,7 @@ view,text,button,input,textarea{box-sizing:border-box}button::after{border:none}
 .app-page .page-heading{font-size:calc(42rpx * var(--kx-user-scale,1));}
 .app-page .primary-btn,.app-page .secondary-btn{font-size:calc(26rpx * var(--kx-user-scale,1));}
 /* #endif */
-.app-page .primary-btn{background:var(--kx-accent,#42575f)!important;color:var(--kx-accent-text,#fff)!important;}
+.app-page .primary-btn{background:var(--kx-accent,#0ea5e9)!important;color:var(--kx-accent-text,#fff)!important;}
 .kx-care{--kx-user-scale:1.15;}
 
 
@@ -51,9 +51,8 @@ view,text,button,input,textarea{box-sizing:border-box}button::after{border:none}
 
 
 
-/* Adapt the original Taro mini-program visual language to the shared UniApp components.
-   PC official-site theme and admin layout remain unchanged. */
-page { background:#f8fafc; --kx-primary:#0ea5e9; --kx-border:#e2e8f0; --kx-muted:#64748b; }
+/* Adapt the original Taro mini-program visual language to the shared UniApp components. */
+page { background:#ffffff; --kx-primary:#0ea5e9; --kx-border:#e2e8f0; --kx-muted:#64748b; }
 .app-page .page-heading { color:var(--kx-ink); }
 .app-page .tag { background:#e0f2fe; color:var(--kx-accent,#0ea5e9); }
 .app-page .secondary-btn { border-color:#d8e4ee; color:var(--kx-accent,#0ea5e9); }

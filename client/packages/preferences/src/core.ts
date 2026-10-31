@@ -10,7 +10,7 @@ export interface DisplayPreferences {
   reduceMotion:boolean;
 }
 export const preferenceStorageKey='kx.display.v1';
-export const DEFAULT_PREFERENCES:Readonly<DisplayPreferences>=Object.freeze({theme:'system',accent:'#42575f',font:'system',scale:1,care:false,reduceMotion:false});
+export const DEFAULT_PREFERENCES:Readonly<DisplayPreferences>=Object.freeze({theme:'system',accent:'#0ea5e9',font:'system',scale:1,care:false,reduceMotion:false});
 type StorageAdapter={getItem(key:string):string|null;setItem(key:string,value:string):void};
 let prefs:DisplayPreferences={...DEFAULT_PREFERENCES};
 let storage:StorageAdapter|undefined;

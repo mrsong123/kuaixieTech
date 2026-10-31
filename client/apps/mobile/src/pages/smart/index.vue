@@ -26,7 +26,7 @@ const {prefs,products,trips,failure,busy,a,b,left,right,names,pickA,pickB,load,n
 </view>
 </template>
 <style scoped>
-.smart-page{padding-top:55rpx}.smart-count{font-size:25rpx;margin-top:18rpx;color:var(--kx-accent,#42575f)}
+.smart-page{padding-top:55rpx}.smart-count{font-size:25rpx;margin-top:18rpx;color:var(--kx-accent,#0ea5e9)}
 .compare-line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12rpx;padding:20rpx 0;border-bottom:1rpx solid #e5eaed;font-size:23rpx;overflow-wrap:anywhere}
 .smart-page .white-card{margin-top:20rpx}.smart-page .secondary-btn{margin-top:20rpx}
 </style>

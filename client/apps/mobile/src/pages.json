@@ -3,477 +3,479 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "行程广场",
+        "navigationBarBackgroundColor": "#ffffff",
+        "navigationBarTextStyle": "black"
       }
     },
     {
       "path": "pages/demand-pool/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "社区"
       }
     },
     {
       "path": "pages/publish-hub/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "发布·订单"
       }
     },
     {
       "path": "pages/messages/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "消息"
       }
     },
     {
       "path": "pages/me/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的"
       }
     },
     {
       "path": "pages/catalog/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "全部分类"
       }
     },
     {
       "path": "pages/trips/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "顺路线路"
       }
     },
     {
       "path": "pages/discover/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "发现"
       }
     },
     {
       "path": "pages/route/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "线路"
       }
     },
     {
       "path": "pages/smart/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "智能推荐"
       }
     },
     {
       "path": "pages/tools/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "工具"
       }
     },
     {
       "path": "pages/buyer-verify/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "实名认证"
       }
     },
     {
       "path": "pages/carrier-verify/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "带单人认证"
       }
     },
     {
       "path": "pages/enterprise-verify/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "企业（对公）认证"
       }
     },
     {
       "path": "pages/account-security/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "账号与安全"
       }
     },
     {
       "path": "pages/kyc-docs/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "认证材料"
       }
     },
     {
       "path": "pages/pk-quotes/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "报价"
       }
     },
     {
       "path": "pages/order-actions/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "订单操作"
       }
     },
     {
       "path": "pages/purchase-proof/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "采购确认可追溯"
       }
     },
     {
       "path": "pages/boarding-proof/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "登机留证"
       }
     },
     {
       "path": "pages/shipping-proof/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "寄出留证"
       }
     },
     {
       "path": "pages/delivery-proof/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "送达留证"
       }
     },
     {
       "path": "pages/cancel-request/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "申请取消订单"
       }
     },
     {
       "path": "pages/invoice-request/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "申请电子发票"
       }
     },
     {
       "path": "pages/assist/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "协带管理"
       }
     },
     {
       "path": "pages/invite/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的邀请"
       }
     },
     {
       "path": "pages/meetup/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "面交"
       }
     },
     {
       "path": "pages/shipping-fee/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "运费"
       }
     },
     {
       "path": "pages/privacy-call/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "隐私通话"
       }
     },
     {
       "path": "pages/order-call/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "网络通话"
       }
     },
     {
       "path": "pages/community-comment/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "评论"
       }
     },
     {
       "path": "pages/deposit/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "保证金"
       }
     },
     {
       "path": "pages/product-detail/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "产品详情"
       }
     },
     {
       "path": "pages/trip-detail/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "行程详情"
       }
     },
     {
       "path": "pages/services/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的服务"
       }
     },
     {
       "path": "pages/settings/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "设置"
       }
     },
     {
       "path": "pages/settings/appearance/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "外观与主题"
       }
     },
     {
       "path": "pages/settings/general/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "通用"
       }
     },
     {
       "path": "pages/settings/privacy/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "隐私与权限"
       }
     },
     {
       "path": "pages/settings/notification/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "消息通知"
       }
     },
     {
       "path": "pages/settings/storage/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "存储空间"
       }
     },
     {
       "path": "pages/settings/account/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "账号与安全"
       }
     },
     {
       "path": "pages/settings/profile/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "编辑资料"
       }
     },
     {
       "path": "pages/settings/about/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "关于顺带"
       }
     },
     {
       "path": "pages/settings/help/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "帮助与反馈"
       }
     },
     {
       "path": "pages/search/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "搜索"
       }
     },
     {
       "path": "pages/my-orders/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的订单"
       }
     },
     {
       "path": "pages/my-demands/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的求购"
       }
     },
     {
       "path": "pages/my-trips/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的行程"
       }
     },
     {
       "path": "pages/my-wallet/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的钱包"
       }
     },
     {
       "path": "pages/wallet-ledger/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "资金明细"
       }
     },
     {
       "path": "pages/my-notifications/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "消息中心"
       }
     },
     {
       "path": "pages/order-detail/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "订单详情"
       }
     },
     {
       "path": "pages/invite-team/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "团队收益明细"
       }
     },
     {
       "path": "pages/invite-apply/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "加入申请"
       }
     },
     {
       "path": "pages/support-center/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "客服中心"
       }
     },
     {
       "path": "pages/support-session/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "客服会话"
       }
     },
     {
       "path": "pages/demand-detail/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "求购详情"
       }
     },
     {
       "path": "pages/favorites/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的收藏夹"
       }
     },
     {
       "path": "pages/cart/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "意向购物车"
       }
     },
     {
       "path": "pages/address-book/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "地址管理"
       }
     },
     {
       "path": "pages/my-products/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的可带商品"
       }
     },
     {
       "path": "pages/my-shipments/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的运单"
       }
     },
     {
       "path": "pages/open-orders/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "公开意向池"
       }
     },
     {
       "path": "pages/announcements/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "平台公告"
       }
     },
     {
       "path": "pages/legal-doc/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "条款阅读"
       }
     },
     {
       "path": "pages/community-detail/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "动态详情"
       }
     },
     {
       "path": "pages/reviews/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "历史评价"
       }
     },
     {
       "path": "pages/login/index",
       "style": {
-        "navigationBarTitleText": "",
-        "navigationStyle": "custom"
+        "navigationBarTitleText": "登录"
       }
     },
     {
       "path": "pages/create-intent/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "发起代购意向",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/intent-detail/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "意向详情",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/dispute-create/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "发起争议",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/dispute-detail/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "争议处理",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/invite-share/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "发送邀请",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/invite-tier/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "推荐人等级权益",
         "navigationStyle": "default"
       }
     },
     {
       "path": "pages/admin/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "运营台",
         "navigationStyle": "default"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "",
+    "navigationBarTitleText": "顺带",
     "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#f8fafc",
+    "backgroundColor": "#ffffff",
     "backgroundTextStyle": "light"
   },
-  "requiredPrivateInfos": ["getLocation"],
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "permission": {
     "scope.userLocation": {
       "desc": "用于按城市推荐顺路线路，以及采购、寄出、到城等环节的交易存证"
