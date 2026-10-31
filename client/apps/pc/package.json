@@ -1,0 +1,25 @@
+{
+  "name": "@kuaixie/pc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "@kuaixie/sdk": "workspace:*",
+    "@kuaixie/ui": "workspace:*",
+    "vue": "^3.5.44",
+    "lucide-vue-next": "^0.468.0",
+    "@kuaixie/i18n": "workspace:*",
+    "@kuaixie/preferences": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^6.4.5",
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.1.0"
+  }
+}

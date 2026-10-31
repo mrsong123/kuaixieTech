@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.IdentitySettingsMapper">
+  <select id="lockProfile" resultType="map">
+    SELECT id, phone, email, phone_verified, email_verified
+    FROM t_profiles WHERE id=#{userId} AND deleted_at IS NULL FOR UPDATE
+  </select>
+  <select id="lockValidCode" resultType="string">
+    SELECT id FROM t_verification_codes
+    WHERE target=#{target} AND channel=#{channel} AND code=#{code}
+      AND used=0 AND expires_at&gt;NOW(3)
+    ORDER BY created_at DESC LIMIT 1 FOR UPDATE
+  </select>
+  <update id="consumeLockedCode">
+    UPDATE t_verification_codes SET used=1
+    WHERE id=#{codeId} AND used=0 AND expires_at&gt;NOW(3)
+  </update>
+  <select id="countContactTaken" resultType="int">
+    SELECT COUNT(*) FROM t_profiles WHERE id&lt;&gt;#{userId} AND deleted_at IS NULL
+      <choose>
+        <when test="channel == 'phone'">AND phone=#{target}</when>
+        <otherwise>AND email=#{target}</otherwise>
+      </choose>
+  </select>
+  <update id="updateContact">
+    UPDATE t_profiles
+    <choose>
+      <when test="channel == 'phone'">SET phone=#{target}, phone_verified=1</when>
+      <otherwise>SET email=#{target}, email_verified=1</otherwise>
+    </choose>
+    WHERE id=#{userId} AND deleted_at IS NULL
+  </update>
+  <select id="findUserByContact" resultType="string">
+    SELECT id FROM t_profiles WHERE deleted_at IS NULL
+    <choose>
+      <when test="channel == 'phone'">AND phone=#{target}</when>
+      <otherwise>AND email=#{target}</otherwise>
+    </choose>
+    LIMIT 1
+  </select>
+</mapper>

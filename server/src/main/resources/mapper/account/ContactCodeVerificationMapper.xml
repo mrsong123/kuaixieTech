@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.ContactCodeVerificationMapper">
+ <update id="consumeLatestValid">
+ UPDATE t_verification_codes SET used=1
+ WHERE id=(SELECT id FROM (SELECT id FROM t_verification_codes
+ WHERE target=#{target} AND channel=#{channel} AND code=#{code}
+ AND used=0 AND expires_at &gt; CURRENT_TIMESTAMP(3)
+ ORDER BY created_at DESC LIMIT 1) candidate)
+ AND used=0 AND expires_at &gt; CURRENT_TIMESTAMP(3)
+ </update>
+</mapper>

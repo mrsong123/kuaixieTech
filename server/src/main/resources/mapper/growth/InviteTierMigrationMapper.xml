@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.growth.InviteTierMigrationMapper">
+<!-- Preserve original v_invite_valid_count view semantics exactly, including rl.invitee_id = p.id. -->
+<select id="validCount" resultType="java.lang.Integer">SELECT COUNT(rl.invitee_id) FROM t_profiles p LEFT JOIN t_reward_ledger rl ON rl.invitee_id=p.id AND rl.event_type='first_order' WHERE p.id=#{uid} GROUP BY p.id</select>
+<update id="updateTier">UPDATE t_profiles SET valid_invitee_count=#{count},invite_tier=#{tier} WHERE id=#{uid} AND (valid_invitee_count &lt;&gt; #{count} OR invite_tier &lt;&gt; #{tier})</update>
+<select id="profileSummary" resultType="map">SELECT invite_tier AS tier,valid_invitee_count AS valid_count,commission_mtd FROM t_profiles WHERE id=#{uid}</select>
+<select id="rewardTotals" resultType="map">SELECT COALESCE(SUM(CASE WHEN currency='cny' THEN amount/100.0 ELSE 0 END),0) AS total_cny,COALESCE(SUM(CASE WHEN currency='points' THEN amount ELSE 0 END),0) AS total_points FROM t_reward_ledger WHERE inviter_id=#{uid} AND status &lt;&gt; 'revoked'</select>
+</mapper>

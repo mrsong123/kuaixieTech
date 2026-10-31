@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.trip.PoolGroupMigrationMapper">
+<select id="lockTrip" resultType="map">SELECT id,carry_mode,status,pool_status,pool_slots FROM t_trips WHERE id=#{id} FOR UPDATE</select>
+<select id="existingSlot" resultType="java.lang.Integer">SELECT MIN(pool_slot_no) FROM t_orders WHERE trip_id=#{tripId} AND buyer_id=#{userId} AND pool_slot_no IS NOT NULL AND status NOT IN ('cancelled_no_fault','cancelled_breach','closed')</select>
+<select id="occupied" resultType="int">SELECT COUNT(*) FROM t_orders WHERE trip_id=#{tripId} AND pool_slot_no IS NOT NULL AND status NOT IN ('cancelled_no_fault','cancelled_breach','closed')</select>
+<select id="lockedCount" resultType="int">SELECT COUNT(*) FROM t_orders WHERE trip_id=#{tripId} AND pool_slot_no IS NOT NULL AND status IN ('locked','purchased','shipped','completed')</select>
+<update id="setForming">UPDATE t_trips SET pool_status='forming' WHERE id=#{id} AND pool_status='none'</update>
+<update id="setFormed">UPDATE t_trips SET pool_status='formed' WHERE id=#{id}</update>
+<insert id="notifyFormed">INSERT INTO t_notifications(id,user_id,kind,title,body,created_at) SELECT UUID(),x.buyer_id,'order','拼单已成团','你参与的顺带拼单已满员成行，请按订单节点等待交付。',NOW(3) FROM (SELECT DISTINCT buyer_id FROM t_orders WHERE trip_id=#{id} AND pool_slot_no IS NOT NULL AND status IN ('locked','purchased','shipped','completed')) x</insert>
+</mapper>

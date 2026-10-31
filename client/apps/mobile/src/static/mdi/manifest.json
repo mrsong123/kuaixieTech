@@ -1,0 +1,31 @@
+{
+  "source": "Material Design Icons 7.4.47 (Apache 2.0), rasterized glyphs, no font files shipped",
+  "originalClasses": 202,
+  "generatedIcons": 191,
+  "variants": {
+    "accent": "all 191 glyphs",
+    "white": [
+      "account"
+    ],
+    "muted": [
+      "magnify",
+      "earth",
+      "close-circle",
+      "package-variant"
+    ]
+  },
+  "aliasedOriginalClasses": {
+    "account-camera": "camera-account",
+    "account-single": "account",
+    "account-travel": "airplane",
+    "account-travel-outline": "airplane",
+    "airplane-off-outline": "airplane",
+    "cosmetic": "palette-swatch-outline",
+    "earth-outline": "earth",
+    "file-document-search-outline": "file-search-outline",
+    "medical": "medical-bag",
+    "shield-refund-outline": "shield-outline",
+    "stroller": "baby-carriage"
+  },
+  "note": "Mini-program main package excludes unused palette variants; all runtime referenced glyphs verified by scripts/verify-v13-migration.mjs"
+}

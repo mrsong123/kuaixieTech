@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.operations.LegacyAdminRpcMapper">
+ <select id="adminExists" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{uid} AND is_admin=1</select>
+ <select id="commissionRows" resultType="map">
+   SELECT rl.id AS row_id,COALESCE(pi.nickname,pi.username,'推荐人') AS inviter_name,
+          COALESCE(pt.nickname,pt.username,'被推荐人') AS invitee_name,
+          o.order_no,rl.level AS tier_level,rl.rate,rl.base_amount AS base_fee,
+          ROUND(ABS(COALESCE(rl.amount,0))/100.0,2) AS amount_cny,
+          rl.status AS row_status,rl.revoked_reason,rl.created_at AS made_at
+    FROM t_reward_ledger rl
+    LEFT JOIN t_profiles pi ON pi.id=rl.inviter_id
+    LEFT JOIN t_profiles pt ON pt.id=rl.invitee_id
+    LEFT JOIN t_orders o ON o.id=rl.order_id
+    WHERE rl.currency='cny' ORDER BY rl.created_at DESC LIMIT #{limit}
+ </select>
+ <select id="lockPoolOrders" resultType="map">
+  SELECT o.id,o.buyer_id,o.goods_amount,o.service_fee FROM t_orders o
+   WHERE o.trip_id=#{id} AND COALESCE(o.pool_slot_no,0)&gt;0
+     AND o.status IN ('requesting','negotiating','vendor_deposit_pending','locked')
+   ORDER BY o.id FOR UPDATE
+ </select>
+ <update id="refundBuyerDeposit">
+  UPDATE t_deposits SET status='refunded',reason=CONCAT('拼单解散退款：',#{reason}),updated_at=NOW(3)
+   WHERE order_id=#{id} AND party_role='buyer' AND status='frozen'
+ </update>
+ <update id="cancelPoolOrder">UPDATE t_orders SET status='cancelled_no_fault',closed_reason=CONCAT('拼单解散：',#{reason}),updated_at=NOW(3) WHERE id=#{id}</update>
+ <update id="expireDissolvedTrip">UPDATE t_trips SET pool_status='expired',status='paused',updated_at=NOW(3) WHERE id=#{id}</update>
+ <insert id="writeAdminLog">
+  INSERT INTO t_admin_logs(id,operator_id,action,target_type,target_id,detail,created_at)
+  VALUES(#{id},#{actor},#{action},#{type},#{target},#{detail},NOW(3))
+ </insert>
+ <insert id="broadcastByRole">
+   INSERT INTO t_notifications(id,user_id,kind,title,body,created_at,read_flag)
+   SELECT UUID(),id,'announcement',#{title},#{body},NOW(3),0 FROM t_profiles
+   WHERE #{scope}='all' OR (#{scope}='buyer' AND COALESCE(user_role,'buyer')='buyer')
+                      OR (#{scope}='carrier' AND COALESCE(user_role,'buyer')='carrier')
+ </insert>
+ <insert id="broadcastSelected">
+   INSERT INTO t_notifications(id,user_id,kind,title,body,created_at,read_flag)
+   SELECT UUID(),id,'announcement',#{title},#{body},NOW(3),0 FROM t_profiles
+   WHERE id IN <foreach item="v" collection="userIds" open="(" separator="," close=")">#{v}</foreach>
+ </insert>
+ <select id="lockDemand" resultType="map">SELECT id,status,publisher_id FROM t_demands WHERE id=#{id} FOR UPDATE</select>
+ <update id="closeDemand">UPDATE t_demands SET status='closed',deadline=LEAST(COALESCE(deadline,NOW(3)),NOW(3)) WHERE id=#{id}</update>
+ <update id="rejectOpenQuotes">UPDATE t_quotes SET status='rejected' WHERE demand_id=#{id} AND status='open'</update>
+ <insert id="notifyUser">
+  INSERT INTO t_notifications(id,user_id,kind,title,body,order_id,created_at,read_flag)
+  VALUES(#{id},#{userId},#{kind},#{title},#{body},#{orderId},NOW(3),0)
+ </insert>
+ <select id="lockTrip" resultType="map">SELECT id,owner_id,carry_mode,pool_status,pool_slots FROM t_trips WHERE id=#{id} FOR UPDATE</select>
+ <select id="takenPoolSeats" resultType="int">
+  SELECT COUNT(DISTINCT buyer_id) FROM t_orders WHERE trip_id=#{id} AND COALESCE(pool_slot_no,0)&gt;0
+   AND status NOT IN ('cancelled_no_fault','cancelled_breach','closed')
+ </select>
+ <update id="markPoolFormed">UPDATE t_trips SET pool_status='formed',updated_at=NOW(3) WHERE id=#{id}</update>
+ <insert id="notifyPoolBuyers">
+  INSERT INTO t_notifications(id,user_id,kind,title,body,order_id,created_at,read_flag)
+  SELECT UUID(),o.buyer_id,'pool_formed','你参与的拼单已成团','运营确认该趟拼单成团，请按行程时间正常履约。',o.id,NOW(3),0
+  FROM t_orders o WHERE o.trip_id=#{id} AND COALESCE(o.pool_slot_no,0)&gt;0
+  GROUP BY o.id,o.buyer_id
+ </insert>
+ <select id="lockProfile" resultType="int">SELECT 1 FROM t_profiles WHERE id=#{id} FOR UPDATE</select>
+ <update id="setBan">
+  UPDATE t_profiles SET banned_until=<choose><when test="ban">DATE_ADD(NOW(3), INTERVAL 365 DAY)</when><otherwise>NULL</otherwise></choose> WHERE id=#{id}
+ </update>
+ <select id="countOpenOrders" resultType="int">
+  SELECT COUNT(*) FROM t_orders WHERE (buyer_id=#{id} OR vendor_id=#{id})
+   AND status NOT IN ('completed','cancelled_no_fault','cancelled_breach','closed')
+ </select>
+ <update id="pauseTrips">UPDATE t_trips SET status='paused' WHERE owner_id=#{id} AND status='active'</update>
+</mapper>

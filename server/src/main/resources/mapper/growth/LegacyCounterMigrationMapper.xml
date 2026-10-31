@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.growth.LegacyCounterMigrationMapper">
+ <update id="reset90DayCounters">UPDATE t_profiles SET breach_count_90d=0,abandon_count_90d=0,lost_dispute_count_90d=0 WHERE created_at &lt; DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 90 DAY)</update>
+</mapper>

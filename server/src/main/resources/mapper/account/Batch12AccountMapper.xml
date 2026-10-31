@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.Batch12AccountMapper">
+<select id="lockProfile" resultType="map">SELECT id,user_role,phone,phone_verified FROM t_profiles WHERE id=#{actor} FOR UPDATE</select>
+<update id="updateEnterprise">UPDATE t_profiles SET enterprise_name=#{name},business_license_no=#{license},enterprise_verify_status='pending' WHERE id=#{actor}</update>
+<delete id="deleteLicense">DELETE FROM t_kyc_documents WHERE user_id=#{actor} AND doc_type='enterprise_license'</delete>
+<delete id="deleteAttachments">DELETE FROM t_enterprise_license_files WHERE user_id=#{actor}</delete>
+<insert id="addAttachment">INSERT INTO t_enterprise_license_files(id,user_id,storage_url,position_no) VALUES(#{id},#{actor},#{url},#{pos})</insert>
+<insert id="createLicense">INSERT INTO t_kyc_documents(id,user_id,doc_type,storage_url,status) VALUES(#{id},#{actor},'enterprise_license',#{url},'pending')</insert>
+<select id="carrierDocs" resultType="int">SELECT COUNT(*) FROM t_kyc_documents WHERE user_id=#{actor} AND status &lt;&gt;'rejected' AND doc_type IN ('id_card_front','id_card_back','passport','holding_id')</select>
+<update id="consumeCode">UPDATE t_verification_codes SET used=1 WHERE target=#{target} AND channel='phone' AND code=#{code} AND used=0 AND expires_at&gt;NOW(3)</update>
+<update id="consumeInvite">UPDATE t_invite_codes SET used_by=#{actor},used_at=NOW(3) WHERE code=#{code} AND used_by IS NULL</update>
+<update id="carrierPending">UPDATE t_profiles SET real_name=#{name},id_card_no_masked=#{idMasked},passport_no_masked=#{passMasked},carrier_verify_status='pending',carrier_verify_reason=#{note} WHERE id=#{actor}</update>
+<update id="carrierDocsReset">UPDATE t_kyc_documents SET status='pending' WHERE user_id=#{actor} AND status='rejected'</update>
+<insert id="notify">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{actor},'verify',#{title},#{body})</insert>
+<select id="lockJoin" resultType="map">SELECT id,target_username,target_user_id FROM t_join_applications WHERE id=#{id} FOR UPDATE</select>
+<select id="lookupByUsername" resultType="string">SELECT id FROM t_profiles WHERE username=#{username} AND deleted_at IS NULL LIMIT 1</select>
+<update id="bindJoin">UPDATE t_join_applications SET target_user_id=#{user} WHERE id=#{id} AND target_user_id IS NULL</update>
+<select id="recentCodeCount" resultType="int">SELECT COUNT(*) FROM t_verification_codes WHERE target=#{target} AND channel=#{channel} AND created_at&gt;NOW(3)-INTERVAL 60 SECOND</select>
+<insert id="newCode">INSERT INTO t_verification_codes(id,target,channel,code,purpose,expires_at) VALUES(#{id},#{target},#{channel},#{code},'contact_verify',NOW(3)+INTERVAL 10 MINUTE)</insert>
+<insert id="enqueueCode">INSERT INTO t_vc_delivery_outbox(target,channel,code,status) VALUES(#{target},#{channel},#{code},'pending')</insert>
+</mapper>

@@ -1,0 +1,73 @@
+{
+  "name": "快协随行购",
+  "appid": "__UNI__KUAIXIE",
+  "description": "分享生活与顺路互助",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "vueVersion": "3",
+  "h5": {
+    "title": "快协随行购",
+    "router": {
+      "mode": "hash"
+    },
+    "devServer": {
+      "https": false
+    }
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true
+    },
+    "lazyCodeLoading": "requiredComponents",
+    "optimization": {
+      "subPackages": true
+    },
+    "requiredPrivateInfos": ["getLocation"],
+    "permission": {
+      "scope.userLocation": {
+        "desc": "用于按城市推荐顺路线路，以及采购、寄出、到城等环节的交易存证"
+      },
+      "scope.camera": {
+        "desc": "用于自拍留证、门店照与面单拍照"
+      },
+      "scope.record": {
+        "desc": "用于订单网络通话语音沟通"
+      }
+    }
+  },
+  "app-plus": {
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>"
+        ],
+        "abiFilters": ["armeabi-v7a", "arm64-v8a"]
+      },
+      "ios": {},
+      "sdkConfigs": {}
+    },
+    "statusbar": {
+      "immersed": "supportedDevice",
+      "style": "dark",
+      "background": "#ffffff"
+    },
+    "safearea": {
+      "background": "#ffffff",
+      "bottom": {
+        "offset": "auto"
+      }
+    }
+  }
+}

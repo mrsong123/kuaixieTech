@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.internationalization.LocaleMigrationMapper">
+ <select id="isAdmin" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_profiles WHERE id=#{admin} AND is_admin=1</select>
+ <insert id="upsert">INSERT INTO t_locales (code,native_name,label_zh,sort_order,active,fallback_code) VALUES (#{code},#{name},#{label},#{sort},1,#{fallback}) ON DUPLICATE KEY UPDATE native_name=VALUES(native_name),label_zh=VALUES(label_zh),sort_order=VALUES(sort_order),fallback_code=VALUES(fallback_code)</insert>
+ <select id="exists" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_locales WHERE code=#{code}</select>
+ <update id="toggle">UPDATE t_locales SET active=#{active} WHERE code=#{code}</update>
+ <delete id="delete">DELETE FROM t_locales WHERE code=#{code}</delete>
+ <insert id="log">INSERT INTO t_admin_logs (id,operator_id,action,target_type,target_id,detail) VALUES (#{id},#{admin},#{action},'locale',#{target},#{detail})</insert>
+</mapper>

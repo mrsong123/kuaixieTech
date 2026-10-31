@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.assist.Batch12AssistMapper">
+<select id="lockOrder" resultType="map">SELECT id,vendor_id,status,goods_amount,shipping_fee FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="lockAssist" resultType="map">SELECT * FROM t_assist_requests WHERE id=#{id} FOR UPDATE</select>
+<select id="activeCount" resultType="int">SELECT COUNT(*) FROM t_assist_requests WHERE order_id=#{order} AND status &lt;&gt;'cancelled'</select>
+<select id="verifiedCarrier" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{id} AND carrier_verify_status='approved' AND deleted_at IS NULL</select>
+<insert id="create">INSERT INTO t_assist_requests(id,order_id,requester_id,share_rate,note,status,handover_a_urls,handover_b_urls) VALUES(#{id},#{order},#{actor},#{rate},#{note},'pending',JSON_ARRAY(),JSON_ARRAY())</insert>
+<update id="accept">UPDATE t_assist_requests SET assistant_id=#{actor},status='accepted' WHERE id=#{id} AND status='pending'</update>
+<update id="cancel">UPDATE t_assist_requests SET status='cancelled' WHERE id=#{id} AND status IN ('pending','accepted')</update>
+<update id="handoverA">UPDATE t_assist_requests SET status='carrying',handover_a_urls=#{urls},handover_a_city=#{city},handover_a_at=NOW(3) WHERE id=#{id} AND status='accepted'</update>
+<update id="finish">UPDATE t_assist_requests SET status='done',handover_b_urls=#{urls},handover_b_city=#{city},finished_at=NOW(3),settled_amount=#{amount} WHERE id=#{id} AND status='carrying'</update>
+<insert id="notifyUser">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{user},'assist',#{title},#{body})</insert>
+<insert id="notifyCarriers">INSERT INTO t_notifications(id,user_id,kind,title,body) SELECT UUID(),id,'assist','新的协带单可接',CONCAT('有带单人发布协带需求，分润 ',#{rate},'%，去接单大厅看看。') FROM t_profiles WHERE carrier_verify_status='approved' AND id &lt;&gt; #{actor} LIMIT 20</insert>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.ShippingNegotiationMapper">
+
+<select id="lockOrder" resultType="map">SELECT id,buyer_id,vendor_id,status,shipping_fee_status,shipping_fee FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<update id="proposeFee">UPDATE t_orders SET shipping_fee=#{fee},shipping_fee_note=#{note},shipping_fee_status='proposed',shipping_fee_deadline=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 24 HOUR),updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+<update id="acceptFee">UPDATE t_orders SET shipping_fee_status='agreed',shipping_fee_deadline=NULL,updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+<update id="counterFee">UPDATE t_orders SET shipping_fee=#{fee},shipping_fee_status='countered',shipping_fee_note=CONCAT('买家反提：',COALESCE(shipping_fee_note,'')),shipping_fee_deadline=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 24 HOUR),updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+<insert id="message">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag) VALUES(#{id},#{orderId},#{sender},#{content},JSON_ARRAY(),1)</insert>
+<insert id="notice">INSERT INTO t_notifications(id,user_id,order_id,kind,title,body) VALUES(#{id},#{user},#{orderId},'shipping_fee',#{title},#{body})</insert>
+</mapper>

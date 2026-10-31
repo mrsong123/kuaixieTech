@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.platform.AnnouncementMigrationMapper">
+ <select id="isAdmin" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_profiles WHERE id=#{admin} AND is_admin=1</select>
+ <insert id="publish">INSERT INTO t_announcements(id,title,body,kind,pinned,created_by) VALUES (#{id},#{title},#{body},#{kind},#{pinned},#{admin})</insert>
+ <select id="exists" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_announcements WHERE id=#{id}</select>
+ <update id="toggle">UPDATE t_announcements SET active=#{active} WHERE id=#{id}</update>
+ <insert id="log">INSERT INTO t_admin_logs(id,operator_id,action,target_type,target_id,detail) VALUES (#{id},#{admin},#{action},'announcement',#{target},#{detail})</insert>
+</mapper>

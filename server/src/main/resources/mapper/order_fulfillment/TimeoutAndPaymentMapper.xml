@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.TimeoutAndPaymentMapper">
+<select id="expiredIntentOrders" resultType="map">SELECT id,buyer_id,buyer_deposit,buyer_deposit_status,status FROM t_orders WHERE status='requesting' AND intent_deadline &lt; CURRENT_TIMESTAMP(3) ORDER BY id LIMIT #{limit} FOR UPDATE SKIP LOCKED</select>
+<select id="expiredQuotes" resultType="map">SELECT id,buyer_id,buyer_deposit,buyer_deposit_status,status FROM t_orders WHERE status='negotiating' AND negotiation_deadline &lt; CURRENT_TIMESTAMP(3) ORDER BY id LIMIT #{limit} FOR UPDATE SKIP LOCKED</select>
+<update id="closeOrder">UPDATE t_orders SET status='closed',closed_reason=#{reason},buyer_deposit_status=CASE WHEN buyer_deposit_status='frozen' THEN 'refunded' ELSE buyer_deposit_status END,settled_at=CURRENT_TIMESTAMP(3),updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status=#{oldStatus}</update>
+<update id="releaseOrderDeposits">UPDATE t_deposits SET status='refunded',reason='订单超时取消',updated_at=CURRENT_TIMESTAMP(3) WHERE order_id=#{id} AND status='frozen' AND party_role='buyer'</update>
+<update id="expireShippingFees">UPDATE t_orders SET shipping_fee_status='agreed',updated_at=CURRENT_TIMESTAMP(3) WHERE shipping_fee_status IN ('proposed','countered') AND shipping_fee_deadline &lt; CURRENT_TIMESTAMP(3)</update>
+<select id="overduePkDemands" resultType="map">SELECT id,publisher_id,title FROM t_demands WHERE status='open' AND pk_deadline IS NOT NULL AND pk_deadline &lt; CURRENT_TIMESTAMP(3) ORDER BY id LIMIT #{limit} FOR UPDATE SKIP LOCKED</select>
+<update id="savePkResult">UPDATE t_demands SET status='awarded_pending',pk_result=CAST(#{result} AS JSON) WHERE id=#{id} AND status='open'</update>
+<select id="closeOverdueDemands" resultType="map">SELECT id FROM t_demands WHERE status='open' AND deadline &lt; CURRENT_TIMESTAMP(3) AND pk_deadline IS NULL ORDER BY id LIMIT #{limit} FOR UPDATE SKIP LOCKED</select>
+<update id="closeDemand">UPDATE t_demands SET status='closed',pk_deadline=NULL WHERE id=#{id} AND status='open'</update>
+<select id="lockRecharge" resultType="map">SELECT id,user_id,out_trade_no,amount_cents,status,transaction_id FROM t_pay_orders WHERE out_trade_no=#{tradeNo} FOR UPDATE</select>
+<update id="markRecharge">UPDATE t_pay_orders SET status='paid',transaction_id=#{transactionId},paid_at=CURRENT_TIMESTAMP(3),updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='pending'</update>
+<insert id="notifyUser">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES(#{id},#{uid},#{kind},#{title},#{body},#{orderId})</insert>
+</mapper>

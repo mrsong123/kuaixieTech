@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.IdentityCodesRpcMapper">
+<select id="lockValidCode" resultType="map">SELECT id FROM t_verification_codes WHERE target=#{target} AND channel=#{channel} AND code=#{code} AND used=0 AND expires_at &gt; CURRENT_TIMESTAMP(3) ORDER BY created_at DESC LIMIT 1 FOR UPDATE</select>
+<update id="markCodeUsed">UPDATE t_verification_codes SET used=1 WHERE id=#{id} AND used=0 AND expires_at &gt; CURRENT_TIMESTAMP(3)</update>
+<update id="updateVerifiedPhone">UPDATE t_profiles SET phone=#{target},phone_verified=1 WHERE id=#{actor} AND deleted_at IS NULL</update>
+<update id="updateVerifiedEmail">UPDATE t_profiles SET email=#{target},email_verified=1 WHERE id=#{actor} AND deleted_at IS NULL</update>
+<update id="consumeInvite">UPDATE t_invite_codes SET used_by=#{actor},used_at=CURRENT_TIMESTAMP(3) WHERE code=#{code} AND used_by IS NULL</update>
+</mapper>

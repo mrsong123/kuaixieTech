@@ -1,0 +1,71 @@
+/* KX Design System v1 · single source for PC, admin and UniApp H5 */
+:root {
+  --kx-font: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", "Segoe UI", system-ui, sans-serif;
+  --kx-ink: #203a32;
+  --kx-muted: #667d74;
+  --kx-primary: #28664b;
+  --kx-primary-hover: #1f523c;
+  --kx-surface: #ffffff;
+  --kx-surface-alt: #f6f9f6;
+  --kx-border: #dfebe3;
+  --kx-radius-sm: 10px;
+  --kx-radius-md: 16px;
+  --kx-radius-lg: 24px;
+  --kx-shadow: 0 12px 40px rgba(28,58,46,.075);
+  --kx-gutter: clamp(16px, 3.5vw, 56px);
+  --kx-content-max: 1280px;
+  --kx-text-xs: 12px;
+  --kx-text-sm: 13px;
+  --kx-text-base: 14px;
+  --kx-text-lg: 16px;
+  --kx-text-title: clamp(24px, 2.3vw, 34px);
+  --kx-line: 1.55;
+}
+:root[data-theme="dark"] {
+  --kx-ink: #e2ece7;
+  --kx-muted: #afc1b7;
+  --kx-primary: #84c7a3;
+  --kx-primary-hover: #9edebc;
+  --kx-surface: #21382f;
+  --kx-surface-alt: #192d26;
+  --kx-border: #385546;
+}
+html {font-size: 14px; text-size-adjust: 100%; -webkit-text-size-adjust: 100%;}
+body {font-family: var(--kx-font); font-size: var(--kx-text-base); line-height: var(--kx-line); font-synthesis:none; -webkit-font-smoothing:antialiased; text-rendering: optimizeLegibility;}
+button,input,textarea,select {font: inherit; min-width:0;}
+button,select {touch-action:manipulation;}
+img,video {max-width:100%;}
+:where(h1,h2,h3,p,small,strong,span,button,label) {overflow-wrap:break-word;}
+:where(.container,.content,.page-header,.surface) {min-width:0;}
+.locale-control {display:inline-flex;gap:6px;align-items:center;color:var(--kx-muted);white-space:nowrap;min-width:0;}
+.locale-control select {max-width:114px;min-width:0;border:1px solid var(--kx-border);border-radius:8px;background:var(--kx-surface);color:var(--kx-ink);padding:6px 4px;font-size:var(--kx-text-xs);}
+/* PC / tablet / mobile breakpoints: never shrink the desktop grid blindly. */
+@media (max-width: 1199px) {.experience-grid,.dashboard-columns {gap:16px;} .container {width:calc(100% - 2*var(--kx-gutter));}}
+@media (max-width: 991px) {.hero {display:grid;grid-template-columns:1fr;}.experience-grid {grid-template-columns:repeat(2,minmax(0,1fr));}.product-grid {grid-template-columns:repeat(3,minmax(0,1fr));}.dashboard-columns {grid-template-columns:1fr;}.topbar-right {gap:8px;}}
+@media (max-width: 767px) {.experience-grid,.dashboard-columns,.stat-grid {grid-template-columns:1fr 1fr;}.product-grid {grid-template-columns:repeat(2,minmax(0,1fr));}.nav-right {gap:8px;}.locale-control {gap:3px;}.page-header {flex-wrap:wrap;}.site-header {height:auto;min-height:64px;}.hero-copy h1 {font-size:clamp(30px,8vw,48px);}}
+@media (max-width: 479px) {.experience-grid,.dashboard-columns {grid-template-columns:1fr;}.container {width:calc(100% - 32px);}.nav-right .live-dot {display:none;}.locale-control select {max-width:86px;}.section-title {gap:12px;flex-wrap:wrap;}.stat-grid {gap:8px;}.content {padding:20px 14px;}}
+/* Multilingual: reserve space, allow normal wrapping and prevent clipped actions. */
+.nav-links,.sidebar-menu,.page-intro,.product-details,.stat-card,.quick-surface,.settings-card {min-width:0;}
+.nav-links button,.sidebar-menu button,.topbar button,.hero-buttons button,.action-row button,.catalog-toolbar button {min-height:40px;white-space:normal;text-align:center;line-height:1.4;}
+.product-details strong,.trip-main h3,.stat-card span,.status-row p {overflow-wrap:anywhere;}
+:where(input,textarea,select) {max-width:100%;}
+:focus-visible {outline:2px solid var(--kx-primary);outline-offset:2px;}
+
+/* Recompose the mobile hero; do not scale a 510px desktop illustration. */
+@media (max-width: 540px) {
+  .hero-art {width:100%;height:275px;transform:none;max-width:100%;overflow:hidden;}
+  .hero-halo {width:254px;height:254px;left:50%;top:5px;transform:translateX(-50%);}
+  .hero-halo.halo-two {width:208px;height:208px;top:27px;left:50%;}
+  .hero-earth {width:208px;height:208px;left:50%;top:32px;transform:translateX(-50%);}
+  .float-card {min-width:0;max-width:77%;padding:8px 10px;gap:6px;border-radius:12px;}
+  .float-card b {font-size:12px;}
+  .float-card small {font-size:11px;line-height:1.35;white-space:normal;}
+  .card-sender {top:17px;left:0;right:auto;}
+  .card-route {left:auto;right:0;bottom:10px;}
+  .route-trace {display:none;}
+  .hero-bottom {margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .benefit {flex-direction:column;gap:2px;align-items:flex-start;text-align:left;}
+  .benefit-number {font-size:15px;}
+  .benefit b,.benefit p {font-size:12px;line-height:1.5;}
+  .brand small {display:none;}
+}

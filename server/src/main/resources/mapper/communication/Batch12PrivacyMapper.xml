@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.communication.Batch12PrivacyMapper">
+<select id="lockOrder" resultType="map">SELECT id,buyer_id,vendor_id,status FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="phone" resultType="string">SELECT phone FROM t_profiles WHERE id=#{user}</select>
+<update id="releaseExpiredNumbers">UPDATE t_privacy_numbers SET status='idle',updated_at=NOW(3) WHERE virtual_number IN (SELECT virtual_number FROM t_privacy_bindings WHERE order_id=#{order} AND status='active' AND expire_at &lt;= NOW(3))</update>
+<update id="releaseExpiredBindings">UPDATE t_privacy_bindings SET status='released',released_at=NOW(3),release_reason='expired' WHERE order_id=#{order} AND status='active' AND expire_at &lt;= NOW(3)</update>
+<select id="activeBinding" resultType="map">SELECT id,virtual_number,expire_at FROM t_privacy_bindings WHERE order_id=#{order} AND status='active' AND expire_at&gt;NOW(3) ORDER BY created_at DESC LIMIT 1 FOR UPDATE</select>
+<select id="availableNumber" resultType="string">SELECT virtual_number FROM t_privacy_numbers WHERE status='idle' AND pool_code &lt;&gt; 'demo_pool' ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED</select>
+<update id="occupyNumber">UPDATE t_privacy_numbers SET status='occupied',updated_at=NOW(3) WHERE virtual_number=#{number} AND status='idle'</update>
+<insert id="createBinding">INSERT INTO t_privacy_bindings(id,order_id,virtual_number,buyer_phone_masked,vendor_phone_masked,expire_at,status) VALUES(#{id},#{order},#{number},#{buyer},#{vendor},NOW(3)+INTERVAL 72 HOUR,'active')</insert>
+<insert id="notifyUser">INSERT INTO t_notifications(id,user_id,order_id,kind,title,body) VALUES(#{id},#{user},#{order},'privacy_call_invite','对方正通过平台隐私号联系你','对方通过平台虚拟号码联系你；真实号码不会对另一方显示。')</insert>
+</mapper>

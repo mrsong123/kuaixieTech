@@ -1,0 +1,116 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/suixinggou?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:Szj@911026}
+  mail:
+    host: localhost   # 换成你实际的邮件服务器
+    port: 1025
+    username: your-username
+    password: your-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# Business data lives in MySQL via this Spring Boot app. Frontend must not call Meoo cloud.
+suixinggou:
+  jobs:
+    reveal-due-demands-enabled: ${MIGRATION_REVEAL_DUE_DEMANDS_ENABLED:false}
+    deliver-contact-codes-enabled: ${MIGRATION_DELIVER_CONTACT_CODES_ENABLED:false}
+    notify-stalled-shipments-enabled: false
+    expire-unformed-pools-enabled: false
+  auth:
+    jwt:
+      enabled: ${AUTH_JWT_ENABLED:false}
+      issuer: ${AUTH_JWT_ISSUER:}
+      jwk-set-uri: ${AUTH_JWT_JWK_SET_URI:}
+      audience: ${AUTH_JWT_AUDIENCE:}
+  identity-provider:
+    enabled: ${IDENTITY_PROVIDER_ENABLED:false}
+    url: ${IDENTITY_PROVIDER_URL:}
+    bearer-token: ${IDENTITY_PROVIDER_TOKEN:}
+    timeout-seconds: ${IDENTITY_PROVIDER_TIMEOUT:8}
+  # Transport adapters only. Default off; no fake success. Frontend never invokes these.
+  cloud-functions:
+    endpoints:
+      invite-qr:
+        enabled: ${CLOUD_INVITE_QR_ENABLED:false}
+        url: ${CLOUD_INVITE_QR_URL:}
+        bearer-token: ${CLOUD_INVITE_QR_TOKEN:}
+        timeout-seconds: ${CLOUD_INVITE_QR_TIMEOUT:10}
+      contact-code-login:
+        enabled: ${CLOUD_CONTACT_CODE_LOGIN_ENABLED:false}
+        url: ${CLOUD_CONTACT_CODE_LOGIN_URL:}
+        bearer-token: ${CLOUD_CONTACT_CODE_LOGIN_TOKEN:}
+        timeout-seconds: ${CLOUD_CONTACT_CODE_LOGIN_TIMEOUT:10}
+      rtc-call:
+        enabled: ${CLOUD_RTC_CALL_ENABLED:false}
+        url: ${CLOUD_RTC_CALL_URL:}
+        bearer-token: ${CLOUD_RTC_CALL_TOKEN:}
+        timeout-seconds: ${CLOUD_RTC_CALL_TIMEOUT:10}
+      notify-push:
+        enabled: ${CLOUD_NOTIFY_PUSH_ENABLED:false}
+        url: ${CLOUD_NOTIFY_PUSH_URL:}
+        bearer-token: ${CLOUD_NOTIFY_PUSH_TOKEN:}
+        timeout-seconds: ${CLOUD_NOTIFY_PUSH_TIMEOUT:10}
+      send-contact-code:
+        enabled: ${CLOUD_SEND_CONTACT_CODE_ENABLED:false}
+        url: ${CLOUD_SEND_CONTACT_CODE_URL:}
+        bearer-token: ${CLOUD_SEND_CONTACT_CODE_TOKEN:}
+        timeout-seconds: ${CLOUD_SEND_CONTACT_CODE_TIMEOUT:10}
+      wechat-pay:
+        enabled: ${CLOUD_WECHAT_PAY_ENABLED:false}
+        url: ${CLOUD_WECHAT_PAY_URL:}
+        bearer-token: ${CLOUD_WECHAT_PAY_TOKEN:}
+        timeout-seconds: ${CLOUD_WECHAT_PAY_TIMEOUT:10}
+      translate-msg:
+        enabled: ${CLOUD_TRANSLATE_MSG_ENABLED:false}
+        url: ${CLOUD_TRANSLATE_MSG_URL:}
+        bearer-token: ${CLOUD_TRANSLATE_MSG_TOKEN:}
+        timeout-seconds: ${CLOUD_TRANSLATE_MSG_TIMEOUT:10}
+      logistics-query:
+        enabled: ${CLOUD_LOGISTICS_QUERY_ENABLED:false}
+        url: ${CLOUD_LOGISTICS_QUERY_URL:}
+        bearer-token: ${CLOUD_LOGISTICS_QUERY_TOKEN:}
+        timeout-seconds: ${CLOUD_LOGISTICS_QUERY_TIMEOUT:10}
+      privacy-call:
+        enabled: ${CLOUD_PRIVACY_CALL_ENABLED:false}
+        url: ${CLOUD_PRIVACY_CALL_URL:}
+        bearer-token: ${CLOUD_PRIVACY_CALL_TOKEN:}
+        timeout-seconds: ${CLOUD_PRIVACY_CALL_TIMEOUT:10}
+      support-ai-reply:
+        enabled: ${CLOUD_SUPPORT_AI_REPLY_ENABLED:false}
+        url: ${CLOUD_SUPPORT_AI_REPLY_URL:}
+        bearer-token: ${CLOUD_SUPPORT_AI_REPLY_TOKEN:}
+        timeout-seconds: ${CLOUD_SUPPORT_AI_REPLY_TIMEOUT:10}
+      channel-test:
+        enabled: ${CLOUD_CHANNEL_TEST_ENABLED:false}
+        url: ${CLOUD_CHANNEL_TEST_URL:}
+        bearer-token: ${CLOUD_CHANNEL_TEST_TOKEN:}
+        timeout-seconds: ${CLOUD_CHANNEL_TEST_TIMEOUT:10}
+
+app:
+  jwt-secret: 9f3a7c2e5b1d4086a7f2e9c4d6b8a1037e5f2c9a4b6d8e1f3a5c7b9d2e4f6081
+  admin-bootstrap-password: ${ADMIN_BOOTSTRAP_PASSWORD:Admin#12345678}
+  sms-mode: mock
+  email-from: no-reply@kuaixietech.com
+  environment: dev
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175}
+
+migration:
+  order-timeouts:
+    enabled: ${MIGRATION_ORDER_TIMEOUTS_ENABLED:false}
+  notify-outbox:
+    enabled: ${MIGRATION_NOTIFY_OUTBOX_ENABLED:false}

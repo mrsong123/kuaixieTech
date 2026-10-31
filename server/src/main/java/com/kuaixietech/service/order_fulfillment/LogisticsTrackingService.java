@@ -1,0 +1,4 @@
+package com.kuaixietech.service.order_fulfillment;
+import com.baomidou.mybatisplus.spring.service.IService;
+import com.kuaixietech.entity.order_fulfillment.LogisticsTracking;
+public interface LogisticsTrackingService extends IService<LogisticsTracking> {}

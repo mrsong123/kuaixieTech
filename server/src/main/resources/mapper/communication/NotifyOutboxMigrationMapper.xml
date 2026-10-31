@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.communication.NotifyOutboxMigrationMapper">
+<select id="pendingInapp" resultType="map">SELECT id,user_id,kind,title,body FROM t_notify_outbox WHERE status='pending' AND channel='inapp' ORDER BY created_at LIMIT 200 FOR UPDATE SKIP LOCKED</select>
+<select id="pendingExternal" resultType="map">SELECT id,channel FROM t_notify_outbox WHERE status='pending' AND channel!='inapp' ORDER BY created_at LIMIT 500 FOR UPDATE SKIP LOCKED</select>
+<insert id="insertInapp">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES(#{id},#{uid},#{kind},#{title},#{body},NULL)</insert>
+<update id="markSent">UPDATE t_notify_outbox SET status='sent',sent_at=CURRENT_TIMESTAMP(3),reason=NULL WHERE id=#{id} AND status='pending'</update>
+<select id="readyProvider" resultType="java.lang.Integer">SELECT CASE WHEN EXISTS(SELECT 1 FROM t_channel_configs cc WHERE cc.enabled=1 AND cc.channel_type=#{mapped}) OR EXISTS(SELECT 1 FROM t_channel_secrets_probe p WHERE p.channel=#{channel} AND p.ready=1) THEN 1 ELSE 0 END</select>
+<update id="block">UPDATE t_notify_outbox SET status='blocked',reason='CHANNEL_NOT_CONFIGURED:后台通道配置未启用' WHERE id=#{id} AND status='pending'</update>
+</mapper>

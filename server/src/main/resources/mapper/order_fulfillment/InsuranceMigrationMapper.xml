@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.InsuranceMigrationMapper">
+  <select id="lockOrder" resultType="map">
+    SELECT id,buyer_id,status FROM t_orders WHERE id=#{orderId} FOR UPDATE
+  </select>
+  <update id="updateInsurance">
+    UPDATE t_orders SET insured=#{choice},insurance_premium=#{premium},declared_value=#{declaredValue},updated_at=NOW(3)
+    WHERE id=#{orderId} AND status IN('requesting','negotiating','vendor_deposit_pending')
+  </update>
+  <insert id="insertSystemMessage">
+    INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag,created_at,sender_role)
+    VALUES(#{messageId},#{orderId},#{senderId},#{content},JSON_ARRAY(),1,NOW(3),'system')
+  </insert>
+</mapper>

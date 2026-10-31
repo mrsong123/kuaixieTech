@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.LegacyAccountClosureRpcMapper">
+  <select id="lockAccount" resultType="int">SELECT 1 FROM t_profiles WHERE id=#{userId} FOR UPDATE</select>
+  <select id="activeOrders" resultType="int">
+    SELECT COUNT(*) FROM t_orders WHERE (buyer_id=#{userId} OR vendor_id=#{userId})
+     AND status NOT IN ('completed','cancelled','refunded','settled')
+  </select>
+  <update id="softDelete">
+    UPDATE t_profiles SET deleted_at=NOW(3), banned_until=DATE_ADD(NOW(3), INTERVAL 100 YEAR) WHERE id=#{userId}
+  </update>
+  <delete id="clearNotices">DELETE FROM t_notifications WHERE user_id=#{userId}</delete>
+</mapper>

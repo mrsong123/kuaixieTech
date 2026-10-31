@@ -1,0 +1,43 @@
+package com.kuaixietech.mapper.operations;
+import java.util.List;
+import java.util.Map;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+@Mapper
+public interface AdminConsoleMapper {
+  List<Map<String,Object>> carrierKyc(@Param("limit")int limit);
+  List<Map<String,Object>> buyerKyc(@Param("limit")int limit);
+  List<Map<String,Object>> enterpriseKyc(@Param("limit")int limit);
+  List<Map<String,Object>> trips(@Param("limit")int limit);
+  List<Map<String,Object>> proofRecipes(@Param("limit")int limit);
+  List<Map<String,Object>> products(@Param("limit")int limit);
+  List<Map<String,Object>> categories(@Param("limit")int limit);
+  List<Map<String,Object>> errorLogs(@Param("limit")int limit);
+  List<Map<String,Object>> orders(@Param("limit")int limit);
+  List<Map<String,Object>> cancels(@Param("limit")int limit);
+  List<Map<String,Object>> disputes(@Param("limit")int limit);
+  List<Map<String,Object>> invoices(@Param("limit")int limit);
+  List<Map<String,Object>> privacyPool(@Param("limit")int limit);
+  List<Map<String,Object>> pools(@Param("limit")int limit);
+  List<Map<String,Object>> demands(@Param("limit")int limit);
+  List<Map<String,Object>> notifyQueue(@Param("limit")int limit);
+  List<Map<String,Object>> withdrawals(@Param("limit")int limit);
+  List<Map<String,Object>> community(@Param("limit")int limit);
+  List<Map<String,Object>> users(@Param("limit")int limit,@Param("keyword")String keyword);
+  List<Map<String,Object>> finance(@Param("limit")int limit);
+  List<Map<String,Object>> invite(@Param("limit")int limit);
+  List<Map<String,Object>> broadcast(@Param("limit")int limit);
+  List<Map<String,Object>> channelConfigs(@Param("limit")int limit);
+  List<Map<String,Object>> locales(@Param("limit")int limit);
+  List<Map<String,Object>> adminLogs(@Param("limit")int limit);
+  int setCarrierVerify(@Param("id")String id,@Param("approved")boolean approved,@Param("note")String note);
+  int setTripVerify(@Param("id")String id,@Param("approved")boolean approved,@Param("note")String note);
+  int forceOffShelf(@Param("id")String id);
+  int deactivateCategory(@Param("id")long id);
+  int createCategory(@Param("name")String name,@Param("parentId")Long parentId,@Param("level")int level);
+  int createInvite(@Param("code")String code,@Param("note")String note,@Param("actor")String actor);
+  int insertRecipe(@Param("id")String id,@Param("tripType")String tripType,@Param("transportMode")String transportMode,@Param("countryCode")String countryCode,@Param("items")String items,@Param("note")String note);
+  int updateRecipe(@Param("id")String id,@Param("tripType")String tripType,@Param("transportMode")String transportMode,@Param("countryCode")String countryCode,@Param("items")String items,@Param("note")String note);
+  int toggleRecipe(@Param("id")String id,@Param("active")boolean active);
+  int toggleChannel(@Param("id")String id,@Param("enabled")boolean enabled);
+}

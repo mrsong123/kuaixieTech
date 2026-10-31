@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.finance.InvoiceRpcMapper">
+
+<select id="lockOrder" resultType="map">SELECT id,buyer_id,status,final_price,goods_amount,service_fee FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="invoiceExists" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_invoices WHERE order_id=#{orderId}</select>
+<insert id="createInvoice">INSERT INTO t_invoices(id,order_id,user_id,title_type,title_name,tax_no,invoice_kind,amount,email,remark) VALUES(#{id},#{orderId},#{userId},#{titleType},#{titleName},#{taxNo},#{kind},#{amount},#{email},#{remark})</insert>
+<update id="recordEmail">UPDATE t_profiles SET email=#{email} WHERE id=#{id} AND email_verified=0</update>
+<select id="lockInvoice" resultType="map">SELECT id,user_id,status,email FROM t_invoices WHERE id=#{id} FOR UPDATE</select>
+<update id="issue">UPDATE t_invoices SET status=CASE WHEN #{approve} THEN 'issued' ELSE 'rejected' END, invoice_no=CASE WHEN #{approve} THEN #{invoiceNo} ELSE invoice_no END,file_url=CASE WHEN #{approve} THEN #{fileUrl} ELSE file_url END,issued_at=CASE WHEN #{approve} THEN CURRENT_TIMESTAMP(3) ELSE issued_at END,reject_reason=CASE WHEN #{approve} THEN reject_reason ELSE #{reason} END WHERE id=#{id} AND status='pending'</update>
+<insert id="notifyUser">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{uid},#{kind},#{title},#{body})</insert>
+</mapper>

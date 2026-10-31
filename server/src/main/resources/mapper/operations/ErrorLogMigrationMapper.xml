@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.operations.ErrorLogMigrationMapper">
+ <select id="isAdmin" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_profiles WHERE id=#{admin} AND is_admin=1</select>
+ <update id="resolve">UPDATE t_error_logs SET status='resolved',resolved_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='open'</update>
+ <insert id="log">INSERT INTO t_admin_logs (id,operator_id,action,target_type,target_id,detail) VALUES (#{id},#{admin},'resolve_error_log','error_logs',#{target},'')</insert>
+</mapper>

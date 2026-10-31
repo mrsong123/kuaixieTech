@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.growth.LegacyScoreRpcMapper">
+  <select id="lockScore" resultType="java.lang.Integer">SELECT performance_score FROM t_profiles WHERE id=#{userId} FOR UPDATE</select>
+  <update id="writeScore">UPDATE t_profiles SET performance_score=#{score} WHERE id=#{userId}</update>
+  <insert id="insertScoreLog">INSERT INTO t_score_logs(id,user_id,order_id,event,delta,score_after,note,created_at) VALUES(#{id},#{userId},#{orderId},#{event},#{delta},#{after},#{note},NOW(3))</insert>
+  <update id="writeBoostFactor">UPDATE t_profiles SET boost_factor=#{factor} WHERE id=#{userId}</update>
+</mapper>

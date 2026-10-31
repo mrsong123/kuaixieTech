@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.finance.AtomicMoneyMapper">
+  <select id="lockBalance" resultType="java.math.BigDecimal">SELECT balance FROM t_profiles WHERE id=#{uid} FOR UPDATE</select>
+  <update id="setBalance">UPDATE t_profiles SET balance=#{amount} WHERE id=#{uid}</update>
+  <insert id="addLedger">INSERT INTO t_balance_ledger (id,user_id,kind,amount,balance_after,order_id,note,created_at)
+   VALUES (#{id},#{uid},#{kind},#{delta},#{after},#{orderId},#{note},NOW(3))</insert>
+</mapper>

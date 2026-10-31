@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.LegacyShippingRpcMapper">
+  <select id="lockOrder" resultType="map">
+    SELECT id,order_no,buyer_id,vendor_id,status FROM t_orders WHERE id=#{orderId} FOR UPDATE
+  </select>
+  <insert id="addNode">
+    INSERT INTO t_order_logistics(id,order_id,node,operator_id,operator_role,detail,created_at)
+    VALUES(#{id},#{orderId},#{node},#{actor},'vendor',#{detail},NOW(3))
+  </insert>
+  <insert id="addNotice">
+    INSERT INTO t_notifications(id,user_id,kind,title,body,order_id,created_at,read_flag)
+    VALUES(#{id},#{userId},#{kind},#{title},#{body},#{orderId},NOW(3),0)
+  </insert>
+  <select id="recentNotice" resultType="int">
+    SELECT COUNT(*) FROM t_notifications WHERE user_id=#{userId} AND kind=#{kind} AND order_id=#{orderId}
+    AND created_at &gt; NOW(3) - INTERVAL 24 HOUR
+  </select>
+  <select id="stalledOrders" resultType="map">
+    SELECT o.id,o.order_no,o.buyer_id FROM t_orders o
+    WHERE o.status='shipped' AND o.shipped_at IS NOT NULL
+      AND GREATEST(o.shipped_at,COALESCE((SELECT MAX(l.created_at) FROM t_order_logistics l WHERE l.order_id=o.id),o.shipped_at))
+          &lt; NOW(3) - INTERVAL 48 HOUR
+  </select>
+  <select id="isStillStalled" resultType="int">
+    SELECT COUNT(*) FROM t_orders o WHERE o.id=#{orderId} AND o.status='shipped' AND o.shipped_at IS NOT NULL
+      AND GREATEST(o.shipped_at,COALESCE((SELECT MAX(l.created_at) FROM t_order_logistics l WHERE l.order_id=o.id),o.shipped_at))
+          &lt; NOW(3) - INTERVAL 48 HOUR
+  </select>
+</mapper>

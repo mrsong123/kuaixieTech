@@ -1,0 +1,115 @@
+/* Values transcribed from meoo Taro src/app.css (visual-source-of-truth).
+   Taro's @config and Tailwind utilities cannot run in UniApp without conversion.
+   Keep tokens + faithful semantic CSS; do not ship the Taro-only directives. */
+page {
+  --background:#ffffff;
+  --foreground:#0f172a;
+  --card:#ffffff;
+  --card-foreground:#0f172a;
+  --popover:#ffffff;
+  --popover-foreground:#3f3f46;
+  --primary:var(--kx-accent,#0ea5e9);
+  --primary-foreground:#ffffff;
+  --secondary:#f1f5f9;
+  --secondary-foreground:#0f172a;
+  --muted:#f1f5f9;
+  --muted-foreground:#64748b;
+  --accent:#f1f5f9;
+  --accent-foreground:#0f172a;
+  --destructive:#dc2626;
+  --border:#e2e8f0;
+  --input:#e2e8f0;
+  --ring:var(--kx-accent,#0ea5e9);
+  --radius:8px;
+  --wechat:#07c160;
+  --brand-deep:#0284c7;
+  --brand-light:#38bdf8;
+  --brand-gradient:linear-gradient(135deg,#0284c7 0%,#0ea5e9 55%,#38bdf8 100%);
+  --primary-08:rgba(14,165,233,.08);
+  --primary-10:rgba(14,165,233,.10);
+  --primary-15:rgba(14,165,233,.15);
+  --primary-25:rgba(14,165,233,.25);
+}
+/* Original Taro base surfaces and tab/page scaffold. */
+.kx-prototype-surface { background:var(--card); color:var(--foreground); border:1rpx solid var(--border); border-radius:16rpx; }
+.kx-prototype-muted { color:var(--muted-foreground); }
+.kx-prototype-heading { font-size:32rpx; font-weight:700; line-height:1.35; }
+.kx-prototype-card { background:var(--card); border:1rpx solid var(--border); border-radius:20rpx; padding:30rpx; }
+.kx-prototype-pill { border-radius:99rpx; border:1rpx solid var(--border); padding:12rpx 21rpx; }
+.kx-dark {--background:#171c1f;--card:#202629;--foreground:#f2f4f4;--border:#475569;--muted-foreground:#cbd5e1;}
+.kx-reduce-motion,.kx-reduce-motion view,.kx-reduce-motion text,.kx-reduce-motion image,.kx-reduce-motion button,.kx-reduce-motion input,.kx-reduce-motion textarea { animation-duration:0ms!important; transition-duration:0ms!important; }
+
+/* V13: Original Taro package-page Tailwind primitives translated 1px=>2rpx. */
+.original-subpage{min-height:100%;box-sizing:border-box;background:var(--background,#fff);color:var(--foreground,#0f172a);padding:28rpx 32rpx calc(80rpx + env(safe-area-inset-bottom));font-size:28rpx}
+/* #ifdef H5 || APP-PLUS */
+.original-subpage{min-height:100vh}
+/* #endif */
+.original-subpage .op-back{display:block;font-size:25rpx;color:var(--primary,#0ea5e9);padding:12rpx 0 22rpx}
+.original-subpage .op-title{font-size:36rpx;font-weight:700;line-height:1.35;margin:10rpx 0 25rpx}
+.original-subpage .op-desc{display:block;color:var(--muted-foreground,#64748b);font-size:24rpx;line-height:1.6;margin:8rpx 0 24rpx}
+.original-subpage .op-card{background:var(--card,#fff);border:1rpx solid var(--border,#e2e8f0);border-radius:20rpx;padding:32rpx;margin-bottom:24rpx;min-width:0}
+.original-subpage .op-card-title{font-weight:700;font-size:28rpx;line-height:1.45;margin-bottom:18rpx}
+.original-subpage .op-row{display:flex;gap:20rpx;align-items:center;justify-content:space-between;border-bottom:1rpx solid var(--border,#e2e8f0);padding:19rpx 0;line-height:1.4;font-size:25rpx}
+.original-subpage .op-row:last-child{border-bottom:0}.original-subpage .op-muted{font-size:23rpx;color:var(--muted-foreground,#64748b);line-height:1.65;overflow-wrap:anywhere}
+.original-subpage .op-input{height:84rpx;width:100%;border:1rpx solid var(--border,#e2e8f0);border-radius:14rpx;padding:0 20rpx;font-size:27rpx;background:var(--card,#fff);box-sizing:border-box}
+.original-subpage .op-action{background:var(--primary,#0ea5e9);color:#fff;border-radius:15rpx;border:0;margin:18rpx 0 0;padding:19rpx 20rpx;font-size:27rpx;font-weight:650;line-height:1.4;text-align:center}
+.original-subpage .op-action[disabled]{opacity:.55}.original-subpage .op-secondary{background:var(--card,#fff);color:var(--primary,#0ea5e9);border:1rpx solid var(--border,#e2e8f0)}
+.original-subpage .op-banner{margin:20rpx 0;border-radius:14rpx;background:var(--primary-08,#f0f9ff);color:var(--foreground,#0f172a);font-size:23rpx;line-height:1.65;padding:20rpx;overflow-wrap:anywhere}
+.original-subpage .op-error{color:#b91c1c;background:#fef2f2;border-radius:14rpx;padding:20rpx;font-size:23rpx;line-height:1.6;margin:16rpx 0}
+.original-subpage .op-empty{text-align:center;padding:60rpx 25rpx;font-size:24rpx;color:var(--muted-foreground,#64748b);line-height:1.7}
+.original-subpage .op-field-label{font-size:24rpx;color:var(--muted-foreground,#64748b);padding:10rpx 0;display:block}
+.original-subpage .op-chat-bubble{display:block;max-width:88%;padding:21rpx 25rpx;border-radius:19rpx;background:var(--muted,#f1f5f9);font-size:26rpx;line-height:1.5;margin:15rpx 0;word-break:break-word;white-space:pre-wrap}
+.original-subpage .op-chat-bubble.mine{margin-left:auto;background:var(--primary,#0ea5e9);color:#fff}
+.original-subpage .op-composer{position:sticky;bottom:0;display:flex;align-items:center;gap:12rpx;background:var(--background,#fff);padding:20rpx 0 env(safe-area-inset-bottom)}
+.original-subpage .op-composer .op-input{flex:1;min-width:0}.original-subpage .op-composer .op-action{margin:0;flex:0 0 auto}
+.kx-dark.original-subpage{--background:#171c1f;--card:#202629;--foreground:#f2f4f4;--border:#475569;--muted:#283137;--muted-foreground:#cbd5e1}
+@media(min-width:768px){.original-subpage{max-width:920rpx;margin:auto}}
+
+/* V14: 1px=2rpx transposition of original Taro list/detail utility classes; no global redesign. */
+.original-subpage .v14-tabs{display:flex;gap:16rpx;margin:18rpx 0 24rpx}
+.original-subpage .v14-tab{flex:1;text-align:center;border:1rpx solid var(--border);border-radius:14rpx;background:var(--card);padding:17rpx 8rpx;font-size:27rpx;color:var(--foreground)}
+.original-subpage .v14-tab.active{background:var(--primary);color:#fff;border-color:transparent}
+.original-subpage .v14-between{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:16rpx;margin-bottom:16rpx}
+.original-subpage .v14-between .op-card-title{margin-bottom:0;flex:1}
+.original-subpage .v14-status{font-size:23rpx;color:var(--primary);white-space:nowrap}
+.original-subpage .v14-kind{color:var(--primary);background:var(--muted);padding:7rpx 15rpx;border-radius:8rpx;font-size:23rpx}
+.original-subpage .v14-pinned{color:#dc2626;font-size:23rpx;background:rgba(220,38,38,.12);padding:7rpx 14rpx;border-radius:8rpx}
+.original-subpage .v14-body{display:block;font-size:27rpx;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;padding:16rpx 0}
+.original-subpage .v14-expand{font-size:23rpx;color:var(--primary);margin-top:9rpx}
+.original-subpage .v14-md-h1{display:block;font-size:35rpx;font-weight:700;margin:20rpx 0 25rpx}
+.original-subpage .v14-md-h2{display:block;font-size:31rpx;font-weight:700;margin:30rpx 0 15rpx}
+.original-subpage .v14-md-p{display:block;font-size:27rpx;line-height:1.75;margin:9rpx 0;white-space:pre-wrap}
+.original-subpage .v14-md-table{display:flex;flex-direction:row;border:1rpx solid var(--border);border-radius:10rpx;overflow:hidden;margin:8rpx 0}
+.original-subpage .v14-md-cell{flex:1;min-width:0;font-size:23rpx;overflow-wrap:anywhere;padding:14rpx;border-right:1rpx solid var(--border)}
+.original-subpage .v14-md-cell:last-child{border-right:0}
+.original-subpage .v14-spacer{height:18rpx}
+.original-subpage .v14-footer{text-align:center;margin:30rpx 0 40rpx}
+.original-subpage .v14-community-image{width:100%;margin:16rpx 0;border-radius:12rpx}
+
+.original-subpage .v14-stars{color:#f59e0b;font-size:26rpx;white-space:nowrap;}
+
+.v14-legal-links .settings-row{display:flex;align-items:center;gap:18rpx}.v14-legal-links .settings-row-label{flex:1}.v14-legal-icon{width:35rpx;height:35rpx;flex:0 0 35rpx;color:var(--primary)}
+
+.original-subpage .v14-community-video{width:100%;height:540rpx;margin:16rpx 0;background:#0f172a;border-radius:12rpx}
+
+/* V15: Taro source rounded-xl/secondary controls transposed at 1px => 2rpx. Append-only; V11-V14 geometry unchanged. */
+.original-subpage .v15-field{background:var(--secondary,#f1f5f9);border-radius:16rpx;padding:0 25rpx;min-height:80rpx;line-height:80rpx;box-sizing:border-box;width:100%;font-size:27rpx;color:var(--foreground)}
+.original-subpage .v15-area{background:var(--secondary,#f1f5f9);border-radius:16rpx;padding:18rpx 25rpx;box-sizing:border-box;width:100%;min-height:170rpx;font-size:27rpx;line-height:1.6;color:var(--foreground)}
+.original-subpage .v15-label{display:block;font-size:24rpx;margin:22rpx 0 12rpx;color:var(--muted-foreground)}
+.original-subpage .v15-choice{display:flex;align-items:center;justify-content:center;gap:8rpx;border:1rpx solid var(--border);border-radius:16rpx;background:var(--secondary);padding:18rpx 12rpx;font-size:26rpx;flex:1;min-width:0}
+.original-subpage .v15-choice.selected{border-color:var(--primary);background:var(--primary-08);color:var(--primary);font-weight:650}
+.original-subpage .v15-choices{display:flex;gap:16rpx;margin:18rpx 0 25rpx}
+.original-subpage .v15-selector{display:flex;align-items:center;justify-content:space-between;padding:20rpx 25rpx;border-radius:16rpx;background:var(--secondary);min-height:77rpx;box-sizing:border-box;font-size:26rpx}
+.original-subpage .v15-flow-row{display:flex;align-items:center;gap:18rpx;min-width:0}.original-subpage .v15-flow-row view{min-width:0;flex:1}
+.original-subpage .v15-switch{font-size:23rpx;color:var(--primary);padding:20rpx 0}
+.original-subpage .v15-section{font-size:27rpx;font-weight:700;margin-bottom:22rpx}
+.original-subpage .v15-notice{border-radius:14rpx;background:var(--primary-08);padding:22rpx;color:var(--foreground);font-size:24rpx;line-height:1.65;margin:18rpx 0}
+.original-subpage .v15-danger-note{border-radius:14rpx;background:rgba(234,179,8,.10);color:var(--foreground);padding:20rpx;font-size:23rpx;line-height:1.65;margin:18rpx 0}
+.original-subpage .v15-login-content{width:100%;box-sizing:border-box;max-width:680rpx;margin:auto;padding-top:75rpx}
+.original-subpage .v15-login-content .op-title{text-align:center;font-size:48rpx}
+.original-subpage .v15-login-content .op-desc{text-align:center;margin-bottom:42rpx}
+.original-subpage .v15-login-content .v15-field{background:var(--card);border:1rpx solid var(--border);margin-bottom:18rpx}
+.original-subpage .v15-linked{color:var(--primary);font-size:24rpx}
+.original-subpage .v15-columns{display:flex;flex-wrap:wrap;gap:15rpx}.original-subpage .v15-columns view{width:calc(50% - 8rpx);box-sizing:border-box}
+.original-subpage .v15-item-row{font-size:24rpx;line-height:1.6;padding:15rpx 0;border-bottom:1rpx solid var(--border);overflow-wrap:anywhere}
+.original-subpage .v15-item-row:last-child{border:0}

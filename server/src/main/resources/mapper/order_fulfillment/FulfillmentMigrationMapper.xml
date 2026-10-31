@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.FulfillmentMigrationMapper">
+  <select id="lockProduct" resultType="map">
+    SELECT id,owner_id,name,status,stock FROM t_products WHERE id=#{id} FOR UPDATE
+  </select>
+  <update id="decrementProductStock">
+    UPDATE t_products SET stock=stock-#{qty},updated_at=NOW(3) WHERE id=#{id} AND stock &gt;= #{qty}
+  </update>
+  <select id="orderParties" resultType="map">
+    SELECT buyer_id,vendor_id FROM t_orders WHERE id=#{orderId}
+  </select>
+  <insert id="insertLogistics">
+    INSERT INTO t_order_logistics(id,order_id,node,operator_id,operator_role,detail,created_at)
+    VALUES(#{id},#{orderId},#{node},#{operatorId},#{operatorRole},#{detail},NOW(3))
+  </insert>
+  <insert id="insertBuyerNotification">
+    INSERT INTO t_notifications(id,user_id,kind,title,body,order_id,read_flag,created_at)
+    VALUES(#{id},#{buyerId},'logistics','物流更新',#{body},#{orderId},0,NOW(3))
+  </insert>
+</mapper>

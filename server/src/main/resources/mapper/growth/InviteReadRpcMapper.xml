@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.growth.InviteReadRpcMapper">
+ <select id="isAdmin" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{actor} AND is_admin=1</select>
+ <select id="teamMembers" resultType="map">
+   SELECT p.id,p.nickname,p.username,p.avatar_url,p.city,p.user_role,p.invited_by,p.created_at,
+          p.performance_score,p.deal_count,p.breach_count_90d,p.carrier_verify_status,
+          p.buyer_verify_status,p.invite_tier
+   FROM t_profiles p WHERE p.invited_by=#{root} OR p.invited_by IN
+     (SELECT x.id FROM (SELECT id FROM t_profiles WHERE invited_by=#{root}) x)
+ </select>
+ <select id="inviteCodeOwner" resultType="java.lang.String">
+   SELECT p.id FROM t_profiles p WHERE p.my_invite_code=#{code}
+    AND (EXISTS(SELECT 1 FROM t_profiles me WHERE me.id=#{actor} AND me.is_admin=1)
+         OR p.invited_by=#{actor}) LIMIT 1
+ </select>
+ <select id="operatorInviteCode" resultType="java.lang.String">
+   SELECT p.my_invite_code FROM t_profiles p WHERE p.id=#{operator}
+     AND (p.id=#{actor}
+       OR EXISTS(SELECT 1 FROM t_profiles me WHERE me.id=#{actor} AND me.is_admin=1)
+       OR EXISTS(SELECT 1 FROM t_join_applications ja WHERE ja.operator_id=#{operator}
+               AND ja.target_user_id=#{actor} AND ja.status='pending')) LIMIT 1
+ </select>
+</mapper>

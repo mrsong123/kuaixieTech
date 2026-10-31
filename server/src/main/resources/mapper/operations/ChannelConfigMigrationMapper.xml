@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.operations.ChannelConfigMigrationMapper">
+ <select id="isAdmin" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_profiles WHERE id=#{actor} AND is_admin=1</select>
+ <select id="lockByType" resultType="java.util.HashMap">SELECT id FROM t_channel_configs WHERE channel_type=#{type} FOR UPDATE</select>
+ <select id="lockConfig" resultType="java.util.HashMap">SELECT id,channel_type,provider FROM t_channel_configs WHERE id=#{id} FOR UPDATE</select>
+ <update id="disableOther">UPDATE t_channel_configs SET enabled=0,updated_at=CURRENT_TIMESTAMP(3) WHERE channel_type=#{type} AND provider &lt;&gt; #{provider}</update>
+ <update id="disableOtherById">UPDATE t_channel_configs SET enabled=0,updated_at=CURRENT_TIMESTAMP(3) WHERE channel_type=#{type} AND id &lt;&gt; #{id}</update>
+ <insert id="upsert">INSERT INTO t_channel_configs (id,channel_type,provider,config,enabled,remark,updated_by) VALUES (#{id},#{type},#{provider},#{config},#{enabled},#{remark},#{actor}) ON DUPLICATE KEY UPDATE config=VALUES(config),enabled=VALUES(enabled),remark=VALUES(remark),updated_by=VALUES(updated_by),updated_at=CURRENT_TIMESTAMP(3)</insert>
+ <update id="toggle">UPDATE t_channel_configs SET enabled=#{enabled},updated_by=#{actor},updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+ <delete id="delete">DELETE FROM t_channel_configs WHERE id=#{id}</delete>
+ <select id="allConfigs" resultType="java.util.HashMap">SELECT id,channel_type,provider,enabled,remark,updated_at,config FROM t_channel_configs ORDER BY channel_type</select>
+ <insert id="log">INSERT INTO t_admin_logs (id,operator_id,action,target_type,target_id,detail) VALUES(#{id},#{actor},#{action},#{type},#{target},#{detail})</insert>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.operations.AdminConsoleMapper">
+<select id="carrierKyc" resultType="map">SELECT id,nickname,username,phone,carrier_verify_status,carrier_verify_reason,created_at FROM t_profiles WHERE carrier_verify_status IN ('pending','rejected','approved') ORDER BY CASE carrier_verify_status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="buyerKyc" resultType="map">SELECT id,nickname,username,phone,buyer_verify_status,created_at FROM t_profiles WHERE buyer_verify_status IN ('pending','rejected','approved') ORDER BY CASE buyer_verify_status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="enterpriseKyc" resultType="map">SELECT id,nickname,enterprise_name,enterprise_verify_status,user_role,created_at FROM t_profiles WHERE user_role='enterprise' OR enterprise_verify_status IS NOT NULL ORDER BY CASE enterprise_verify_status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="trips" resultType="map">SELECT t.id,t.owner_id,t.destination,t.transport_mode,t.depart_date,t.verify_status,t.verify_reason,t.status,t.carry_mode,t.pool_status,COALESCE(p.nickname,p.username) AS owner_name FROM t_trips t LEFT JOIN t_profiles p ON p.id=t.owner_id ORDER BY CASE t.verify_status WHEN 'pending' THEN 0 ELSE 1 END, t.created_at DESC LIMIT #{limit}</select>
+<select id="proofRecipes" resultType="map">SELECT id,trip_type,transport_mode,country_code,items,note,active,sort_order FROM t_proof_recipes ORDER BY sort_order,id LIMIT #{limit}</select>
+<select id="products" resultType="map">SELECT id,owner_id,name,region,price,stock,status,created_at FROM t_products ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="categories" resultType="map">SELECT id,name,parent_id,level,active,sort_order,region FROM t_categories ORDER BY level,sort_order,id LIMIT #{limit}</select>
+<select id="errorLogs" resultType="map">SELECT id,scope,message,page,user_id,status,resolved_at,created_at FROM t_error_logs ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="orders" resultType="map">SELECT id,order_no,item_name,status,goods_amount,service_fee,buyer_id,vendor_id,created_at FROM t_orders ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="cancels" resultType="map">SELECT id,order_id,applicant_id,applicant_role,reason_type,reason_detail,status,withdrawn,created_at FROM t_cancel_requests ORDER BY CASE WHEN status='pending' AND withdrawn=0 THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="disputes" resultType="map">SELECT id,order_id,type,stage,expect_resolution,description,refund_amount,created_at FROM t_disputes ORDER BY CASE WHEN stage IN ('negotiating','platform_review','appeal') THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="invoices" resultType="map">SELECT id,order_id,user_id,status,title_type,title_name,tax_no,invoice_kind,email,amount,invoice_no,file_url,reject_reason,created_at FROM t_invoices ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="privacyPool" resultType="map">SELECT virtual_number,pool_code,status,remark,updated_at FROM t_privacy_numbers ORDER BY status,updated_at DESC LIMIT #{limit}</select>
+<select id="pools" resultType="map">SELECT id,owner_id,destination,carry_mode,pool_status,pool_slots,depart_date,status FROM t_trips WHERE carry_mode='pool' ORDER BY CASE pool_status WHEN 'forming' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="demands" resultType="map">SELECT id,title,status,expect_price,publisher_id,pk_mode,deadline,created_at FROM t_demands ORDER BY CASE status WHEN 'open' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="notifyQueue" resultType="map">SELECT id,user_id,kind,title,channel,status,reason,created_at FROM t_notify_outbox ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="withdrawals" resultType="map">SELECT id,user_id,amount,channel,status,admin_note,created_at FROM t_withdrawals ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="community" resultType="map">SELECT id,author_id,kind,title,status,removed_reason,created_at FROM t_posts ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC LIMIT #{limit}</select>
+<select id="users" resultType="map">SELECT id,nickname,username,phone,user_role,is_admin,balance,points,performance_score,carrier_verify_status,buyer_verify_status,banned_until,invite_tier,created_at FROM t_profiles
+<where>
+ <if test="keyword!=null and keyword!=''">AND (nickname LIKE CONCAT('%',#{keyword},'%') OR username LIKE CONCAT('%',#{keyword},'%') OR phone LIKE CONCAT('%',#{keyword},'%') OR id=#{keyword})</if>
+</where>
+ ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="finance" resultType="map">SELECT id,user_id,kind,amount,balance_after,order_id,note,created_at FROM t_balance_ledger ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="invite" resultType="map">SELECT code,note,used_by,used_at,created_by,created_at FROM t_invite_codes ORDER BY created_at DESC LIMIT #{limit}</select>
+<select id="broadcast" resultType="map">SELECT id,title,kind,pinned,active,created_at FROM t_announcements ORDER BY pinned DESC, created_at DESC LIMIT #{limit}</select>
+<select id="channelConfigs" resultType="map">SELECT id,channel_type,provider,enabled,remark,updated_at FROM t_channel_configs ORDER BY channel_type LIMIT #{limit}</select>
+<select id="locales" resultType="map">SELECT code,native_name,label_zh,sort_order,active,fallback_code FROM t_locales ORDER BY sort_order,code LIMIT #{limit}</select>
+<select id="adminLogs" resultType="map">SELECT id,operator_id,action,target_type,target_id,detail,created_at FROM t_admin_logs ORDER BY created_at DESC LIMIT #{limit}</select>
+<update id="setCarrierVerify">UPDATE t_profiles SET carrier_verify_status=CASE WHEN #{approved} THEN 'approved' ELSE 'rejected' END, carrier_verify_reason=#{note}, verified_at=CASE WHEN #{approved} THEN CURRENT_TIMESTAMP(3) ELSE verified_at END WHERE id=#{id} AND carrier_verify_status='pending'</update>
+<update id="setTripVerify">UPDATE t_trips SET verify_status=CASE WHEN #{approved} THEN 'approved' ELSE 'rejected' END, verify_reason=#{note}, verified_at=CASE WHEN #{approved} THEN CURRENT_TIMESTAMP(3) ELSE verified_at END WHERE id=#{id} AND verify_status='pending'</update>
+<update id="forceOffShelf">UPDATE t_products SET status='off', updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='on'</update>
+<update id="deactivateCategory">UPDATE t_categories SET active=0 WHERE id=#{id}</update>
+<insert id="createCategory">INSERT INTO t_categories(name,parent_id,level,active,sort_order) VALUES (#{name},#{parentId},#{level},1,99)</insert>
+<insert id="createInvite">INSERT INTO t_invite_codes(code,note,created_by,created_at) VALUES (#{code},#{note},#{actor},CURRENT_TIMESTAMP(3))</insert>
+<insert id="insertRecipe">INSERT INTO t_proof_recipes(id,trip_type,transport_mode,country_code,items,note,active,sort_order,created_at,updated_at) VALUES (#{id},#{tripType},#{transportMode},#{countryCode},#{items},#{note},1,100,CURRENT_TIMESTAMP(3),CURRENT_TIMESTAMP(3))</insert>
+<update id="updateRecipe">UPDATE t_proof_recipes SET trip_type=#{tripType},transport_mode=#{transportMode},country_code=#{countryCode},items=#{items},note=#{note},updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+<update id="toggleRecipe">UPDATE t_proof_recipes SET active=#{active},updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+<update id="toggleChannel">UPDATE t_channel_configs SET enabled=#{enabled},updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id}</update>
+</mapper>

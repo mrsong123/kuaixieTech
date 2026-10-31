@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.communication.PrivacyReleaseMigrationMapper">
+ <update id="releaseExpiredBindings">UPDATE t_privacy_bindings SET status='released',released_at=CURRENT_TIMESTAMP(3),release_reason='expired' WHERE status='active' AND expire_at &lt;= CURRENT_TIMESTAMP(3)</update>
+ <update id="releaseIdleNumbers">UPDATE t_privacy_numbers SET status='idle',updated_at=CURRENT_TIMESTAMP(3) WHERE status='occupied' AND virtual_number NOT IN(SELECT virtual_number FROM t_privacy_bindings WHERE status='active')</update>
+</mapper>

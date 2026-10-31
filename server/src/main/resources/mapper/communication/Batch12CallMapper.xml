@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.communication.Batch12CallMapper">
+<select id="lockOrder" resultType="map">SELECT id,buyer_id,vendor_id,status FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="lockCall" resultType="map">SELECT * FROM t_call_records WHERE id=#{id} FOR UPDATE</select>
+<update id="expireRinging">UPDATE t_call_records SET status='missed',updated_at=NOW(3) WHERE order_id=#{order} AND status='ringing' AND created_at &lt; NOW(3)-INTERVAL 60 SECOND</update>
+<select id="activeRinging" resultType="int">SELECT COUNT(*) FROM t_call_records WHERE order_id=#{order} AND status='ringing'</select>
+<insert id="createCall">INSERT INTO t_call_records(id,order_id,caller_id,callee_id,room_id,consent_confirmed,status,transcript_flags) VALUES(#{id},#{order},#{caller},#{callee},#{room},1,'ringing',JSON_ARRAY())</insert>
+<update id="accept">UPDATE t_call_records SET status='accepted',started_at=NOW(3),updated_at=NOW(3) WHERE id=#{id} AND status='ringing'</update>
+<update id="reject">UPDATE t_call_records SET status=#{status},updated_at=NOW(3) WHERE id=#{id} AND status='ringing'</update>
+<update id="hangup">UPDATE t_call_records SET status='ended',ended_at=NOW(3),duration_sec=#{duration},updated_at=NOW(3) WHERE id=#{id} AND status IN ('ringing','accepted')</update>
+<insert id="notifyPeer">INSERT INTO t_notifications(id,user_id,order_id,kind,title,body) VALUES(#{id},#{peer},#{order},#{kind},#{title},#{body})</insert>
+<insert id="systemMessage">INSERT INTO t_messages(id,order_id,sender_id,content,system_flag,image_urls) VALUES(#{id},#{order},#{sender},CONCAT('平台网络通话结束，时长 ',FLOOR(#{duration}/60),' 分 ',MOD(#{duration},60),' 秒；录音状态由供应商回调确认'),1,JSON_ARRAY())</insert>
+</mapper>

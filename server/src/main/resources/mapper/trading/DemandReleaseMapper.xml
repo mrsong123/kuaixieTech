@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.trading.DemandReleaseMapper">
+<select id="lockDueDemands" resultType="map">
+SELECT id, publisher_id, title, visibility FROM t_demands
+WHERE status='open' AND scheduled_at IS NOT NULL AND scheduled_at &lt;= NOW(3)
+ORDER BY scheduled_at,id LIMIT #{limit} FOR UPDATE SKIP LOCKED
+</select>
+<update id="clearScheduledAt">UPDATE t_demands SET scheduled_at=NULL WHERE id=#{id} AND status='open' AND scheduled_at IS NOT NULL AND scheduled_at &lt;= NOW(3)</update>
+<insert id="insertReleaseNotification">INSERT INTO t_notifications (id,user_id,kind,title,body) VALUES (#{id},#{userId},'demand',#{title},#{body})</insert>
+</mapper>

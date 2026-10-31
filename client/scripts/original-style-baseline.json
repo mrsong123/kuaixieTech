@@ -1,0 +1,30 @@
+{
+  "source": "C:\\Users\\sim\\Downloads\\meoo_zip_1793317908757\\src\\app.css",
+  "values": {
+    "background": "#ffffff",
+    "foreground": "#0f172a",
+    "card": "#ffffff",
+    "card-foreground": "#0f172a",
+    "popover": "#ffffff",
+    "popover-foreground": "#3f3f46",
+    "secondary": "#f1f5f9",
+    "secondary-foreground": "#0f172a",
+    "muted": "#f1f5f9",
+    "muted-foreground": "#64748b",
+    "accent": "#f1f5f9",
+    "accent-foreground": "#0f172a",
+    "destructive": "#dc2626",
+    "border": "#e2e8f0",
+    "input": "#e2e8f0",
+    "radius": "8px",
+    "wechat": "#07c160",
+    "brand-deep": "#0284c7",
+    "brand-light": "#38bdf8",
+    "brand-gradient": "linear-gradient(135deg, #0284c7 0%, #0ea5e9 55%, #38bdf8 100%)"
+  },
+  "exceptions": {
+    "primary": "User-configurable accent; original fallback #0ea5e9",
+    "ring": "Uses accent token",
+    "index.brandTitle": "Product name follows approved portal branding"
+  }
+}

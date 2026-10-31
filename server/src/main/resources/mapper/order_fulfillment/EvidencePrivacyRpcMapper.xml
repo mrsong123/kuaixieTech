@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.EvidencePrivacyRpcMapper">
+
+<select id="findOrderEvidence" resultType="map">SELECT id,trip_id,order_no,status,item_name,buyer_id,vendor_id,confirmed_at,procurement_at,shipped_at,settled_at,purchase_evidence,purchase_meta,purchase_receipt_urls,procurement_lat,procurement_lng,procurement_city,procurement_address,purchase_risk_flags,ship_risk_flags,location_mismatch,freight_label_urls,carrier_code,tracking_no,ship_lat,ship_lng,ship_city,delivery_at,delivery_lat,delivery_lng,delivery_city,delivery_face_verification_id FROM t_orders WHERE id=#{id}</select>
+<select id="findTripEvidence" resultType="map">SELECT id,flight_no,depart_datetime,return_date,boarding_snapshot_url,boarding_at,boarding_city,boarding_lat,boarding_lng,boarding_risk_flags,arrival_snapshot_url,arrival_at,arrival_city,sms_proof_urls,visa_proof_urls,ticket_proof_urls FROM t_trips WHERE id=#{id}</select>
+<select id="findFaces" resultType="map">SELECT f.id,f.scene,f.snapshot_url,f.device_info,f.created_at,f.user_id,vc.used AS challenge_used FROM t_face_verifications f LEFT JOIN t_verification_codes vc ON vc.target=f.user_id AND vc.channel=CONCAT('face_',f.scene) AND vc.code=f.challenge_code WHERE f.order_id=#{orderId} ORDER BY f.created_at</select>
+<select id="activeBinding" resultType="map">SELECT id,virtual_number FROM t_privacy_bindings WHERE order_id=#{orderId} AND status='active' AND expire_at&gt;CURRENT_TIMESTAMP(3) ORDER BY created_at DESC LIMIT 1</select>
+<select id="orderParties" resultType="map">SELECT buyer_id,vendor_id FROM t_orders WHERE id=#{orderId}</select>
+<insert id="callLog">INSERT INTO t_call_logs(id,order_id,binding_id,caller_id,caller_role,peer_role,virtual_number,result) VALUES(#{id},#{orderId},#{bindingId},#{caller},#{role},#{peer},#{number},#{result})</insert>
+</mapper>

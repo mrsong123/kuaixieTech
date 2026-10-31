@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.catalog.PublicCatalogMapper">
+  <!-- Explicit projection: do not return PII, KYC, proof images, deposits, bank details, private location. -->
+  <select id="categories" resultType="map">
+    SELECT c.id,c.parent_id,c.name,c.icon,c.ref_price_min,c.ref_price_max,c.region,c.level,c.sort_order
+      FROM t_categories c WHERE c.active=1
+      <if test="countryCode != null">AND EXISTS(SELECT 1 FROM t_category_countries cc WHERE cc.category_id=c.id AND cc.country_code=#{countryCode})</if>
+      ORDER BY c.level ASC,c.sort_order ASC,c.id ASC LIMIT #{limit}
+  </select>
+  <select id="products" resultType="map">
+    SELECT p.id,p.category_id,p.name,p.spec,p.region,p.price,p.stock,p.image_urls
+      FROM t_products p
+      WHERE p.status='on'
+      ORDER BY p.created_at DESC,p.id DESC LIMIT #{limit}
+  </select>
+  <select id="trips" resultType="map">
+    SELECT t.id,t.owner_id,t.destination,t.destination_flag,t.entry_port,t.transport_mode,
+           t.depart_date,t.arrive_date,t.return_date,t.capacity_qty,t.remaining_slots,
+           t.fee_mode,t.fee_value,t.trip_type,t.direction,
+           (COALESCE(p.boost_factor,1)*100 + COALESCE(p.performance_score,60)*2
+            + COALESCE(p.star_avg,5)*10 + LEAST(COALESCE(p.deal_count,0),50)*1.5
+            + CASE WHEN COALESCE(p.deal_count,0)&gt;0 THEN 30.0*COALESCE(p.ontime_count,0)/p.deal_count ELSE 15.0 END
+            + CASE WHEN t.verify_status='approved' THEN 50 ELSE 0 END) AS rank_score
+      FROM t_trips t JOIN t_profiles p ON t.owner_id=p.id
+      WHERE t.verify_status='approved' AND t.status='active' AND t.visibility='public'
+        AND t.return_date &gt;= CURRENT_DATE() AND p.deleted_at IS NULL
+      <choose>
+        <when test="sort == 'latest'">ORDER BY t.created_at DESC,t.id DESC</when>
+        <when test="sort == 'score'">ORDER BY p.performance_score DESC,t.id ASC</when>
+        <otherwise>ORDER BY rank_score DESC,t.id ASC</otherwise>
+      </choose>
+      LIMIT #{limit}
+  </select>
+  <select id="maskedProfiles" resultType="map">
+    SELECT id,
+           CASE WHEN username REGEXP '@|^[+]?[0-9][- 0-9]{6,}$'
+                THEN NULL ELSE username END AS username,
+           nickname,avatar_url,city,carrier_verify_status,performance_score,
+           star_avg,star_count,deal_count,ontime_count,user_role,buyer_verify_status,
+           carrier_tier,invite_tier
+      FROM t_profiles WHERE deleted_at IS NULL AND id IN
+      <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+  </select>
+</mapper>

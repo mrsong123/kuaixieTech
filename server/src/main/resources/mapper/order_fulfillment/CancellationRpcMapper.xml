@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.CancellationRpcMapper">
+<select id="lockOrder" resultType="map">SELECT id,order_no,buyer_id,vendor_id,buyer_deposit,vendor_deposit,buyer_deposit_status,vendor_deposit_status,status,trip_id FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="latestPending" resultType="map">SELECT id,applicant_id,applicant_role,reason_type FROM t_cancel_requests WHERE order_id=#{id} AND status='pending' AND withdrawn=0 ORDER BY created_at DESC LIMIT 1 FOR UPDATE</select>
+<update id="markCancelled">UPDATE t_orders SET status=#{status},cancel_tier=#{tier},cancel_reason_type=#{reason},cancel_force_majeure=#{force},cancel_proof_urls=CAST(#{proof} AS JSON),buyer_deposit_status=#{buyerStatus},vendor_deposit_status=#{vendorStatus},cancel_penalty_amount=#{penalty},closed_reason=#{closedReason},settled_at=CURRENT_TIMESTAMP(3),updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status IN ('requesting','negotiating','vendor_deposit_pending','locked','purchased','disputing')</update>
+<update id="markDepositRows">UPDATE t_deposits SET status='refunded',reason=#{reason},updated_at=CURRENT_TIMESTAMP(3) WHERE order_id=#{id} AND status='frozen'</update>
+<update id="reduceScore">UPDATE t_profiles SET performance_score=GREATEST(0,performance_score-#{delta}),breach_count_90d=breach_count_90d+IF(#{breach},1,0) WHERE id=#{uid}</update>
+<update id="saveDecision">UPDATE t_cancel_requests SET status=IF(#{approve},'approved','rejected'),verdict=IF(#{approve},'no_fault','continue_fulfill'),verdict_reason=#{reason},reviewed_by=#{op},resolved_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='pending' AND withdrawn=0</update>
+<update id="restoreLocked">UPDATE t_orders SET status='locked',updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status IN ('requesting','disputing')</update>
+<insert id="addNotice">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES(#{id},#{uid},#{kind},#{title},#{body},#{orderId})</insert>
+</mapper>

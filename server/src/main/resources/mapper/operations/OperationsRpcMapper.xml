@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.operations.OperationsRpcMapper">
+
+<update id="grantPoints">UPDATE t_profiles SET points=GREATEST(COALESCE(points,0)+#{points},0) WHERE id=#{uid}</update>
+<insert id="rewardLedger">INSERT INTO t_reward_ledger(id,inviter_id,invitee_id,order_id,level,event_type,reward_kind,amount,status,note,currency,settled_to_balance) VALUES(#{id},#{uid},#{uid},NULL,0,'admin_grant','points',#{points},'granted',#{note},'points',0)</insert>
+<insert id="notice">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES (#{id},#{uid},#{kind},#{title},#{body},#{orderId})</insert>
+<select id="lockTrip" resultType="map">SELECT id,owner_id,arrival_at,destination FROM t_trips WHERE id=#{id} FOR UPDATE</select>
+<update id="saveArrival">UPDATE t_trips SET arrival_snapshot_url=#{url},arrival_city=#{city},arrival_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND arrival_at IS NULL</update>
+<insert id="notifyArrival">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) SELECT UUID(),o.buyer_id,'arrival',CONCAT('带单人已到达',COALESCE(NULLIF(#{city},''),t.destination),'（到城留证）'),'带单人已上传到城自拍与定位，请留意当面交付或寄出安排',o.id FROM t_orders o JOIN t_trips t ON t.id=o.trip_id WHERE o.trip_id=#{tripId} AND o.status IN ('locked','purchased')</insert>
+<select id="expireTrips" resultType="map">SELECT id FROM t_trips WHERE carry_mode='pool' AND pool_status IN ('none','forming') AND status='active' AND return_date &lt; DATE_SUB(CURDATE(),INTERVAL 1 DAY) ORDER BY id FOR UPDATE</select>
+<select id="expireOrders" resultType="map">SELECT id,buyer_id,vendor_id,buyer_deposit_status,vendor_deposit_status,buyer_deposit,vendor_deposit,service_fee FROM t_orders WHERE trip_id=#{tripId} AND pool_slot_no IS NOT NULL AND status IN ('requesting','negotiating','vendor_deposit_pending','locked') ORDER BY id FOR UPDATE</select>
+<update id="cancelExpiredOrder">UPDATE t_orders SET status='cancelled_no_fault',buyer_deposit_status='refunded',vendor_deposit_status=CASE WHEN vendor_deposit_status='frozen' THEN 'refunded' ELSE vendor_deposit_status END,cancel_reason_type='mutual_agreement' WHERE id=#{orderId} AND status IN ('requesting','negotiating','vendor_deposit_pending','locked')</update>
+<update id="expirePool">UPDATE t_trips SET pool_status='expired' WHERE id=#{tripId} AND pool_status IN ('none','forming')</update>
+</mapper>

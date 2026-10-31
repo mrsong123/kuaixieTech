@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.finance.RewardSettlementMapper">
+
+<select id="lockProfile" resultType="map">SELECT id,invited_by,invite_tier,commission_mtd,commission_mtd_month FROM t_profiles WHERE id=#{uid} FOR UPDATE</select>
+<select id="getInviter" resultType="java.lang.String">SELECT invited_by FROM t_profiles WHERE id=#{uid}</select>
+<select id="hasFirstOrder" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_reward_ledger WHERE invitee_id=#{uid} AND event_type='first_order'</select>
+<insert id="addReward">INSERT INTO t_reward_ledger(id,inviter_id,invitee_id,order_id,level,event_type,reward_kind,amount,status,note,rate,base_amount,currency,settled_to_balance) VALUES(#{id},#{inviter},#{invitee},#{orderId},#{level},#{event},#{kind},#{amount},'settled',#{note},#{rate},#{base},#{currency},#{paid})</insert>
+<update id="grantPoints">UPDATE t_profiles SET points=points+#{points} WHERE id=#{uid} AND banned_until IS NULL</update>
+<insert id="notice">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{uid},#{kind},#{title},#{body})</insert>
+<update id="setCommissionMonth">UPDATE t_profiles SET commission_mtd=0,commission_mtd_month=#{month} WHERE id=#{uid}</update>
+<update id="addCommissionMonth">UPDATE t_profiles SET commission_mtd=commission_mtd+#{amount} WHERE id=#{uid}</update>
+<select id="alreadyCommission" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_reward_ledger WHERE order_id=#{orderId} AND inviter_id=#{inviter} AND event_type='team_commission' AND level=#{level}</select>
+<select id="lockCommissionRewards" resultType="map">SELECT id,inviter_id,currency,amount,settled_to_balance FROM t_reward_ledger WHERE order_id=#{orderId} AND event_type='team_commission' AND status!='revoked' AND revoked_at IS NULL ORDER BY id FOR UPDATE</select>
+<update id="revokeReward">UPDATE t_reward_ledger SET status='revoked',revoked_at=CURRENT_TIMESTAMP(3),revoked_reason=#{reason} WHERE id=#{id} AND revoked_at IS NULL</update>
+<update id="reduceCommission">UPDATE t_profiles SET commission_mtd=GREATEST(commission_mtd-#{amount},0) WHERE id=#{uid}</update>
+<select id="lockOrder" resultType="map">SELECT id,status,buyer_id,vendor_id,goods_amount,service_fee,shipped_at,promised_arrive_date,shipping_fee_status,freight_label_urls,shipping_fee,insured,insurance_premium,tax_refund_plan,tax_refund_amount,purchase_evidence,delivery_at FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<update id="markOrderSettled">UPDATE t_orders SET status='completed',settled_at=CURRENT_TIMESTAMP(3),updated_at=CURRENT_TIMESTAMP(3),buyer_deposit_status='released_to_goods',vendor_deposit_status='released' WHERE id=#{id} AND status IN ('shipped','purchased')</update>
+<update id="releaseDeposits">UPDATE t_deposits SET status=CASE WHEN party_role='buyer' THEN 'released_to_goods' ELSE 'released' END,updated_at=CURRENT_TIMESTAMP(3) WHERE order_id=#{id} AND status='frozen'</update>
+<update id="markNoProof">UPDATE t_orders SET purchase_risk_flags=JSON_ARRAY_APPEND(COALESCE(purchase_risk_flags,JSON_ARRAY()),'$', 'auto_settled_no_proof') WHERE id=#{id} AND JSON_CONTAINS(COALESCE(purchase_risk_flags,JSON_ARRAY()),JSON_QUOTE('auto_settled_no_proof'))=0</update>
+<update id="markTaxDegraded">UPDATE t_orders SET tax_refund_plan='vendor_keeps',service_fee=#{fee},purchase_risk_flags=JSON_ARRAY_APPEND(COALESCE(purchase_risk_flags,JSON_ARRAY()),'$', 'tax_degraded') WHERE id=#{id}</update>
+<update id="setTaxRefundAmount">UPDATE t_orders SET tax_refund_amount=#{tax} WHERE id=#{id}</update>
+<update id="updateVendorStats">UPDATE t_profiles SET deal_count=deal_count+1,ontime_count=ontime_count+CASE WHEN #{onTime} THEN 1 ELSE 0 END,clean_streak=CASE WHEN #{onTime} THEN clean_streak+1 ELSE 0 END WHERE id=#{id}</update>
+<insert id="message">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag) VALUES(#{id},#{orderId},#{sender},#{content},JSON_ARRAY(),1)</insert>
+</mapper>

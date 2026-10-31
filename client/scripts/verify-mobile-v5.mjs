@@ -1,0 +1,14 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+const root=path.resolve(import.meta.dirname,'..');const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const pages=JSON.parse(read('apps/mobile/src/pages.json'));assert.deepEqual(pages.tabBar.list.map(v=>v.text),['广场','社区','发布','消息','我的']);
+const plaza=read('apps/mobile/src/pages/index/index.vue')+read('apps/mobile/src/stores/useIndexPage.ts');
+for(const fragment of ['api.catalog.trips(100)','api.portal.demands(100)','api.portal.verifiedRole()','region','role.value?.user_role'])assert.ok(plaza.includes(fragment),fragment);
+const community=read('apps/mobile/src/pages/demand-pool/index.vue')+read('apps/mobile/src/stores/useDemandPoolPage.ts');assert.ok(community.includes('api.portal.communityFeed(60)'));assert.ok(community.includes('<video'));assert.ok(!community.includes('const fakePosts'));
+const pub=read('apps/mobile/src/pages/publish-hub/index.vue')+read('apps/mobile/src/stores/usePublishHubPage.ts');for(const x of ['api.portal.publishDemand','api.portal.publishTrip','api.portal.postCommunity'])assert.ok(pub.includes(x));
+const chat=read('apps/mobile/src/pages/messages/index.vue')+read('apps/mobile/src/stores/useMessagesPage.ts');
+for(const x of ['api.support.open','api.support.send','api.support.messages','@confirm="send"','chooseMedia','portal.chat.send'])assert.ok(chat.includes(x));
+assert.ok(chat.includes('isTransfer(value)'));assert.ok(!chat.includes("navigate('me')"));assert.ok(!chat.includes('mockAi'));assert.ok(!chat.includes('fakeReply'));
+const me=read('apps/mobile/src/pages/me/index.vue')+read('apps/mobile/src/stores/useMineOriginalPage.ts');assert.ok(me.includes('mine-quick')&&me.includes('mine.groupCommunity'));assert.ok(me.includes('mine.appearanceDesc'));assert.ok(read('apps/mobile/src/App.vue').includes('portal.tabs.community')); 
+const sdk=read('packages/sdk/src/client.ts');for(const route of ['/public/demands','/public/community/feed','/portal/me','/portal/demands','/portal/trips','/support/conversations'])assert.ok(sdk.includes(route),route);
+assert.ok(!read('apps/pc/src/App.vue').includes('portal.square.title'),'PC homepage should not be rebranded into the plaza');
+console.log('MOBILE V5 BUSINESS CHECK PASSED: unified plaza, verified role, real feed, dual publish, chat/handoff, unchanged PC');

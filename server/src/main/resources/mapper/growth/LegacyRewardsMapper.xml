@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.growth.LegacyRewardsMapper">
+<select id="getOwnInviteCode" resultType="string">SELECT my_invite_code FROM t_profiles WHERE id=#{userId}</select>
+<update id="assignInviteCode">UPDATE t_profiles SET my_invite_code=#{code} WHERE id=#{userId} AND my_invite_code IS NULL</update>
+<select id="findInviter" resultType="string">SELECT id FROM t_profiles WHERE my_invite_code=#{code}</select>
+<select id="invitedBy" resultType="string">SELECT invited_by FROM t_profiles WHERE id=#{userId}</select>
+<update id="bindInviter">UPDATE t_profiles SET invited_by=#{inviter} WHERE id=#{userId} AND invited_by IS NULL</update>
+<update id="deductPoints">UPDATE t_profiles SET points=points-#{points} WHERE id=#{userId} AND points &gt;= #{points}</update>
+<insert id="insertCoupon">INSERT INTO t_coupons(id,user_id,face_value,points_cost,status,expire_at) VALUES(#{id},#{userId},#{face},#{points},'active',DATE_ADD(NOW(3), INTERVAL 90 DAY))</insert>
+<select id="getUsableCouponValue" resultType="java.math.BigDecimal">SELECT face_value FROM t_coupons WHERE id=#{id} AND user_id=#{userId} AND status='active' AND expire_at &gt; NOW(3)</select>
+<update id="markCouponUsed">UPDATE t_coupons SET status='used',used_order_id=#{orderId} WHERE id=#{id} AND user_id=#{userId} AND status='active' AND expire_at &gt; NOW(3)</update>
+<insert id="notifyInviter">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{inviter},'invite_bound','邀请成功','你的受邀伙伴已加入平台，完成首单后你将获得积分奖励')</insert>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.KycRpcMapper">
+ <select id="hasDoc" resultType="int">
+   SELECT COUNT(*) FROM t_kyc_documents WHERE user_id=#{uid} AND doc_type=#{kind} AND status != 'rejected'
+     <if test="challenge">AND challenge_code IS NOT NULL</if>
+ </select>
+ <update id="updateBuyerSubmission">
+   UPDATE t_profiles SET real_name=#{name},id_card_no_masked=#{mask},buyer_verify_status='pending',buyer_verify_reason=NULL WHERE id=#{uid}
+ </update>
+ <insert id="upsertDoc">
+   INSERT INTO t_kyc_documents(id,user_id,doc_type,storage_url,status,challenge_code,created_at)
+   VALUES(#{id},#{uid},#{kind},#{url},'pending',#{code},NOW(3))
+   ON DUPLICATE KEY UPDATE storage_url=VALUES(storage_url),status='pending',reject_reason=NULL,
+       challenge_code=COALESCE(VALUES(challenge_code),challenge_code)
+ </insert>
+ <select id="isAdmin" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{uid} AND is_admin=1</select>
+ <update id="reviewBuyer">
+   UPDATE t_profiles SET buyer_verify_status=<choose><when test="approved">'approved'</when><otherwise>'rejected'</otherwise></choose>,
+      buyer_verify_reason=<choose><when test="approved">NULL</when><otherwise>#{reason}</otherwise></choose>,
+      buyer_verified_at=<choose><when test="approved">NOW(3)</when><otherwise>buyer_verified_at</otherwise></choose>
+   WHERE id=#{uid}
+ </update>
+ <update id="reviewDocs">
+    UPDATE t_kyc_documents SET status=<choose><when test="approved">'approved'</when><otherwise>'rejected'</otherwise></choose>,
+      reject_reason=<choose><when test="approved">NULL</when><otherwise>#{reason}</otherwise></choose>
+    WHERE user_id=#{uid} AND doc_type IN('id_card_front','id_card_back','holding_id','real_name_selfie') AND status='pending'
+ </update>
+ <insert id="addNotice">
+   INSERT INTO t_notifications(id,user_id,kind,title,body,created_at) VALUES(#{id},#{uid},'system',#{title},#{body},NOW(3))
+ </insert>
+ <insert id="addAdminLog">
+   INSERT INTO t_admin_logs(id,operator_id,action,target_type,target_id,detail,created_at)
+   VALUES(#{id},#{admin},'buyer_kyc_review','profile',#{target},#{detail},NOW(3))
+ </insert>
+ <insert id="insertChallenge">
+   INSERT INTO t_verification_codes(id,target,channel,code,purpose,expires_at,used,created_at)
+   VALUES(#{id},#{uid},#{channel},#{code},'face_challenge',DATE_ADD(NOW(3),INTERVAL 5 MINUTE),0,NOW(3))
+ </insert>
+ <select id="lockChallenge" resultType="java.lang.String">
+   SELECT id FROM t_verification_codes WHERE target=#{uid} AND channel='face_purchase_confirm'
+      AND code=#{code} AND used=0 AND expires_at &gt; NOW(3)
+   ORDER BY created_at DESC LIMIT 1 FOR UPDATE
+ </select>
+ <update id="markChallengeUsed">UPDATE t_verification_codes SET used=1 WHERE id=#{id} AND used=0 AND expires_at &gt; NOW(3)</update>
+ <insert id="insertFaceRecord">
+   INSERT INTO t_face_verifications(id,user_id,scene,snapshot_url,device_info,order_id,challenge_code,created_at)
+   VALUES(#{id},#{uid},#{scene},#{url},#{device},#{orderId},#{code},NOW(3))
+ </insert>
+</mapper>

@@ -1,0 +1,42 @@
+{
+  "tab-home.png": {
+    "original": "house.png",
+    "sha256": "5bf87084a68c8e608cfa8dee71f95c25b62541b422e1a028a22ba517241a4793"
+  },
+  "tab-home-on.png": {
+    "original": "house-active.png",
+    "sha256": "e069a01f509eb8f6100421de1e2253742c79af8385c323891c63e4de88c55f2c"
+  },
+  "tab-demand.png": {
+    "original": "search.png",
+    "sha256": "5cc68c8976c6f63e62fd9d744ebaef02480757d7af026ae1420c41a6db0374d8"
+  },
+  "tab-demand-on.png": {
+    "original": "search-active.png",
+    "sha256": "3f5adc831d51a2c7080e2e15f36b13386b26cf650ecb26ab53550460a4a7a873"
+  },
+  "tab-publish.png": {
+    "original": "send.png",
+    "sha256": "a4832133e77ab1ff21f9b6c27cfd9eb82e8c9a670d314cfbdcbf223261dd2b52"
+  },
+  "tab-publish-on.png": {
+    "original": "send-active.png",
+    "sha256": "31585a997cdd4dce2a39da5ef0ecf047ebc123637e54cb83bac14ffb068a3f79"
+  },
+  "tab-messages.png": {
+    "original": "messages-square.png",
+    "sha256": "b5af0c11b112bb0e030592fd2e1d8f4f8a62fd2240ed87a07246bb3a3d3c1694"
+  },
+  "tab-messages-on.png": {
+    "original": "messages-square-active.png",
+    "sha256": "22c5927f4de75b9eda8182dbe0abde549f5c3c8e47a90f31fc12266d6639118a"
+  },
+  "tab-me.png": {
+    "original": "user.png",
+    "sha256": "1000afc4c6434d9988247ce1cebb4870e9d46259aba2161a2c53030bd45d8850"
+  },
+  "tab-me-on.png": {
+    "original": "user-active.png",
+    "sha256": "6e7d7657c623973563b9acca57fee02672ce82cf3876fe4da22795d407b3290d"
+  }
+}

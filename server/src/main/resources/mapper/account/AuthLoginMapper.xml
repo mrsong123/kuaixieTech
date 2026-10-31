@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.AuthLoginMapper">
+  <update id="ensureCredentialTable">
+    CREATE TABLE IF NOT EXISTS t_auth_credentials (
+      user_id CHAR(36) NOT NULL PRIMARY KEY,
+      password_hash VARCHAR(120) NOT NULL,
+      updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+    )
+  </update>
+  <select id="findProfile" resultType="map">
+    SELECT id,is_admin,banned_until,phone,email,nickname
+    FROM t_profiles
+    WHERE deleted_at IS NULL
+    <choose>
+      <when test="channel=='email'">AND email=#{contact}</when>
+      <otherwise>AND phone=#{contact}</otherwise>
+    </choose>
+    LIMIT 1
+  </select>
+  <select id="passwordHash" resultType="string">SELECT password_hash FROM t_auth_credentials WHERE user_id=#{userId}</select>
+  <insert id="savePassword">
+    INSERT INTO t_auth_credentials(user_id,password_hash,updated_at) VALUES (#{userId},#{hash},CURRENT_TIMESTAMP(3))
+    ON DUPLICATE KEY UPDATE password_hash=#{hash},updated_at=CURRENT_TIMESTAMP(3)
+  </insert>
+  <select id="adminCount" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE is_admin=1 AND deleted_at IS NULL</select>
+  <update id="markAdmin">UPDATE t_profiles SET is_admin=1 WHERE id=#{userId} AND deleted_at IS NULL</update>
+  <insert id="insertAdmin">
+    INSERT INTO t_profiles(id,username,nickname,phone,email,is_admin,user_role,created_at)
+    VALUES (#{id},#{username},#{nickname},#{phone},#{email},1,'buyer',CURRENT_TIMESTAMP(3))
+  </insert>
+</mapper>

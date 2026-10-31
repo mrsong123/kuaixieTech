@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.community.CommunityMigrationMapper">
+ <select id="isAdmin" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_profiles WHERE id=#{actor} AND is_admin=1</select>
+ <select id="lockPost" resultType="java.lang.String">SELECT id FROM t_posts WHERE id=#{post} FOR UPDATE</select>
+ <select id="lockPostAuthor" resultType="java.lang.String">SELECT author_id FROM t_posts WHERE id=#{post} FOR UPDATE</select>
+ <select id="isLiked" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_post_likes WHERE post_id=#{post} AND user_id=#{user}</select>
+ <insert id="insertLike">INSERT INTO t_post_likes (post_id,user_id) VALUES (#{post},#{user})</insert>
+ <delete id="deleteLike">DELETE FROM t_post_likes WHERE post_id=#{post} AND user_id=#{user}</delete>
+ <select id="updateLikeCount" resultType="java.lang.Integer">SELECT COUNT(*) FROM t_post_likes WHERE post_id=#{post}</select>
+ <update id="storeLikeCount">UPDATE t_posts SET like_count=(SELECT COUNT(*) FROM t_post_likes WHERE post_id=#{post}) WHERE id=#{post}</update>
+ <update id="removePost">UPDATE t_posts SET status='removed',removed_reason=#{reason} WHERE id=#{post}</update>
+ <insert id="log">INSERT INTO t_admin_logs (id,operator_id,action,target_type,target_id,detail) VALUES (#{id},#{admin},'post_removed','post',#{post},#{reason})</insert>
+ <insert id="notify">INSERT INTO t_notifications (id,user_id,kind,title,body) VALUES (#{id},#{user},'community','内容已被运营下架',CONCAT('原因：',#{reason}))</insert>
+</mapper>

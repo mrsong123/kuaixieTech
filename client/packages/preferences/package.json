@@ -1,0 +1,14 @@
+{
+  "name": "@kuaixie/preferences",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/core.ts",
+    "./vue": "./src/vue.ts",
+    "./theme.css": "./src/theme.css"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  }
+}

@@ -1,0 +1,25 @@
+# dependencies & build
+node_modules/
+dist/
+unpackage/
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.p12
+*.jks
+
+# ide / os
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# local tooling
+*.iml
+.cursor/*.log

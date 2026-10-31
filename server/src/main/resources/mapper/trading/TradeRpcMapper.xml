@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.trading.TradeRpcMapper">
+ <select id="lockOrder" resultType="map">SELECT * FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+ <select id="lockDemand" resultType="map">SELECT * FROM t_demands WHERE id=#{id} FOR UPDATE</select>
+ <select id="lockProduct" resultType="map">SELECT id,owner_id,name,status,stock FROM t_products WHERE id=#{id} FOR UPDATE</select>
+ <select id="quote" resultType="map">SELECT * FROM t_quotes WHERE id=#{qid} AND demand_id=#{demandId} AND status='pending'</select>
+ <select id="pendingQuotes" resultType="map">
+  SELECT q.id,q.vendor_id,q.price,q.promise_days,q.purchase_place,q.note,
+         p.performance_score,p.star_avg,p.deal_count,p.ontime_count,p.carrier_tier
+  FROM t_quotes q JOIN t_profiles p ON p.id=q.vendor_id WHERE q.demand_id=#{demandId} AND q.status='pending'
+ </select>
+ <select id="ownPendingQuoteCount" resultType="int">SELECT COUNT(*) FROM t_quotes WHERE demand_id=#{demandId} AND vendor_id=#{uid} AND status='pending'</select>
+ <select id="pendingOwnQuote" resultType="map">SELECT id FROM t_quotes WHERE demand_id=#{demandId} AND vendor_id=#{uid} AND status='pending' LIMIT 1</select>
+ <select id="pkWindowExpired" resultType="int">SELECT COUNT(*) FROM t_demands WHERE id=#{demandId} AND pk_deadline IS NOT NULL AND NOW(3) &gt; pk_deadline</select>
+ <select id="pkWindowOpen" resultType="int">SELECT COUNT(*) FROM t_demands WHERE id=#{demandId} AND pk_deadline IS NOT NULL AND pk_deadline &gt; NOW(3)</select>
+ <select id="isCarrier" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{uid} AND carrier_verify_status='approved'</select>
+ <select id="isAdmin" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{uid} AND is_admin=1</select>
+ <select id="lineMatches" resultType="int">
+  SELECT COUNT(*) FROM t_trips t WHERE t.owner_id=#{uid} AND t.status='active'
+   AND (#{tripType} IS NULL OR #{tripType}='any' OR COALESCE(t.trip_type,'international')=#{tripType})
+   AND (#{direction} IS NULL OR #{direction}='any' OR COALESCE(t.direction,'outbound')=#{direction})
+ </select>
+ <update id="acceptOrder">UPDATE t_orders SET status='locked',vendor_id=#{uid},vendor_deposit=#{deposit},vendor_deposit_status='frozen',
+    agreed_json=JSON_OBJECT('accepted_at',DATE_FORMAT(NOW(3),'%Y-%m-%dT%H:%i:%s.%f')),updated_at=NOW(3)
+    WHERE id=#{id} AND status='requesting' AND (vendor_id IS NULL OR vendor_id=#{uid})</update>
+ <insert id="putDeposit">INSERT INTO t_deposits(id,order_id,payer_id,party_role,kind,amount,status,created_at,updated_at)
+    VALUES(#{id},#{orderId},#{payer},#{role},#{kind},#{amount},'frozen',NOW(3),NOW(3))</insert>
+ <insert id="addMessage">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag,created_at)
+    VALUES(#{id},#{orderId},#{sender},#{content},JSON_ARRAY(),1,NOW(3))</insert>
+ <insert id="addNotice">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id,created_at)
+    VALUES(#{id},#{uid},#{kind},#{title},#{body},#{orderId},NOW(3))</insert>
+ <update id="updatePendingQuote">UPDATE t_quotes SET price=#{amount},promise_days=#{days},purchase_place=#{place},note=#{note},created_at=NOW(3)
+    WHERE id=#{qid} AND status='pending'</update>
+ <insert id="insertQuote">INSERT INTO t_quotes(id,demand_id,vendor_id,price,promise_days,purchase_place,note,status,created_at)
+    VALUES(#{qid},#{demandId},#{uid},#{amount},#{days},#{place},#{note},'pending',NOW(3))</insert>
+ <update id="setPkResult">UPDATE t_demands SET status='awarded_pending',pk_result=CAST(#{json} AS JSON) WHERE id=#{demandId} AND status='open'</update>
+ <select id="countOpenOrders" resultType="int">SELECT COUNT(*) FROM t_orders WHERE demand_id=#{demandId} AND status NOT IN ('cancelled_no_fault','cancelled_breach','refunded')</select>
+ <insert id="insertPkOrder">
+    INSERT INTO t_orders(id,order_no,buyer_id,vendor_id,demand_id,item_name,expect_unit_price,quantity,
+        goods_amount,service_fee,buyer_deposit,vendor_deposit,status,buyer_deposit_status,vendor_deposit_status,
+        delivery_mode,insured,insurance_premium,declared_value,shipping_fee,shipping_fee_status,
+        ref_image_urls,purchase_receipt_urls,cancel_proof_urls,purchase_evidence,freight_label_urls,
+        ship_risk_flags,purchase_meta,purchase_risk_flags,created_at,updated_at)
+    VALUES(#{id},#{orderNo},#{buyer},#{vendor},#{demand},#{itemName},#{goods},1,
+        #{goods},#{fee},#{buyerDeposit},#{vendorDeposit},'locked','frozen','frozen',
+        'ship',#{insured},#{premium},#{declared},#{shipFee},#{shipStatus},
+        JSON_ARRAY(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),NOW(3),NOW(3))
+ </insert>
+ <update id="quoteWon">UPDATE t_quotes SET status='won' WHERE id=#{id} AND status='pending'</update>
+ <update id="remainingQuotesLost">UPDATE t_quotes SET status='lost' WHERE demand_id=#{demandId} AND id != #{quoteId} AND status='pending'</update>
+ <update id="awardDemand">UPDATE t_demands SET status='awarded',awarded_quote_id=#{quoteId} WHERE id=#{demandId} AND status IN ('awarded_pending','open')</update>
+ <insert id="createPublishDeposit">INSERT INTO t_publish_deposits(id,user_id,amount,status,source,order_id,created_at,updated_at)
+    VALUES(#{id},#{uid},#{amount},'frozen',#{source},#{orderId},NOW(3),NOW(3))</insert>
+ <select id="unfinishedOrders" resultType="int">
+    SELECT COUNT(*) FROM t_orders o WHERE (o.buyer_id=#{uid} OR o.vendor_id=#{uid})
+     AND o.status NOT IN ('completed','cancelled_no_fault','cancelled_breach','closed')
+ </select>
+ <select id="sumFrozenPublish" resultType="java.math.BigDecimal">SELECT COALESCE(SUM(amount),0) FROM t_publish_deposits WHERE user_id=#{uid} AND status='frozen'</select>
+ <update id="refundPublish">UPDATE t_publish_deposits SET status='refunded',refunded_at=NOW(3),updated_at=NOW(3),reason='全部订单已完结，申请退回'
+   WHERE user_id=#{uid} AND status='frozen'</update>
+ <update id="productStock">UPDATE t_products SET stock=#{stock},updated_at=NOW(3) WHERE id=#{id}</update>
+ <insert id="appendNode">INSERT INTO t_order_logistics(id,order_id,node,operator_id,operator_role,detail,created_at)
+    VALUES(#{id},#{orderId},#{node},#{uid},#{role},#{detail},NOW(3))</insert>
+</mapper>

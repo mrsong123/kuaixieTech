@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.MeetupRpcMapper">
+
+<select id="lockOrder" resultType="map">SELECT id,buyer_id,vendor_id,delivery_mode,status,meetup_code,procurement_city FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<update id="issueCode">UPDATE t_orders SET meetup_code=#{code},updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND meetup_code IS NULL</update>
+<update id="confirm">UPDATE t_orders SET meetup_confirmed_json=JSON_OBJECT('buyer_id',#{buyer},'confirmed_at',DATE_FORMAT(CURRENT_TIMESTAMP(3),'%Y-%m-%dT%H:%i:%s'),'lat',#{lat},'lng',#{lng},'city',#{city}),shipped_at=COALESCE(shipped_at,CURRENT_TIMESTAMP(3)),ship_risk_flags=CASE WHEN #{cityGap} THEN JSON_ARRAY_APPEND(COALESCE(ship_risk_flags,JSON_ARRAY()),'$', 'meetup_city_gap') ELSE ship_risk_flags END WHERE id=#{id}</update>
+<insert id="message">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag) VALUES(#{id},#{orderId},#{sender},#{content},JSON_ARRAY(),1)</insert>
+<insert id="notice">INSERT INTO t_notifications(id,user_id,order_id,kind,title,body) VALUES(#{id},#{uid},#{orderId},#{kind},#{title},#{body})</insert>
+</mapper>

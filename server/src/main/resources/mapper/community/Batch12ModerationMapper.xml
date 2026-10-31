@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.community.Batch12ModerationMapper">
+<select id="recentSplitCount" resultType="int">SELECT COUNT(*) FROM t_chat_violations WHERE user_id=#{actor} AND code='phone_split_suspect' AND created_at &gt; NOW(3)-INTERVAL 24 HOUR</select>
+<insert id="violation">INSERT INTO t_chat_violations(id,user_id,code,snippet,reviewed) VALUES(#{id},#{actor},#{code},#{snippet},0)</insert>
+<select id="lockPost" resultType="map">SELECT id,author_id,status FROM t_posts WHERE id=#{id} FOR UPDATE</select>
+<insert id="newComment">INSERT INTO t_post_comments(id,post_id,author_id,content) VALUES(#{id},#{post},#{actor},#{content})</insert>
+<update id="updateCommentCount">UPDATE t_posts SET comment_count=(SELECT COUNT(*) FROM t_post_comments WHERE post_id=#{id}) WHERE id=#{id}</update>
+<insert id="notification">INSERT INTO t_notifications(id,user_id,kind,title,body) VALUES(#{id},#{user},'community','你的动态收到新评论',#{body})</insert>
+</mapper>

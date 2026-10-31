@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.order_fulfillment.CancellationTierMigrationMapper">
+  <select id="orderTierFacts" resultType="map">
+    SELECT o.status,o.confirmed_at,o.trip_id,t.depart_datetime
+    FROM t_orders o LEFT JOIN t_trips t ON o.trip_id=t.id
+    WHERE o.id=#{orderId}
+  </select>
+</mapper>

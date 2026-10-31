@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve(import.meta.dirname,'..');
+const read=(p)=>fs.readFileSync(path.join(root,p),'utf8');
+const pages=JSON.parse(read('apps/mobile/src/pages.json'));
+const names=pages.pages.map(p=>p.path);
+assert.equal(new Set(names).size,names.length,'duplicated UniApp route');
+for(const item of names)assert.ok(fs.existsSync(path.join(root,'apps/mobile/src',item+'.vue')),`missing view ${item}`);
+const added=['settings/index','settings/appearance/index','settings/general/index','settings/storage/index','settings/privacy/index','settings/notification/index','settings/profile/index','settings/account/index','settings/about/index','settings/help/index','search/index'];
+for(const name of added){
+ const src=read(`apps/mobile/src/pages/${name}.vue`);
+ assert.ok(src.includes('<SettingsLayout '),`missing standard layout ${name}`);
+ assert.ok(!src.includes('api.portal.')&&!src.includes('api.support.'),`direct network access ${name}`);
+}
+const zh=JSON.parse(read('packages/i18n/src/zh-CN.json'));
+const en=JSON.parse(read('packages/i18n/src/en-US.json'));
+for(const k of Object.keys(zh))assert.ok(k in en,'missing en: '+k);
+const search=read('apps/mobile/src/stores/useUnifiedSearchPage.ts');
+assert.ok(search.includes('api.catalog.products(100)')&&search.includes('api.catalog.trips(100)'), 'search must use real public backend');
+assert.ok(search.includes('onLoad')&&search.includes('openProduct')&&search.includes('openTrip'),'search routing broken');
+const storage=read('apps/mobile/src/stores/useStorageSettings.ts');
+assert.ok(storage.includes('CLEARABLE_PREFIXES')&&storage.includes('isClearableStorageKey'),'unsafe cache cleanup');
+assert.ok(!storage.includes('uni.clearStorageSync'),'storage must not delete credentials and user drafts');
+const settings=read('apps/mobile/src/pages/settings/index.vue');
+assert.ok(settings.includes('settingsGroups')&&settings.includes('openSettings'),'settings menu links missing');
+const me=read('apps/mobile/src/pages/me/index.vue');
+assert.ok(me.includes('mine-quick')&&me.includes('mine.groupTrade')&&me.includes('mine.settingsRow'),'original mine groups missing');
+const p=read('apps/mobile/src/pages/index/index.vue');
+assert.ok(p.includes("navigate('publish-hub')")&&p.includes("navigate('demand-pool')")&&p.includes('v-model="search"')&&p.includes('country-picker'), 'plaza original search and navigation altered');
+const packageFile=JSON.parse(read('package.json'));
+assert.ok(packageFile.scripts['dev:mobile']?.includes('pnpm --filter'), 'must use one pnpm workspace');
+const sdk=read('packages/sdk/src/client.ts');assert.ok(sdk.includes('normalizePublicPath')&&sdk.includes('Accept-Language'),'API/locale protocol regression');
+console.log(`V8 migration checks PASSED: ${added.length} new screens, ${names.length} routed UniApp screens, i18n pairs ${Object.keys(zh).length}, original plaza preserved`);

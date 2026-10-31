@@ -1,0 +1,520 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/demand-pool/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/publish-hub/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/messages/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/me/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/catalog/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/trips/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/discover/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/route/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/smart/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/tools/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/buyer-verify/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/carrier-verify/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/enterprise-verify/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/account-security/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/kyc-docs/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/pk-quotes/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/order-actions/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/purchase-proof/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/boarding-proof/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/shipping-proof/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/delivery-proof/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/cancel-request/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/invoice-request/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/assist/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/invite/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/meetup/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/shipping-fee/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/privacy-call/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/order-call/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/community-comment/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/deposit/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/product-detail/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/trip-detail/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/services/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/appearance/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/general/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/privacy/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/notification/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/storage/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/account/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/profile/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/about/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/settings/help/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/search/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-orders/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-demands/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-trips/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-wallet/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/wallet-ledger/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-notifications/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/order-detail/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/invite-team/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/invite-apply/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/support-center/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/support-session/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/demand-detail/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/favorites/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/cart/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/address-book/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-products/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/my-shipments/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/open-orders/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/announcements/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/legal-doc/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/community-detail/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/reviews/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/create-intent/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/intent-detail/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/dispute-create/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/dispute-detail/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/invite-share/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/invite-tier/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/admin/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "default"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f8fafc",
+    "backgroundTextStyle": "light"
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于按城市推荐顺路线路，以及采购、寄出、到城等环节的交易存证"
+    }
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#0ea5e9",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "广场",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-on.png"
+      },
+      {
+        "pagePath": "pages/demand-pool/index",
+        "text": "社区",
+        "iconPath": "static/tab-demand.png",
+        "selectedIconPath": "static/tab-demand-on.png"
+      },
+      {
+        "pagePath": "pages/publish-hub/index",
+        "text": "发布",
+        "iconPath": "static/tab-publish.png",
+        "selectedIconPath": "static/tab-publish-on.png"
+      },
+      {
+        "pagePath": "pages/messages/index",
+        "text": "消息",
+        "iconPath": "static/tab-messages.png",
+        "selectedIconPath": "static/tab-messages-on.png"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我的",
+        "iconPath": "static/tab-me.png",
+        "selectedIconPath": "static/tab-me-on.png"
+      }
+    ]
+  }
+}

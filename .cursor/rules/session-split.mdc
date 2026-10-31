@@ -1,0 +1,44 @@
+---
+description: Parallel UI vs function branch ownership so two Cursor sessions do not overwrite the same files.
+alwaysApply: true
+---
+
+# Session split (git)
+
+Two branches share one baseline commit. Do not mix work.
+
+## `feat/loop` (this function session)
+
+May edit:
+
+- `server/**`
+- `client/apps/*/src/stores/**`
+- `client/packages/sdk/**`
+- `client/packages/api/**` if present
+- Vue/TS that fetch, map, or persist data
+- i18n keys required by new logic
+- SQL / mappers / controllers
+
+Must not edit skin:
+
+- `client/packages/ui/src/tokens.css`
+- `client/packages/preferences/src/theme.css`
+- `client/apps/*/src/styles/**`
+- `client/apps/mobile/src/pages/index/original-prototype.css`
+- layout-only class/token rewrites in plaza or admin chrome
+
+Focus: login → plaza with real trips/demands → demand/quote/PK → unique unpaid order → proofs → matching admin queues.
+
+## `ui/skin` (other session)
+
+May edit CSS, tokens, spacing, typography, layout class names, and presentational markup that does not change request/state.
+
+Must not edit stores, SDK, Spring controllers/mappers, or business conditionals.
+
+## Shared files (stop and coordinate)
+
+Do not both rewrite: `App.vue`, plaza `pages/index/index.vue`, admin `ConsoleView.vue`, `tabs.ts`, router. If a change needs both logic and layout, finish one branch, merge, then the other.
+
+## Merge
+
+Commit on your branch. The other session `git checkout` their branch and `git merge` only after a pull of the latest other branch, or merge both into `main`.
