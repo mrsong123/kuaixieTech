@@ -7,12 +7,48 @@ import OriginalDemandCard from '../../components/plaza/OriginalDemandCard.vue';
 import {computed,onMounted,onUnmounted,ref,watch} from 'vue';
 import {setLocale,t} from '@kuaixie/i18n';
 import {localeRef} from '@kuaixie/i18n/vue';
-const {prefs,role,active,search,loading,tripError,demandError,rootStyle,reload,roleMessageKey,trips,demands,matchingProducts,productError,viewTrip,viewDemand,country,countryChoices,countryIndex,countryChanged} = useIndexPage();
+import {prototypeAccent} from '../../utils/prototype';
+const {
+ prefs,active,search,loading,tripError,demandError,rootStyle,reload,
+ trips,demands,viewTrip,viewDemand,
+ country,countryChoices,countryIndex,countryChanged,
+ matchingProducts,productError
+} = useIndexPage();
 const languageLabel=computed(()=>{void localeRef.value;return t('prototype.locale.switch')});
+function mixChannel(from:number,to:number,weight:number){return Math.round(from*weight+to*(1-weight))}
+function relativeLuminance(rgb:number[]){const linear=rgb.map(value=>{const channel=value/255;return channel<=0.04045?channel/12.92:((channel+0.055)/1.055)**2.4});return 0.2126*linear[0]+0.7152*linear[1]+0.0722*linear[2]}
+function contrast(foreground:number[],background:number[]){const left=relativeLuminance(foreground),right=relativeLuminance(background);return (Math.max(left,right)+0.05)/(Math.min(left,right)+0.05)}
+const kickerColor=computed(()=>{
+ const accent=prototypeAccent(prefs.value.accent);
+ const dark=prefs.value.theme==='dark';
+ const background=dark?[23,28,31]:[255,255,255];
+ const ink=dark?[242,244,244]:[15,23,42];
+ const source=[1,3,5].map(index=>parseInt(accent.slice(index,index+2),16));
+ let color=ink;
+ for(let weight=0.62;weight>=0;weight-=0.04){
+  const next=source.map((channel,index)=>mixChannel(channel,ink[index],weight));
+  color=next;
+  if(contrast(next,background)>=4.5)break;
+ }
+ return '#'+color.map(channel=>channel.toString(16).padStart(2,'0')).join('');
+});
 function toggleLanguage(){const value=localeRef.value==='zh-CN'?'en-US':'zh-CN';setLocale(value);uni.setStorageSync('kx.locale',value)}
+const reaches=['international','domestic','intercity','city','village','neighbor'] as const;
+type Reach=typeof reaches[number];
+const reach=ref<Reach|''>('');
+function setReach(value:Reach){reach.value=reach.value===value?'':value}
+function reachOf(value?:string|null):Reach|''{
+ const key=String(value||'').toLowerCase();
+ if(['international','cross_border','overseas','crossborder'].includes(key))return 'international';
+ if(key==='intercity')return 'intercity';
+ if(['local','same_city','intracity','within_city'].includes(key))return 'city';
+ if(['domestic','inland','within_country'].includes(key))return 'domestic';
+ return '';
+}
+const shownTrips=computed(()=>trips.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
+const shownDemands=computed(()=>demands.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
 const discovery=ref(false),discoveryEmpty=ref(false);
 let hideTimer:ReturnType<typeof setTimeout>|undefined;
-const signedFeed=computed(()=>role.value?.user_role==='buyer'||(role.value?.user_role==='carrier'&&role.value.carrier_verify_status==='approved'));
 const productCategories=computed(()=>matchingProducts.value.map(item=>String(item.category_id||'')).filter(Boolean));
 function syncDiscovery(){
  clearTimeout(hideTimer);
@@ -35,86 +71,188 @@ onMounted(()=>lockDocumentScroll(true));
 onUnmounted(()=>{clearTimeout(hideTimer);lockDocumentScroll(false)});
 </script>
 <template>
- <view class="plaza" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark','kx-reduce-motion':prefs.reduceMotion}" :style="rootStyle">
-  <view class="hero">
-    <view class="hero-top"><view class="hero-brand"><view class="hero-title">{{ $t('home.brand') }}</view><view class="hero-subtitle">{{ $t('home.slogan') }}</view></view><view class="hero-lang" @click="toggleLanguage"><text>{{ languageLabel }}</text><text class="hero-lang-caret">▾</text></view></view>
-    <!-- Source layout: country picker on the left, search box on the right. -->
-    <view class="hero-find-row">
-      <picker class="country-picker" mode="selector" :range="countryChoices" range-key="name" :value="countryIndex" @change="countryChanged">
-        <view class="country-control"><view class="country-globe"><OriginalMdiIcon name="earth" tone="muted"/></view><text class="country-label">{{ countryChoices[countryIndex]?.name||$t('prototype.plaza.countryAll') }}</text><text class="country-down">⌄</text></view>
-      </picker>
-      <view class="search-field"><view class="search-symbol"><OriginalMdiIcon name="magnify" tone="muted"/></view><input class="search-input" v-model="search" confirm-type="search" :placeholder="$t('portal.square.search')"/><view v-if="search" class="clear" @click="search=''"><OriginalMdiIcon name="close-circle" tone="muted"/></view></view>
+ <view class="min-h-screen bg-background" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark','kx-reduce-motion':prefs.reduceMotion}" :style="rootStyle">
+  <view class="px-4 pt-6 pb-4" style="background-image:var(--brand-gradient)">
+   <view class="flex flex-row items-center justify-between">
+    <view class="flex-1">
+     <view class="leading-7">
+      <text class="text-xl font-bold" style="color:#ffffff">{{ $t('home.brand') }}</text>
+     </view>
+     <view class="mt-1 leading-5">
+      <text class="text-xs" style="color:rgba(255,255,255,0.85)">{{ $t('home.slogan') }}</text>
+     </view>
     </view>
-  </view>
-  <scroll-view scroll-y class="plaza-scroll" :show-scrollbar="false">
-  <view class="plaza-content">
-   <view v-if="discovery" class="discovery">
-    <OriginalCategoryExplorer v-if="!discoveryEmpty" :country="country" :query="search.trim()" :focus="productCategories" compact/>
-    <view v-else class="plaza-state">{{ $t('migration.searchEmpty') }}</view>
+    <view class="flex flex-row items-center gap-1 px-3 py-1 rounded-full max-w-40" style="border-width:1px;border-style:solid;border-color:rgba(255,255,255,0.6);background-color:rgba(255,255,255,0.15)" @click="toggleLanguage">
+     <view class="i-mdi-translate w-4 h-4 shrink-0" style="color:#ffffff"><OriginalMdiIcon name="translate" tone="white"/></view>
+     <text class="text-xs font-bold truncate" style="color:#ffffff">{{ languageLabel }}</text>
+     <text class="text-xs shrink-0" style="color:rgba(255,255,255,0.75)">▾</text>
+    </view>
    </view>
-   <view class="feed-head"><text v-if="signedFeed" class="role-hint"><text class="role-dot"/>{{ $t(roleMessageKey) }}</text><text class="refresh" @click="reload">↻</text></view>
-   <view v-if="loading" class="plaza-state">{{ $t('portal.square.loading') }}</view>
-   <template v-else-if="active==='demands'">
-     <view v-if="demandError" class="plaza-state">{{ $t('portal.square.noDemandApi') }}</view>
-     <view v-else-if="!demands.length" class="plaza-state">{{ $t('portal.square.emptyDemands') }}</view>
-     <OriginalDemandCard v-for="demand in demands" :key="demand.id" :demand="demand" @open="viewDemand"/>
-   </template>
-   <template v-else>
-     <view v-if="tripError" class="plaza-state">{{ $t('common.apiLoadError') }}</view>
-     <view v-else-if="!trips.length" class="plaza-state">{{ $t('portal.square.noScope') }}</view>
-     <OriginalTripCard v-for="trip in trips" :key="String(trip.id)" :trip="trip" @open="viewTrip"/>
-   </template>
-   <view class="plaza-close">
-    <text class="plaza-close-title">{{ $t('home.depositTitle') }}</text>
-    <text class="plaza-close-line">{{ $t('home.depositBuyer') }}</text>
-    <text class="plaza-close-line">{{ $t('home.depositCarrier') }}</text>
-    <text class="plaza-close-line">{{ $t('home.depositBreach') }}</text>
+   <view id="nav-search" class="nav-searchbar">
+    <view class="nav-left">
+     <picker id="nav-search-dropdown-card" class="nav-search-scope" mode="selector" :range="countryChoices" range-key="name" :value="countryIndex" @change="countryChanged">
+      <view class="nav-search-facade">
+       <text id="nav-search-label-id" class="nav-search-label">{{ countryChoices[countryIndex]?.name||$t('prototype.plaza.countryAll') }}</text>
+       <view class="nav-icon"></view>
+      </view>
+     </picker>
+    </view>
+    <view class="nav-fill">
+     <view class="nav-search-field">
+      <input class="nav-input" v-model="search" :placeholder="$t('home.searchPlaceholder')" placeholder-style="color:#6f7373" confirm-type="search"/>
+     </view>
+    </view>
+    <view class="nav-right">
+     <view class="nav-search-submit" aria-label="Go">
+      <view class="nav-search-submit-text"></view>
+     </view>
+    </view>
+   </view>
+   <view class="reach-row" :class="{even:localeRef==='zh-CN'}">
+    <text v-for="item in reaches" :key="item" class="reach-word" :class="{chosen:reach===item}" @click="setReach(item)">{{ $t('plaza.reach.'+item) }}</text>
    </view>
   </view>
+
+  <scroll-view scroll-y class="py-4" style="height:70vh" :show-scrollbar="false">
+   <view class="w-full px-4 pb-4">
+    <view v-if="discovery" class="menu-slot">
+     <OriginalCategoryExplorer v-if="!discoveryEmpty" :country="country" :query="search.trim()" :focus="productCategories" compact/>
+     <text v-else class="menu-empty">{{ $t('migration.searchEmpty') }}</text>
+    </view>
+    <text class="feed-kicker" :style="{color:kickerColor}">{{ $t(active==='demands'?'plaza.feed.demands':'plaza.feed.trips') }}</text>
+    <template v-if="active==='demands'">
+     <view v-if="loading" class="flex flex-col items-center py-10">
+      <text class="text-xs text-muted-foreground mt-2">{{ $t('portal.square.loading') }}</text>
+     </view>
+     <view v-else-if="demandError" class="flex flex-col items-center justify-center py-12">
+      <text class="mt-3 text-sm font-medium text-muted-foreground">{{ $t('portal.square.noDemandApi') }}</text>
+     </view>
+     <view v-else-if="!shownDemands.length" class="flex flex-col items-center justify-center py-12">
+      <text class="mt-3 text-sm font-medium text-muted-foreground">{{ $t(reach?'portal.square.noScope':'portal.square.emptyDemands') }}</text>
+     </view>
+     <OriginalDemandCard v-for="demand in shownDemands" :key="demand.id" :demand="demand" @open="viewDemand"/>
+    </template>
+    <template v-else>
+     <view v-if="loading" class="flex flex-col items-center py-10">
+      <text class="text-xs text-muted-foreground mt-2">{{ $t('portal.square.loading') }}</text>
+     </view>
+     <view v-else-if="tripError" class="flex flex-col items-center justify-center py-12">
+      <text class="mt-3 text-sm font-medium text-muted-foreground">{{ $t('common.apiLoadError') }}</text>
+     </view>
+     <view v-else-if="!shownTrips.length" class="flex flex-col items-center justify-center py-12">
+      <text class="mt-3 text-sm font-medium text-muted-foreground">{{ $t('portal.square.noScope') }}</text>
+     </view>
+     <view v-for="trip in shownTrips" :key="String(trip.id)">
+      <OriginalTripCard :trip="trip" @open="viewTrip"/>
+     </view>
+    </template>
+
+    <view class="mt-6 rounded-xl p-4" style="background-color:var(--primary-08)">
+      <view class="flex flex-row items-center gap-2 mb-2">
+       <view class="i-mdi-handshake-outline w-5 h-5" style="color:var(--primary)"><OriginalMdiIcon name="handshake-outline" tone="accent"/></view>
+       <text class="text-sm font-bold" style="color:var(--primary)">{{ $t('home.depositTitle') }}</text>
+      </view>
+      <text class="text-xs leading-relaxed" style="color:var(--muted-foreground)">{{ $t('home.depositBody') }}</text>
+     </view>
+   </view>
   </scroll-view>
  </view>
 </template>
 <style scoped>
-.plaza{--prototype-accent:#0ea5e9;--prototype-accent-text:white;min-height:100vh;background:#f8fafc;color:#0f172a;max-width:1100rpx;margin:auto;padding-bottom:calc(70rpx + env(safe-area-inset-bottom));font-size:27rpx}
-/* #ifndef MP */
-.plaza{font-size:calc(27rpx * var(--kx-user-scale,1))}
-/* #endif */
-.hero{padding:48rpx 30rpx 34rpx;background:linear-gradient(125deg,var(--prototype-accent),#38bdf8);color:var(--prototype-accent-text)}.hero-top{display:flex;align-items:center;justify-content:space-between;gap:16rpx}.hero-title{font-size:42rpx;font-weight:750;letter-spacing:-.5rpx;line-height:1.35}.hero-subtitle{font-size:23rpx;opacity:.9;margin-top:10rpx;line-height:1.55}.hero-mark{font-size:52rpx;font-weight:600}
-.search-field{margin-top:34rpx;display:flex;align-items:center;height:86rpx;border-radius:17rpx;background:white;padding:0 20rpx;color:#64748b;gap:16rpx}.search-symbol{font-size:39rpx}.search-input{flex:1;min-width:0;font-size:26rpx;height:83rpx;color:#0f172a}.clear{width:36rpx;height:36rpx;flex:0 0 36rpx;display:flex;align-items:center;justify-content:center}
-.plaza-content{padding:24rpx 28rpx}.feed-tabs{display:flex;align-items:center;gap:29rpx;min-height:77rpx;border-bottom:1rpx solid #e2e8f0}.feed-tab{font-size:30rpx;font-weight:600;padding:15rpx 0;border-bottom:5rpx solid transparent}.feed-tab.current{color:var(--prototype-accent);border-color:var(--prototype-accent)}.refresh{margin-left:auto;padding:14rpx;color:var(--prototype-accent);font-size:33rpx}.role-hint{display:flex;align-items:center;gap:10rpx;color:#64748b;font-size:22rpx;margin:23rpx 0 20rpx;line-height:1.55}.role-dot{height:12rpx;width:12rpx;border-radius:50%;background:var(--prototype-accent);flex:0 0 auto}.region-scroll{width:100%;white-space:nowrap}.region-track{display:flex;gap:13rpx;padding:3rpx 0 12rpx}.region-chip{border:1rpx solid #dce5ed;background:#fff;border-radius:99rpx;min-height:59rpx;min-width:123rpx;padding:9rpx 20rpx;color:#475569;text-align:center;font-size:24rpx;white-space:normal;display:flex;align-items:center;justify-content:center}.region-chip.chosen{background:var(--prototype-accent);border-color:var(--prototype-accent);color:#fff}.feed-count{display:flex;align-items:center;justify-content:space-between;color:#94a3b8;font-size:20rpx;margin:22rpx 0 18rpx;gap:12rpx;line-height:1.5}
-.feed-card{background:white;border:1rpx solid #e2e8f0;padding:25rpx 20rpx;display:flex;align-items:center;gap:17rpx;border-radius:19rpx;margin-bottom:17rpx;min-height:137rpx}.feed-icon{display:flex;align-items:center;justify-content:center;flex:0 0 72rpx;width:72rpx;height:72rpx;border-radius:19rpx;background:#e0f2fe;color:var(--prototype-accent);font-size:36rpx}.feed-info{flex:1;min-width:0}.feed-heading{font-size:29rpx;font-weight:710;overflow-wrap:anywhere;line-height:1.45}.feed-meta{font-size:22rpx;color:#64748b;margin-top:6rpx;overflow-wrap:anywhere}.feed-price{font-size:23rpx;margin-top:6rpx;color:var(--prototype-accent)}.feed-arrow{font-size:40rpx;color:#94a3b8}.plaza-state{padding:48rpx 28rpx;background:white;border:1rpx solid #e2e8f0;color:#64748b;text-align:center;border-radius:18rpx;font-size:25rpx;line-height:1.8}.plaza-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14rpx;margin-top:31rpx}.shortcut{min-width:0;border-radius:18rpx;border:1rpx solid #e2e8f0;background:white;display:flex;flex-direction:column;gap:11rpx;align-items:center;justify-content:center;text-align:center;padding:18rpx 9rpx;font-size:23rpx;line-height:1.4;overflow-wrap:anywhere}.shortcut text{font-size:39rpx;color:var(--prototype-accent)}
-.kx-dark{background:#171c1f;color:#f2f4f4}.kx-dark .feed-card,.kx-dark .region-chip,.kx-dark .shortcut,.kx-dark .plaza-state{background:#202629;border-color:#475569;color:#f2f4f4}.kx-dark .feed-meta,.kx-dark .role-hint{color:#cbd5e1}.kx-care .feed-tab,.kx-care .feed-heading,.kx-care .region-chip{font-size:30rpx}.kx-care .feed-card{min-height:156rpx}
-@media(max-width:355px){.plaza-content{padding:18rpx}.feed-tabs{gap:18rpx}.region-chip{min-width:113rpx}}@media(min-width:768px){.plaza{max-width:920rpx}.plaza-content{padding:32rpx}}
-
-/* Original Taro index.tsx: 16px side spacing, 24px top, 16px bottom, brand gradient. */
-.plaza{max-width:1100rpx;background:#f8fafc;--primary:var(--prototype-accent,#0ea5e9);--ring:var(--prototype-accent,#0ea5e9)}.hero{padding:48rpx 32rpx 32rpx;background:var(--brand-gradient,linear-gradient(135deg,#0284c7,#0ea5e9 55%,#38bdf8));color:#fff}.hero-title{font-size:39rpx;font-weight:700;letter-spacing:0;line-height:1.35}.hero-subtitle{font-size:23rpx;opacity:.85;margin-top:7rpx}.hero-lang{flex:0 0 auto;padding:10rpx 15rpx;font-size:23rpx;color:white;border:1rpx solid #ffffff66;border-radius:14rpx}.hero-find-row{margin-top:32rpx;display:flex;align-items:stretch;gap:16rpx}.country-picker{flex:0 0 230rpx;width:230rpx;max-width:37%;min-width:0}.country-control{min-height:72rpx;height:100%;display:flex;align-items:center;gap:8rpx;background:rgba(255,255,255,.9);border-radius:16rpx;padding:0 24rpx;color:#0f172a;min-width:0}.country-globe{color:#0ea5e9;font-size:31rpx;width:31rpx;height:31rpx;flex:0 0 31rpx}.country-label{flex:1;min-width:0;font-size:28rpx;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.country-down{font-size:32rpx;color:#64748b}.hero .search-field{margin:0;min-width:0;flex:1;height:auto;min-height:72rpx;border-radius:16rpx;padding:0 24rpx;gap:16rpx;background:rgba(255,255,255,.9)}.hero .search-symbol{font-size:31rpx;width:31rpx;height:31rpx;flex:0 0 31rpx}.hero .search-input{font-size:28rpx;height:72rpx;min-width:0}.plaza-content{padding:25rpx 32rpx}.original-section-heading{display:flex;align-items:center;justify-content:space-between;margin:32rpx 0 18rpx;gap:14rpx;font-size:29rpx;font-weight:700}.line-trust{font-size:21rpx;color:#64748b;font-weight:400}.direction-row{display:flex;gap:14rpx;margin-bottom:12rpx;min-width:0}.direction-chip{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:60rpx;border:1rpx solid var(--border,#e2e8f0);border-radius:12rpx;background:var(--card,#fff);font-size:23rpx;color:var(--muted-foreground,#64748b);padding:9rpx 12rpx;text-align:center;overflow-wrap:anywhere;line-height:1.35}.direction-chip.chosen{background:var(--primary,#0ea5e9);color:white;border-color:var(--primary,#0ea5e9)}.direction-chip.soft{min-height:54rpx;border-radius:99rpx;padding:7rpx 8rpx;font-size:21rpx}.direction-chip.soft.chosen{background:var(--primary-10,#e0f2fe);color:var(--primary,#0ea5e9)}.nearby-chip{display:flex;align-items:center;justify-content:center;min-height:54rpx;flex:0 0 auto;border:1rpx solid var(--border,#e2e8f0);border-radius:99rpx;padding:7rpx 12rpx;font-size:20rpx;color:var(--muted-foreground,#64748b)}
-/* Original trip-card layout: rounded-xl border p-4 and distinct route / rating / fee rows. */
-.plaza .feed-card{padding:28rpx 28rpx;border-radius:19rpx;margin-bottom:20rpx;min-height:145rpx}.plaza .feed-icon{border-radius:15rpx;width:66rpx;height:66rpx;flex-basis:66rpx}.plaza .feed-heading{font-size:29rpx}.plaza .feed-meta{font-size:22rpx}
-.kx-dark .country-control,.kx-dark .hero .search-field,.kx-dark .direction-chip,.kx-dark .nearby-chip{background:#202629;color:#f2f4f4;border-color:#475569}.kx-dark .hero .search-input{color:#f2f4f4}
-@media(max-width:355px){.hero{padding:36rpx 23rpx 25rpx}.plaza-content{padding:20rpx}.country-picker{flex-basis:197rpx;width:197rpx}.country-label{font-size:21rpx}.direction-row{gap:7rpx}.direction-chip{font-size:21rpx;padding:7rpx}.nearby-chip{font-size:18rpx;padding:6rpx}}
-@media(min-width:768px){.plaza{max-width:920rpx}.plaza-content{padding:30rpx 32rpx}}
-
-/* Original index.tsx search panel: product/demand/trip groups, 1px=2rpx. */
-.search-heading{flex-wrap:wrap}.search-group-heading{font-weight:700;font-size:23rpx;margin:28rpx 0 17rpx;color:var(--muted-foreground,#64748b)}
-.search-product{display:flex;align-items:center;gap:24rpx;padding:24rpx;margin-bottom:16rpx;background:var(--card,#fff);border:1rpx solid var(--border,#e2e8f0);border-radius:24rpx;min-width:0}
-.search-product-image{width:112rpx;height:112rpx;flex:0 0 112rpx;border-radius:16rpx;object-fit:cover}.search-product-empty{background:var(--muted,#f1f5f9);display:flex;justify-content:center;align-items:center}.search-product-placeholder{width:48rpx;height:48rpx}
-.search-product-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:8rpx}.search-product-name{font-size:27rpx;font-weight:700;line-height:1.35;overflow-wrap:anywhere}.search-product-region{color:var(--muted-foreground,#64748b);font-size:22rpx;overflow-wrap:anywhere}.search-product-price{color:var(--primary,#0ea5e9);font-size:26rpx;font-weight:700}.search-product-arrow{color:var(--muted-foreground,#64748b);font-size:35rpx}.search-hint{font-size:22rpx;line-height:1.65;color:var(--muted-foreground,#64748b);margin:12rpx 0 26rpx}
-
-/* Header and search stay put; only the feed scrolls, and the gradient close is the true end. */
-.plaza{position:fixed;top:var(--window-top,0px);right:0;bottom:var(--window-bottom,0px);left:0;height:auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0;box-sizing:border-box}
-.hero{flex:none}
-.plaza-scroll{flex:1;height:1px;min-height:0;scrollbar-width:none;-ms-overflow-style:none}.plaza-scroll::-webkit-scrollbar{width:0;height:0;display:none}.plaza-content{min-height:100%;display:flex;flex-direction:column;box-sizing:border-box}
-.hero-subtitle{opacity:1;color:rgba(255,255,255,.85)}
-.hero-lang{display:flex;align-items:center;gap:8rpx;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.15);border-radius:99rpx;padding:8rpx 24rpx;font-size:24rpx;font-weight:700}
-.hero-lang-caret{color:rgba(255,255,255,.75);font-weight:400}
-.feed-head{display:flex;align-items:center;gap:12rpx;min-height:48rpx}.feed-head .role-hint{display:flex;margin:0;flex:1}.feed-head .refresh{margin-left:auto}.discovery{margin:4rpx 0 12rpx}
-.plaza-close{margin:auto -32rpx 0;padding:48rpx 32rpx 56rpx;border-radius:0;background:var(--brand-gradient,linear-gradient(135deg,#0284c7,#0ea5e9 55%,#38bdf8));color:#fff}
-.plaza-close-title{display:block;font-size:32rpx;font-weight:700;line-height:1.4}
-.plaza-close-line{display:block;margin-top:18rpx;font-size:24rpx;line-height:1.55;color:rgba(255,255,255,.92)}
+/* weapp-tailwindcss, designWidth 750: 1px = 2rpx. Class names are the original index.tsx utilities. */
+.min-h-screen{min-height:100vh;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;height:calc(100vh - var(--window-top,0px) - var(--window-bottom,0px));color:var(--foreground,#0f172a)}
+.bg-background{background:var(--background,#ffffff)}
+.px-4{padding-left:32rpx;padding-right:32rpx}
+.pt-6{padding-top:48rpx}
+.pb-4{padding-bottom:32rpx}
+.flex{display:flex}
+.flex-row{flex-direction:row}
+.flex-col{flex-direction:column}
+.items-center{align-items:center}
+.items-stretch{align-items:stretch}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.flex-1{flex:1 1 0%;min-width:0}
+.leading-7{line-height:56rpx}
+.leading-5{line-height:40rpx}
+.leading-relaxed{line-height:1.625}
+.text-xl{font-size:40rpx}
+.text-base{font-size:32rpx}
+.text-sm{font-size:28rpx}
+.text-xs{font-size:24rpx}
+.font-bold{font-weight:700}
+.text-sm.font-medium{font-size:28rpx;font-weight:500}
+.font-medium{font-weight:500}
+.mt-1{margin-top:8rpx}
+.mt-2{margin-top:16rpx}
+.mt-3{margin-top:24rpx}
+.mt-6{margin-top:48rpx}
+.mb-2{margin-bottom:16rpx}
+.mb-3{margin-bottom:24rpx}
+.gap-1{gap:8rpx}
+.gap-2{gap:16rpx}
+.gap-3{gap:24rpx}
+.px-2{padding-left:16rpx;padding-right:16rpx}
+.px-3{padding-left:24rpx;padding-right:24rpx}
+.py-1{padding-top:8rpx;padding-bottom:8rpx}
+.py-2{padding-top:16rpx;padding-bottom:16rpx}
+.py-4{padding-top:32rpx;padding-bottom:32rpx}
+.py-10{padding-top:80rpx;padding-bottom:80rpx}
+.py-12{padding-top:96rpx;padding-bottom:96rpx}
+.p-3{padding:24rpx}
+.p-4{padding:32rpx}
+.rounded-lg{border-radius:16rpx}
+.rounded-xl{border-radius:24rpx}
+.rounded-full{border-radius:9999px}
+.max-w-40{max-width:320rpx}
+.w-full{width:100%}
+.w-3{width:24rpx}.h-3{height:24rpx}
+.w-4{width:32rpx}.h-4{height:32rpx}
+.w-5{width:40rpx}.h-5{height:40rpx}
+.w-6{width:48rpx}.h-6{height:48rpx}
+.w-14{width:112rpx}.h-14{height:112rpx}
+.shrink-0{flex-shrink:0}
+.min-w-0{min-width:0}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.block{display:block}
+.border{border-width:1px;border-style:solid;border-color:var(--border,#e2e8f0)}
+.border-border{border-color:var(--border,#e2e8f0)}
+.bg-card{background:var(--card,#ffffff)}
+.bg-transparent{background:transparent}
+.text-foreground{color:var(--foreground,#0f172a)}
+.text-muted-foreground{color:var(--muted-foreground,#64748b)}
+.text-primary{color:var(--primary,#0ea5e9)}
+.nav-searchbar{margin-top:16px;display:flex;align-items:stretch;height:40px;border-radius:8px;overflow:hidden;background:#fff}
+.nav-searchbar:focus-within{box-shadow:0 0 0 2px #fff,0 0 0 4px #ff9900}
+.nav-left{flex:0 0 auto;display:flex;align-items:stretch;background:#e6e6e6;border-right:1px solid #cdcdcd}
+.nav-search-scope{display:flex;height:40px}
+.nav-search-facade{position:relative;display:flex;align-items:center;height:40px;padding:0 26px 0 12px}
+.nav-search-label{width:auto;font-size:12px;font-weight:400;line-height:40px;color:#555;white-space:nowrap}
+.nav-icon{position:absolute;right:10px;top:18px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #666}
+.nav-fill{flex:1;min-width:0;display:flex;background:#fff}
+.nav-search-field{flex:1;min-width:0;display:flex;align-items:center;background:#fff}
+.nav-input{flex:1;width:100%;height:40px;min-height:40px;border:0;outline:none;background:#fff;font-size:15px;padding:0 10px;color:#0f1111}
+.nav-right{flex:0 0 45px;display:flex}
+.nav-search-submit{flex:1;display:flex;align-items:center;justify-content:center;background:#febd69}
+.nav-search-submit-text{width:20px;height:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230F1111' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='6'/%3E%3Cpath d='M14.8 14.8L20 20'/%3E%3C/svg%3E") center/18px 18px no-repeat}
+.menu-slot{margin:4px 0 12px}
+.menu-empty{display:block;padding:12px 0;color:var(--muted-foreground,#64748b);font-size:12px;line-height:1.5}
+.reach-row{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:12px}
+.reach-row.even{flex-wrap:nowrap;justify-content:space-between;gap:0}
+.reach-word{color:rgba(255,255,255,.78);font-size:13px;line-height:1.4;background:transparent;border:0;padding:0}
+.reach-word.chosen{color:#fff;font-weight:700}
+.feed-kicker{display:block;margin:0 0 12px;font-size:16px;font-weight:700;line-height:1.4;color:var(--foreground,#0f172a)}
+.py-4{flex:1;height:70vh;min-height:0;box-sizing:border-box}
 </style>
 <style>
-.plaza-scroll,
-.plaza-scroll .uni-scroll-view{scrollbar-width:none;-ms-overflow-style:none}
-.plaza-scroll::-webkit-scrollbar,
-.plaza-scroll .uni-scroll-view::-webkit-scrollbar{width:0;height:0;display:none}
+#nav-search .uni-input-wrapper,
+#nav-search .uni-input-form,
+#nav-search .uni-input-input{height:40px;min-height:40px;line-height:40px;font-size:15px;background:transparent;border:0;padding:0}
+#nav-search .uni-input-placeholder{line-height:40px;font-size:15px;color:#6f7373}
+.nav-left:hover{background:#d4d4d4}
+.nav-search-submit:hover{background:#f3a847}
+.py-4,
+.py-4 .uni-scroll-view{scrollbar-width:none;-ms-overflow-style:none}
+.py-4::-webkit-scrollbar,
+.py-4 .uni-scroll-view::-webkit-scrollbar{width:0;height:0;display:none}
 </style>

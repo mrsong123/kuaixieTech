@@ -80,9 +80,13 @@ export function createApiClient(transport:Transport, settings:ClientSettings={})
     originalV15: {
       // V15 migration candidates, NOT confirmed Java backend routes. Do not report success until HTTP succeeds.
       // Auth requests MUST be rate-limited, identity-verification and consent-checked by the server.
-      login:(body:{channel:'phone'|'email';contact:string;password?:string;code?:string})=>request<import('./types').AuthTokenResult>('POST','/auth/login',{body}),
-      signup:(body:{channel:'phone'|'email';contact:string;password:string;code:string;role:'buyer'|'carrier';inviteCode?:string})=>request<import('./types').AuthTokenResult>('POST','/auth/register',{body}),
-      sendCode:(body:{channel:'phone'|'email';contact:string;purpose:'signin'|'signup'})=>request<{status:string}>('POST','/auth/send-code',{body}),
+      login:(body:{channel:'phone'|'email';contact:string;password?:string;code?:string;countryCode?:string})=>request<import('./types').AuthTokenResult>('POST','/auth/login',{body}),
+      wechat:(body:{code:string})=>request<import('./types').AuthTokenResult>('POST','/auth/wechat',{body}),
+      captcha:()=>request<{id:string;image:string}>('GET','/auth/captcha'),
+      signup:(body:{channel:'phone'|'email';contact:string;password:string;code:string;role:'buyer'|'carrier'|'enterprise';inviteCode?:string;countryCode?:string;enterpriseName?:string;businessLicenseNo?:string})=>request<import('./types').AuthTokenResult>('POST','/auth/register',{body}),
+      sendCode:(body:{channel:'phone'|'email';contact:string;purpose:'signin'|'signup'|'reset';countryCode?:string;captchaId:string;captchaCode:string})=>request<{status:string;retryAfter?:number}>('POST','/auth/send-code',{body}),
+      resetPassword:(body:{channel:'phone'|'email';contact:string;code:string;newPassword:string;countryCode?:string})=>request<import('./types').AuthTokenResult>('POST','/auth/reset-password',{body}),
+      recoveryHelp:(body:{channel:'phone'|'email';contact:string;countryCode?:string;captchaId:string;captchaCode:string})=>request<{status:string}>('POST','/auth/recovery-help',{body}),
       createIntent:(body:import('./types').OriginalIntentInput)=>request<{id:string;status:string}>('POST','/me/intents',{body}),
       dispute:(id:string)=>request<import('./types').OriginalDispute>('GET','/me/disputes/{id}',{pathParams:{id}}),
       createDispute:(body:import('./types').OriginalDisputeInput)=>request<{id:string;stage:string}>('POST','/me/disputes',{body}),

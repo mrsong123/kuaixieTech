@@ -46,15 +46,15 @@ public class ApiSecurityConfig {
             http.addFilterAfter(new ActiveProfileFilter(guard),BearerTokenAuthenticationFilter.class);
             http.authorizeHttpRequests(a->a
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/public/**","/public/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/auth/login","/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/public/**","/public/**","/api/auth/captcha","/auth/captcha").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/auth/login","/auth/login","/api/auth/wechat","/auth/wechat","/api/auth/send-code","/auth/send-code","/api/auth/register","/auth/register","/api/auth/reset-password","/auth/reset-password","/api/auth/recovery-help","/auth/recovery-help").permitAll()
                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2->oauth2.jwt(Customizer.withDefaults()));
         } else {
             http.authorizeHttpRequests(a->a
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/public/**","/public/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/auth/login","/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/public/**","/public/**","/api/auth/captcha","/auth/captcha").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/auth/login","/auth/login","/api/auth/wechat","/auth/wechat","/api/auth/send-code","/auth/send-code","/api/auth/register","/auth/register","/api/auth/reset-password","/auth/reset-password","/api/auth/recovery-help","/auth/recovery-help").permitAll()
                 .anyRequest().denyAll());
         }
         return http.build();

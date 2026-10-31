@@ -22,11 +22,11 @@ const targets={
   'original avatar w-16 h-16':'width:128rpx;height:128rpx'
  },
  'apps/mobile/src/pages/index/index.vue':{
-  'country picker source 230rpx':'flex:0 0 230rpx;width:230rpx',
-  'search row mt-4 gap-2':'margin-top:32rpx;display:flex;align-items:stretch;gap:16rpx',
-  'country control px-3':'padding:0 24rpx',
-  'country label text-sm':'font-size:28rpx;font-weight:500',
-  'original 90-percent white overlay':'background:rgba(255,255,255,.9)'
+  'joined search bar':'display:flex;align-items:stretch;height:40px;border-radius:8px;overflow:hidden',
+  'country scope on the left':'background:#e6e6e6',
+  'search field stays white':'background:#fff',
+  'amber submit cap':'background:#febd69',
+  'country label weight':'font-size:12px;font-weight:400'
  }
 };
 for (const [file,checks] of Object.entries(targets)) {

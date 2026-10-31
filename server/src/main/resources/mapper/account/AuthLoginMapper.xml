@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kuaixietech.mapper.account.AuthLoginMapper">
+  <update id="ensureCountryColumn">
+    ALTER TABLE t_profiles ADD COLUMN phone_country_code VARCHAR(8) NULL
+  </update>
   <update id="ensureCredentialTable">
     CREATE TABLE IF NOT EXISTS t_auth_credentials (
       user_id CHAR(36) NOT NULL PRIMARY KEY,
@@ -9,12 +12,18 @@
     )
   </update>
   <select id="findProfile" resultType="map">
-    SELECT id,is_admin,banned_until,phone,email,nickname
+    SELECT id,is_admin,banned_until,phone,email,nickname,phone_country_code
     FROM t_profiles
     WHERE deleted_at IS NULL
     <choose>
       <when test="channel=='email'">AND email=#{contact}</when>
-      <otherwise>AND phone=#{contact}</otherwise>
+      <otherwise>
+        AND phone=#{contact}
+        AND (
+          phone_country_code=#{country}
+          OR (#{country}='+86' AND (phone_country_code IS NULL OR phone_country_code='' OR phone_country_code='+86'))
+        )
+      </otherwise>
     </choose>
     LIMIT 1
   </select>
@@ -25,8 +34,44 @@
   </insert>
   <select id="adminCount" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE is_admin=1 AND deleted_at IS NULL</select>
   <update id="markAdmin">UPDATE t_profiles SET is_admin=1 WHERE id=#{userId} AND deleted_at IS NULL</update>
+  <update id="rememberCountry">
+    UPDATE t_profiles SET phone_country_code=#{country}
+    WHERE id=#{userId} AND deleted_at IS NULL
+  </update>
+  <select id="findByOpenid" resultType="map">
+    SELECT id,is_admin,banned_until,phone,email,nickname,phone_country_code
+    FROM t_profiles WHERE deleted_at IS NULL AND openid=#{openid} LIMIT 1
+  </select>
+  <insert id="insertWechat">
+    INSERT INTO t_profiles(id,username,nickname,openid,unionid,user_role,phone_country_code,created_at)
+    VALUES (#{id},#{username},#{nickname},#{openid},#{unionid},'buyer','+86',CURRENT_TIMESTAMP(3))
+  </insert>
   <insert id="insertAdmin">
-    INSERT INTO t_profiles(id,username,nickname,phone,email,is_admin,user_role,created_at)
-    VALUES (#{id},#{username},#{nickname},#{phone},#{email},1,'buyer',CURRENT_TIMESTAMP(3))
+    INSERT INTO t_profiles(id,username,nickname,phone,email,phone_country_code,is_admin,user_role,created_at)
+    VALUES (#{id},#{username},#{nickname},#{phone},#{email},#{country},1,'buyer',CURRENT_TIMESTAMP(3))
+  </insert>
+  <select id="recentCodeCount" resultType="int">
+    SELECT COUNT(*) FROM t_verification_codes
+    WHERE target=#{target} AND channel=#{channel} AND created_at&gt;NOW(3)-INTERVAL 60 SECOND
+  </select>
+  <insert id="insertCode">
+    INSERT INTO t_verification_codes(id,target,channel,code,purpose,expires_at,used,created_at)
+    VALUES(#{id},#{target},#{channel},#{code},#{purpose},NOW(3)+INTERVAL 10 MINUTE,0,NOW(3))
+  </insert>
+  <insert id="enqueueCode">
+    INSERT INTO t_vc_delivery_outbox(target,channel,code,status) VALUES(#{target},#{channel},#{code},'pending')
+  </insert>
+  <select id="lockCode" resultType="string">
+    SELECT id FROM t_verification_codes
+    WHERE target=#{target} AND channel=#{channel} AND code=#{code} AND purpose=#{purpose}
+      AND used=0 AND expires_at&gt;NOW(3)
+    ORDER BY created_at DESC LIMIT 1
+  </select>
+  <update id="consumeCode">
+    UPDATE t_verification_codes SET used=1 WHERE id=#{id} AND used=0 AND expires_at&gt;NOW(3)
+  </update>
+  <insert id="insertUser">
+    INSERT INTO t_profiles(id,username,nickname,phone,email,phone_country_code,user_role,enterprise_name,business_license_no,invite_code_used,created_at)
+    VALUES(#{id},#{username},#{nickname},#{phone},#{email},#{country},#{role},#{enterpriseName},#{licenseNo},#{inviteCode},CURRENT_TIMESTAMP(3))
   </insert>
 </mapper>

@@ -57,7 +57,7 @@ export interface PublicLegalDocument {id?:string;doc_key:string;title:string;bod
 export interface PublicReview {id:string;target_id:string;reviewer_id?:string;reviewer_name?:string;stars:number;content?:string;created_at?:string;hidden?:boolean;reply?:string}
 
 /** Candidate DTOs from the Taro original; absent from the verified Spring Boot baseline. */
-export interface AuthTokenResult { accessToken?:string; access_token?:string; token?:string; userId?:string; expiresIn?:number; isAdmin?:boolean }
+export interface AuthTokenResult { accessToken?:string; access_token?:string; token?:string; userId?:string; expiresIn?:number; isAdmin?:boolean; phoneCountryCode?:string; locale?:'zh-CN'|'en-US' }
 export interface OriginalIntentInput {tripId:string;itemName:string;itemSpec?:string;quantity:number;unit:string;categoryId?:string;expectUnitPrice:number;note?:string;contactName:string;contactPhone:string;address:string;expectDate?:string;insuranceChoice:'yes'|'waived'}
 export interface OriginalDisputeInput {orderId:string;type:'quality'|'wrong_item'|'missing'|'damaged';description:string;expectResolution:'refund_part'|'refund_full'|'resend'|'compensate';refundAmount?:number; evidenceUrls:string[]}
 export interface OriginalDispute {id:string;order_id:string;stage:string;type?:string;description?:string;initiator_id?:string;respondent_id?:string;refund_amount?:number|string;verdict?:string;created_at?:string;[key:string]:unknown}

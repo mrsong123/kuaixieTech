@@ -18,7 +18,8 @@ public final class ActiveProfileFilter extends OncePerRequestFilter {
   public ActiveProfileFilter(DomainAccessGuard guard) {this.guard=guard;}
   @Override protected boolean shouldNotFilter(HttpServletRequest request) {
     String path = request.getRequestURI().substring(request.getContextPath().length());
-    if ("POST".equalsIgnoreCase(request.getMethod()) && (path.equals("/api/auth/login") || path.equals("/auth/login"))) return true;
+    if ("GET".equalsIgnoreCase(request.getMethod()) && (path.equals("/api/auth/captcha") || path.equals("/auth/captcha"))) return true;
+    if ("POST".equalsIgnoreCase(request.getMethod()) && (path.equals("/api/auth/login") || path.equals("/auth/login") || path.equals("/api/auth/wechat") || path.equals("/auth/wechat") || path.equals("/api/auth/send-code") || path.equals("/auth/send-code") || path.equals("/api/auth/register") || path.equals("/auth/register") || path.equals("/api/auth/reset-password") || path.equals("/auth/reset-password") || path.equals("/api/auth/recovery-help") || path.equals("/auth/recovery-help"))) return true;
     if (!"GET".equalsIgnoreCase(request.getMethod())) return false;
     return path.startsWith("/api/public/") || path.startsWith("/public/");
   }
