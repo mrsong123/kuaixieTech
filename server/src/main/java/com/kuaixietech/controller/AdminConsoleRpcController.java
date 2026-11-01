@@ -17,7 +17,9 @@ public class AdminConsoleRpcController {
   public AdminConsoleRpcController(AdminConsoleService console,LegacyAdminRpcService legacy){
     this.console=console;this.legacy=legacy;
   }
-  public record ListBody(String kind,Integer limit,String keyword){}
+  public record ListBody(String kind,Integer limit,String keyword,Integer offset){
+    public ListBody(String kind,Integer limit,String keyword){this(kind,limit,keyword,null);}
+  }
   public record VerifyBody(String userId,String tripId,boolean approve,String note){}
   public record IdBody(String id){}
   public record BanBody(String userId,boolean ban,String reason){}
@@ -34,7 +36,7 @@ public class AdminConsoleRpcController {
   public record PostRemove(String postId,String reason){}
   public record ErrorId(Long id){}
 
-  @PostMapping("/admin_console_list") public List<Map<String,Object>> list(@RequestBody ListBody b){return console.list(b.kind(),b.limit(),b.keyword());}
+  @PostMapping("/admin_console_list") public List<Map<String,Object>> list(@RequestBody ListBody b){return console.list(b.kind(),b.limit(),b.keyword(),b.offset());}
   @PostMapping("/admin_set_carrier_verify") public String carrier(@RequestBody VerifyBody b){return console.setCarrierVerify(b.userId(),b.approve(),b.note());}
   @PostMapping("/admin_set_trip_verify") public String trip(@RequestBody VerifyBody b){return console.setTripVerify(b.tripId(),b.approve(),b.note());}
   @PostMapping("/admin_force_off_shelf") public String off(@RequestBody IdBody b){return console.forceOffShelf(b.id());}

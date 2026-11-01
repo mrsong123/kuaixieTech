@@ -166,7 +166,7 @@ def products(catalog):
             "-- 仅供新建空库审阅初始化；已有业务库请使用增量版，不要重复导入本文件。\n"
             "-- 保留原始索引、外键及触发器定义；不含原始种子数据和业务数据。\n"
             "-- MySQL没有库级COMMENT语法，数据库用途在此及DATA_DICTIONARY.md中说明。\n"
-            "-- 本工具不连接数据库；未验证原始触发器或实际MySQL执行。\n"
+            "-- 本工具不连接数据库；生成不代表实际MySQL执行通过；隔离运行证据见docs/audit。\n"
             f"-- 原始文件SHA256：{digest}；排除种子INSERT：{removed}条。\n\n")
     from build_deployment_sql import render
     incremental,_=render()

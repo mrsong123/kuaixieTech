@@ -1,0 +1,490 @@
+{
+  "scope": "人工审阅发现；修复后需更新此文件并保留运行证据，不能将自动扫描计数当已验收功能数",
+  "routes": {
+    "pages/messages/index": [
+      "文字轮询可编码；消息图/视频仅本地预览且阻断发送；原生语音未实现；AI依赖未接业务消费者"
+    ],
+    "pages/discover/index": [
+      "发现页仍为手填postId评论RPC样板，不是完整发现业务页"
+    ],
+    "pages/route/index": [
+      "H5浏览器语音草稿，非小程序/App语音服务；无实际路线规划/地图导航"
+    ],
+    "pages/smart/index": [
+      "仅公开商品对比/列表；没有AI推荐执行链"
+    ],
+    "pages/tools/index": [
+      "API工具表单/JSON输出是开发辅助界面，不能作为业务功能完成证据"
+    ],
+    "pages/buyer-verify/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/carrier-verify/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/enterprise-verify/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/account-security/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/kyc-docs/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/pk-quotes/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/order-actions/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/purchase-proof/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/boarding-proof/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/shipping-proof/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/delivery-proof/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/cancel-request/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/invoice-request/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/assist/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/invite/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/meetup/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/shipping-fee/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/privacy-call/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/order-call/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/community-comment/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/deposit/index": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "pages/trip-detail/index": [
+      "详情从限量列表查找；列表窗口外有效ID不可达，需独立详情接口"
+    ],
+    "pages/settings/account/index": [
+      "换绑项永久disabled；账号注销完整流程未在此提供"
+    ],
+    "pages/support-session/index": [
+      "文字轮询可编码；消息图/视频仅本地预览且阻断发送；原生语音未实现；AI依赖未接业务消费者"
+    ],
+    "pages/demand-detail/index": [
+      "详情从限量列表查找；列表窗口外有效ID不可达，需独立详情接口",
+      "仅查看，没有从此页进入报价/成单的CTA"
+    ],
+    "pages/cart/index": [
+      "只管理数量/移除并跳单品详情；无批量结账/合单/库存总校验"
+    ],
+    "pages/my-shipments/index": [
+      "只有本人订单tracking_no；无物流轨迹查询/订阅/异常更新"
+    ],
+    "pages/open-orders/index": [
+      "实际仅本人carrier订单投影，不是公开意向池"
+    ],
+    "pages/community-detail/index": [
+      "详情从限量列表查找；列表窗口外有效ID不可达，需独立详情接口"
+    ],
+    "pages/invite-share/index": [
+      "复制永久禁用，等待新鲜服务端人脸验证；无分享/二维码闭环"
+    ],
+    "pages/admin/index": [
+      "移动运营台只读指标与三类清单，不能替代后台审核/配置"
+    ],
+    "#home": [
+      "行程联大阪→上海为装饰示意；应用入口/二维码四格固定待上传/待配置，没有配置加载和点击"
+    ],
+    "#workspace": [
+      "API工具表单/JSON输出是开发辅助界面，不能作为业务功能完成证据"
+    ],
+    "#publish": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#messages": [
+      "文字轮询可编码；消息图/视频仅本地预览且阻断发送；原生语音未实现；AI依赖未接业务消费者"
+    ],
+    "#services/cart": [
+      "只管理数量/移除并跳单品详情；无批量结账/合单/库存总校验"
+    ],
+    "#services/buyer-verify": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/carrier-verify": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/enterprise-verify": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/account-security": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/kyc-docs": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/order-actions": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/purchase-proof": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/boarding-proof": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/shipping-proof": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/delivery-proof": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/cancel-request": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/invoice-request": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/meetup": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/pk-quotes": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/shipping-fee": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/assist": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/deposit": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/invite": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/privacy-call": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/order-call": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/community-comment": [
+      "自动字段/手工ID/JSON或URL输入，不是完整取证/通话/认证/履约产品界面；审计基线资金确认会话风险本轮已修；正式业务界面仍待补"
+    ],
+    "#services/support-center": [
+      "文字轮询可编码；消息图/视频仅本地预览且阻断发送；原生语音未实现；AI依赖未接业务消费者"
+    ]
+  },
+  "findings": [
+    {
+      "id": "C01",
+      "priority": "P0",
+      "status": "本轮代码修复并有专项证据；用户环境/真实业务待验",
+      "feature": "HBuilderX缺编译器",
+      "evidence": "client/scripts/ensure-hbuilderx-compiler.mjs:30",
+      "trigger": "用户HBuilderX点击编译即失败",
+      "gap": "历史CLI编译通过不能证明用户GUI会从pnpm工作区正确解析编译器；原bridge只查路径存在，不是完整HBuilderX启动验收",
+      "next": "先修可复现安装/编译器发现并用用户HBuilderX版本验证，不继续宣称小程序已跑通",
+      "remediation": "13编译入口诊断+Node>=22.12/pnpm10+安装顺序+隔离/真实CLI验证；Windows GUI未验"
+    },
+    {
+      "id": "C02",
+      "priority": "P0",
+      "status": "本轮代码修复并有专项证据；用户环境/真实业务待验",
+      "feature": "验证码投递状态不透明",
+      "evidence": "server/src/main/java/com/kuaixietech/scheduler/ContactCodeDeliveryScheduler.java",
+      "trigger": "后台每分钟抛出统一异常",
+      "gap": "前台注册/找回依赖投递；现有通用异常不能区分未配置、迁移缺失、密文问题、通道故障",
+      "next": "根因分类健康状态、独立通道诊断和真实测试验证码；不能伪成功或静音真实失败",
+      "remediation": "分通道状态和安全根因、只读配置诊断窗口、blocked不重发；无真实发信"
+    },
+    {
+      "id": "C03",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "约21类通用业务流程页",
+      "evidence": "client/apps/mobile/src/components/WorkflowScreen.vue:25",
+      "trigger": "采购/发货/交付/身份/通话等服务页",
+      "gap": "按照RPC字段生成表单，用户手填ID、URL、JSON，结果键值输出；缺订单上下文、实际原生取证、具体阶段产品流程",
+      "next": "按订单状态逐段做专用表单；自动关联订单、上传证据/定位/签收，真实落库并核对资金与状态"
+    },
+    {
+      "id": "C04",
+      "priority": "P1",
+      "status": "本轮代码修复并有专项证据；用户环境/真实业务待验",
+      "feature": "通用流程旧确认跨会话",
+      "evidence": "client/packages/ui/src/useBusinessWorkflow.ts:26",
+      "trigger": "A报价或确认框挂起后切到B",
+      "gap": "审计基线无session订阅/await快照守卫，accept_order_atomic/award_pk/respond_shipping_fee确认后直接invoke",
+      "next": "优先加永久初始会话、对象/报价快照、旧响应拒绝和真实Vue竞态测试，再接正式履约界面",
+      "remediation": "初始会话/目标快照/late response/reentry/native confirm保护；22项竞态测试"
+    },
+    {
+      "id": "C05",
+      "priority": "P1",
+      "status": "已修复代码+专项通过，真实联调待验",
+      "feature": "地址/购物车/收藏会话",
+      "evidence": "client/packages/ui/src/useSavedCommerce.ts:6",
+      "trigger": "A删除确认/地址列表未返回时切B",
+      "gap": "本次已修：地址/购物车/收藏私有model账号绑定、订阅即清、scope dispose与generation；旧确认和旧地址选择不使用新账号。公开商品操作允许登录后新操作，但拒绝旧响应。",
+      "next": "主代理纳入verify-saved-session.mjs的24项断言、原业务回归与跨端构建，再用真实账号验证。"
+    },
+    {
+      "id": "C06",
+      "priority": "P1",
+      "status": "占位",
+      "feature": "聊天图片视频发送",
+      "evidence": "client/apps/mobile/src/stores/useMessagesPage.ts:58",
+      "trigger": "选择图片或视频再发送",
+      "gap": "chooseMedia仅本地路径预览，send明确拒绝附件；无上传/消息落库/接收方读取链",
+      "next": "实现有归属的聊天附件上传、扫描/限制、消息持久化及读权限；否则隐藏不可用发送入口并明确说明"
+    },
+    {
+      "id": "C07",
+      "priority": "P2",
+      "status": "未实现（原生）",
+      "feature": "小程序/App语音输入",
+      "evidence": "client/apps/mobile/src/stores/useMessagesPage.ts:93",
+      "trigger": "点击语音",
+      "gap": "仅H5 Web Speech草稿；原生直接unavailable，未接录音上传/ASR服务",
+      "next": "选择已授权语音服务，接录音权限、上传、识别回执和手工确认；禁止本地识别冒充服务器结果"
+    },
+    {
+      "id": "C08",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "网络通话媒体",
+      "evidence": "client/apps/mobile/src/pages/order-call/index.vue:4",
+      "trigger": "发起/接听网络通话",
+      "gap": "只有RPC信令字段；客户端无媒体SDK入房、真实connected状态、音视频权限/重连/结束清理",
+      "next": "在受保护订单身份令牌之上接各端媒体SDK和实际入房回执；无媒体能力不得显示已接通"
+    },
+    {
+      "id": "C09",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "隐私号码业务",
+      "evidence": "client/apps/mobile/src/pages/privacy-call/index.vue:3",
+      "trigger": "申请绑定隐私号",
+      "gap": "通用RPC表单不等于运营商真实AXB绑定/拨号/释放/账单；需对照后端真实消费者能力",
+      "next": "接持牌隐私号机构API、状态/释放/回调与原生拨号；界面显示真实绑定结果与限期"
+    },
+    {
+      "id": "C10",
+      "priority": "P1",
+      "status": "半功能/语义不符",
+      "feature": "公开意向池",
+      "evidence": "client/apps/mobile/src/stores/useOriginalOrderLists.ts:19",
+      "trigger": "打开open-orders",
+      "gap": "实际读取本人carrier订单列表，并非公开可接意向池；现注释已承认这只是client projection",
+      "next": "补最小公开意向查询与接单资格/隐私投影，或改名本人订单；不要将本人订单冒充公开池"
+    },
+    {
+      "id": "C11",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "物流运单",
+      "evidence": "client/apps/mobile/src/stores/useOriginalOrderLists.ts:20",
+      "trigger": "打开我的运单/跟踪",
+      "gap": "只有订单过滤及tracking_no/shipping_fee；无真实物流轨迹、揽收/签收订阅或异常链",
+      "next": "接物流查询/订阅、回调验签与幂等落库，前台时间线及异常操作"
+    },
+    {
+      "id": "C12",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "求购详情与报价出口",
+      "evidence": "client/apps/mobile/src/stores/useDemandDetailPage.ts:11",
+      "trigger": "打开旧求购深链",
+      "gap": "只在首100条找ID；页面只有说明无报价/竞价CTA，窗口外有效记录不可达",
+      "next": "增加按ID安全详情API；从详情带demandId进入报价并自动加载上下文和资格"
+    },
+    {
+      "id": "C13",
+      "priority": "P2",
+      "status": "半功能",
+      "feature": "社区/行程详情分页窗口",
+      "evidence": "client/apps/mobile/src/stores/useOriginalCommunityDetail.ts:12",
+      "trigger": "打开不在最近窗口的动态/行程",
+      "gap": "社区与trip详情从限量列表查找；合法深链会显示不存在或窗口限制",
+      "next": "分别增加按ID只读详情与分页评论API，正确定义下架/隐藏/403/404"
+    },
+    {
+      "id": "C14",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "购物车结账",
+      "evidence": "client/packages/ui/src/SavedCommerce.vue:9",
+      "trigger": "购物车购买",
+      "gap": "现有仅数量/移除和跳转单品详情，没有批量结账、合单报价、总库存校验",
+      "next": "先明确多卖家/多行程拆单和保险费用规则，再实现后端批量报价/原子预占与逐单回执"
+    },
+    {
+      "id": "C15",
+      "priority": "P1",
+      "status": "明确受限",
+      "feature": "邀请复制/二维码分享",
+      "evidence": "client/apps/mobile/src/pages/invite-share/index.vue:5",
+      "trigger": "认证用户点击复制邀请码",
+      "gap": "按钮永久disabled，依赖新鲜服务端人脸验证但链路未接；没有真实分享/二维码生成出口",
+      "next": "对接可信人脸校验及一次性凭证，授权后生成短期分享资源，不绕过验证直接放开"
+    },
+    {
+      "id": "C16",
+      "priority": "P2",
+      "status": "明确受限",
+      "feature": "设置页换绑",
+      "evidence": "client/apps/mobile/src/pages/settings/account/index.vue:8",
+      "trigger": "账号安全→换绑",
+      "gap": "设置行永久禁用；通用account-security RPC入口不能替代友好换绑流程",
+      "next": "接旧联系方式验证、新联系方式验证、重新认证与会话失效，写明确成功/失败状态"
+    },
+    {
+      "id": "C17",
+      "priority": "P2",
+      "status": "占位",
+      "feature": "附近行程/附近商品",
+      "evidence": "client/apps/mobile/src/stores/useIndexPage.ts:33",
+      "trigger": "点击附近",
+      "gap": "只有toast提示，无定位、半径查询或距离排序",
+      "next": "若开放，增加定位授权/坐标规范和后端距离查询；否则标明确不可用不当已完成功能"
+    },
+    {
+      "id": "C18",
+      "priority": "P2",
+      "status": "半功能/命名不符",
+      "feature": "智能推荐与路线",
+      "evidence": "client/apps/mobile/src/stores/useSmartPage.ts:24",
+      "trigger": "打开smart或route",
+      "gap": "smart仅两个公开商品比较，route仅列表+H5语音草稿，无个性推荐、地图路径或导航",
+      "next": "按实际能力改名或接明确定义的推荐/地图业务；AI/geocode协议存在不等于已接消费者"
+    },
+    {
+      "id": "C19",
+      "priority": "P2",
+      "status": "占位",
+      "feature": "PC应用入口及订单二维码",
+      "evidence": "client/apps/pc/src/views/HomeView.vue:163",
+      "trigger": "点击首页继续下单四格",
+      "gap": "四格仅待上传/待配置文本，未读取配置也无实际跳转或二维码；没有下载/发布落地页",
+      "next": "实现受审配置的正式链接、可用平台检测、二维码和真实安装包/小程序路径；未配置保持不可点击"
+    },
+    {
+      "id": "C20",
+      "priority": "P2",
+      "status": "装饰数据",
+      "feature": "PC首页大阪→上海行程联",
+      "evidence": "client/apps/pc/src/views/HomeView.vue:25",
+      "trigger": "查看首页大卡片",
+      "gap": "地名来自静态字典，是装饰示意，不是正在进行的真实订单或行程",
+      "next": "明确示意或读取真实可公开行程；不能将其计作业务数据已验收"
+    },
+    {
+      "id": "C21",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "发现页面旧RPC样板",
+      "evidence": "client/apps/mobile/src/stores/useDiscoverPage.ts:15",
+      "trigger": "进入discover",
+      "gap": "三个分类状态与手填postId评论RPC，非完整发现/社区/商店业务界面",
+      "next": "整合现有真实社区/商品/行程入口，移除重复旧样板和手填技术ID"
+    },
+    {
+      "id": "C22",
+      "priority": "P1",
+      "status": "工具入口，非正式业务完成",
+      "feature": "接口工作台与工具页",
+      "evidence": "client/apps/mobile/src/stores/useToolsPage.ts:24",
+      "trigger": "选择API并执行",
+      "gap": "JSON输入输出和所有操作注册表只能提供技术可达性；无业务任务引导，危险确认也无会话守卫",
+      "next": "开发工具与正式客户入口隔离；危险操作加账户/参数快照；每功能另列正式页面验收"
+    },
+    {
+      "id": "C23",
+      "priority": "P1",
+      "status": "受外部能力阻断",
+      "feature": "商品保险真实投保",
+      "evidence": "client/packages/ui/src/useInsurance.ts:26",
+      "trigger": "选择险种/报价/投保",
+      "gap": "前端框架与机构参考名册有代码，但无已验证保险企业API/产品合同/直接收款回执则不能形成真实保单",
+      "next": "按合作机构逐个报价/投保/出单/退保/理赔接入；保持客户自选、机构定价收费，平台不担保"
+    },
+    {
+      "id": "C24",
+      "priority": "P1",
+      "status": "部分支持",
+      "feature": "充值/国际卡/银行卡/多币种",
+      "evidence": "client/packages/ui/src/usePaymentWallet.ts:51",
+      "trigger": "选币种/支付方式并确认",
+      "gap": "前端已报价/状态查询与SDK边界；仅有渠道真实收单能力才可用。银行卡、信用卡、跨境/大部分币种不能由目录或SDK构造证明",
+      "next": "逐渠道商户/币种/回执验收，实际收款、退款和账单对账；不开放无实现渠道"
+    },
+    {
+      "id": "C25",
+      "priority": "P1",
+      "status": "部分支持",
+      "feature": "售后退款与财务核算",
+      "evidence": "client/packages/ui/src/useEscrowRefunds.ts:10",
+      "trigger": "查看/执行售后退款",
+      "gap": "钱包货款退款仅限可证明的新托管来源；全额后费用/运费/保证金核算仍阻断，复杂/历史/跨币种退款未闭环",
+      "next": "确认费用责任规则和独立核算记录，历史来源对账后逐类型开放，不能把钱包到账当银行原路到账"
+    },
+    {
+      "id": "C26",
+      "priority": "P1",
+      "status": "半功能",
+      "feature": "移动运营台",
+      "evidence": "client/apps/mobile/src/stores/useV15AdminPage.ts:20",
+      "trigger": "进入移动admin",
+      "gap": "只有受保护统计和三类只读记录；不包含完整后台审核、资金/配置窗口；无session响应守卫",
+      "next": "按角色明确仅只读或补安全审核；优先防跨账号旧记录，后台管理不得无差别下放"
+    },
+    {
+      "id": "C27",
+      "priority": "P1",
+      "status": "部分已修复，余项待执行",
+      "feature": "客服/订单列表/邀请旧私有响应",
+      "evidence": "client/apps/mobile/src/stores/useMessagesPage.ts:54",
+      "trigger": "挂起请求后换账号",
+      "gap": "useOriginalOrderLists本次已修即时清理、token/generation/role快照、旧认证响应和旧行导航保护；消息与邀请等旧model仍应按同标准完成逐项复核。",
+      "next": "订单列表24项专项证据纳入root回归；客服、邀请等其余model保留待办，不宣称全私有数据已覆盖。"
+    },
+    {
+      "id": "C28",
+      "priority": "P1",
+      "status": "待真实运行验收",
+      "feature": "所有已编码客户业务",
+      "evidence": "client/packages/sdk/src/client.ts:35",
+      "trigger": "真实登录后执行代表性任务",
+      "gap": "此前资源构建和271条模型断言没有证明数据库、JWT、商户/保险/存储、调度与真机连通",
+      "next": "建立可复现数据库/服务启动和健康检查，按测试账号跑单并记录HTTP、DB、资金及真回执，未执行项继续待验"
+    }
+  ],
+  "fixEvidence": {
+    "C05": [
+      "client/scripts/verify-saved-session.mjs",
+      "/tmp/saved-session-tests.log"
+    ],
+    "C27_original_order_lists": [
+      "client/scripts/verify-saved-session.mjs",
+      "/tmp/saved-session-mobile-types.log"
+    ]
+  }
+}

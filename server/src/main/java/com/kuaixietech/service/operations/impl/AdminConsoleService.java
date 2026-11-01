@@ -32,36 +32,40 @@ public class AdminConsoleService {
     this.mapper=mapper;this.guard=guard;this.admin=admin;this.community=community;this.privacy=privacy;this.errors=errors;
   }
   @Transactional(readOnly=true)
-  public List<Map<String,Object>> list(String kind,Integer limit,String keyword){
+  public List<Map<String,Object>> list(String kind,Integer limit,String keyword){return list(kind,limit,keyword,null);}
+  @Transactional(readOnly=true)
+  public List<Map<String,Object>> list(String kind,Integer limit,String keyword,Integer offset){
     guard.requireAdmin();
     if(kind==null||!KINDS.contains(kind)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"unknown admin console kind");
     int n=limit==null?80:Math.min(Math.max(limit,1),200);
+    int start=offset==null?0:offset;
+    if(start<0)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid admin console offset");
     return switch(kind){
-      case "carrierKyc" -> mapper.carrierKyc(n);
-      case "buyerKyc" -> mapper.buyerKyc(n);
-      case "enterpriseKyc" -> mapper.enterpriseKyc(n);
-      case "trips" -> mapper.trips(n);
-      case "proofRecipes" -> mapper.proofRecipes(n);
-      case "products" -> mapper.products(n);
-      case "categories" -> mapper.categories(n);
-      case "errorLogs" -> mapper.errorLogs(n);
-      case "orders" -> mapper.orders(n);
-      case "cancels" -> mapper.cancels(n);
-      case "disputes" -> mapper.disputes(n);
-      case "invoices" -> mapper.invoices(n);
-      case "privacyPool" -> mapper.privacyPool(n);
-      case "pools" -> mapper.pools(n);
-      case "demands" -> mapper.demands(n);
-      case "notifyQueue" -> mapper.notifyQueue(n);
-      case "withdrawals" -> mapper.withdrawals(n);
-      case "community" -> mapper.community(n);
-      case "users" -> mapper.users(n,keyword==null||keyword.isBlank()?null:keyword.trim());
-      case "finance" -> mapper.finance(n);
-      case "invite" -> mapper.invite(n);
-      case "broadcast" -> mapper.broadcast(n);
-      case "channelConfigs" -> mapper.channelConfigs(n);
-      case "locales" -> mapper.locales(n);
-      case "adminLogs" -> mapper.adminLogs(n);
+      case "carrierKyc" -> mapper.carrierKyc(n,start);
+      case "buyerKyc" -> mapper.buyerKyc(n,start);
+      case "enterpriseKyc" -> mapper.enterpriseKyc(n,start);
+      case "trips" -> mapper.trips(n,start);
+      case "proofRecipes" -> mapper.proofRecipes(n,start);
+      case "products" -> mapper.products(n,start);
+      case "categories" -> mapper.categories(n,start);
+      case "errorLogs" -> mapper.errorLogs(n,start);
+      case "orders" -> mapper.orders(n,start);
+      case "cancels" -> mapper.cancels(n,start);
+      case "disputes" -> mapper.disputes(n,start);
+      case "invoices" -> mapper.invoices(n,start);
+      case "privacyPool" -> mapper.privacyPool(n,start);
+      case "pools" -> mapper.pools(n,start);
+      case "demands" -> mapper.demands(n,start);
+      case "notifyQueue" -> mapper.notifyQueue(n,start);
+      case "withdrawals" -> mapper.withdrawals(n,start);
+      case "community" -> mapper.community(n,start);
+      case "users" -> mapper.users(n,start,keyword==null||keyword.isBlank()?null:keyword.trim());
+      case "finance" -> mapper.finance(n,start);
+      case "invite" -> mapper.invite(n,start);
+      case "broadcast" -> mapper.broadcast(n,start);
+      case "channelConfigs" -> mapper.channelConfigs(n,start);
+      case "locales" -> mapper.locales(n,start);
+      case "adminLogs" -> mapper.adminLogs(n,start);
       default -> List.of();
     };
   }

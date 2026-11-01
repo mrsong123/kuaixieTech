@@ -12,7 +12,7 @@ def render():
              '-- Does not import reference/current-schema.sql, seed credentials, or modify business balances.\n'
              '-- MySQL 8 DDL implicitly commits. Verify existing objects and a recoverable backup first.\n'
              '-- CREATE TABLE IF NOT EXISTS does not validate an existing table definition.\n'
-             '-- No migration in this bundle has been executed by the coding agent.\n\n']
+             '-- Not applied to the business database; isolated local audit execution is documented separately.\n\n']
     sources = sorted((ROOT/'db/migrations').glob('*.proposed.sql'))
     if not sources:
         raise ValueError('No migrations found')

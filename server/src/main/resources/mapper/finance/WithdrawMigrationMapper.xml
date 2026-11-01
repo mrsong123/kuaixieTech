@@ -9,7 +9,6 @@
   <insert id="insertWithdrawal">INSERT INTO t_withdrawals (id,user_id,amount) VALUES (#{id},#{user},#{amount})</insert>
   <select id="lockWithdrawal" resultType="java.util.HashMap">SELECT id,user_id,amount,status FROM t_withdrawals WHERE id=#{id} FOR UPDATE</select>
   <update id="reviewWithdrawal">UPDATE t_withdrawals SET status=#{status},admin_note=#{note},reviewed_by=#{admin},reviewed_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='pending'</update>
-  <update id="markPaid">UPDATE t_withdrawals SET status='paid',admin_note=COALESCE(#{note},admin_note) WHERE id=#{id} AND status='approved'</update>
   <insert id="insertLedger">INSERT INTO t_balance_ledger (id,user_id,kind,amount,note) VALUES(#{id},#{user},#{kind},#{amount},#{note})</insert>
   <insert id="insertNotification">INSERT INTO t_notifications (id,user_id,kind,title,body) VALUES (#{id},#{user},'order',#{title},#{body})</insert>
   <insert id="insertAdminLog">INSERT INTO t_admin_logs (id,operator_id,action,target_type,target_id,detail) VALUES(#{id},#{admin},#{action},'withdrawal',#{target},#{detail})</insert>

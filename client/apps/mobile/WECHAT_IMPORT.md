@@ -2,6 +2,8 @@
 
 本目录是 UniApp 源码工程，`src/pages.json` 和 `src/manifest.json` 由 UniApp 编译为微信需要的 `app.json`。不要在源码根目录手写一个空的 `app.json`，也不要把 `src/` 当作原生微信项目导入。
 
+编译前先在 `client/` 完成依赖安装；若 HBuilderX 提示缺少编译器模块，请按 [HBuilderX 编译环境诊断](HBUILDERX_SETUP.md) 处理。该问题与产物 `app.json` 入口是两层不同故障。
+
 ## 发行资源
 
 在 `client/` 目录执行：

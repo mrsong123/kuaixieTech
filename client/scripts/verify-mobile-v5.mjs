@@ -4,7 +4,10 @@ const pages=JSON.parse(read('apps/mobile/src/pages.json'));assert.deepEqual(page
 const plaza=read('apps/mobile/src/pages/index/index.vue')+read('apps/mobile/src/stores/useIndexPage.ts');
 for(const fragment of ['api.catalog.trips(100)','api.portal.demands(100)','api.portal.verifiedRole()','region','role.value?.user_role'])assert.ok(plaza.includes(fragment),fragment);
 const community=read('apps/mobile/src/pages/demand-pool/index.vue')+read('apps/mobile/src/stores/useDemandPoolPage.ts');assert.ok(community.includes('api.portal.communityFeed(60)'));assert.ok(community.includes('<video'));assert.ok(!community.includes('const fakePosts'));
-const pub=read('apps/mobile/src/pages/publish-hub/index.vue')+read('apps/mobile/src/stores/usePublishHubPage.ts');for(const x of ['api.portal.publishDemand','api.portal.publishTrip','api.portal.postCommunity'])assert.ok(pub.includes(x));
+const pub=read('apps/mobile/src/pages/publish-hub/index.vue'),pubStore=read('apps/mobile/src/stores/usePublishHubPage.ts'),pubModel=read('packages/ui/src/usePublishComposer.ts');
+assert.ok(pub.includes('usePublishHubPage()')&&pubStore.includes("from '@kuaixie/ui/usePublishComposer'")&&/usePublishComposer\(api\)/.test(pubStore),'mobile publish page must delegate to the shared business model');
+for(const x of ['api.portal.publishDemand','api.portal.publishTrip','api.portal.postCommunity'])assert.ok(pubModel.includes(x),'shared publishing API missing: '+x);
+assert.ok(pub.includes('ProductPublishingMobile')&&pub.includes("selected==='product'"),'product publishing must keep its independent upload/save flow');
 const chat=read('apps/mobile/src/pages/messages/index.vue')+read('apps/mobile/src/stores/useMessagesPage.ts');
 for(const x of ['api.support.open','api.support.send','api.support.messages','@confirm="send"','chooseMedia','portal.chat.send'])assert.ok(chat.includes(x));
 assert.ok(chat.includes('isTransfer(value)'));assert.ok(!chat.includes("navigate('me')"));assert.ok(!chat.includes('mockAi'));assert.ok(!chat.includes('fakeReply'));

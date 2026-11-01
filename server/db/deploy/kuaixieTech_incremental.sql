@@ -4,7 +4,7 @@
 -- Does not import reference/current-schema.sql, seed credentials, or modify business balances.
 -- MySQL 8 DDL implicitly commits. Verify existing objects and a recoverable backup first.
 -- CREATE TABLE IF NOT EXISTS does not validate an existing table definition.
--- No migration in this bundle has been executed by the coding agent.
+-- Not applied to the business database; isolated local audit execution is documented separately.
 
 -- BEGIN 001-missing-business-tables.proposed.sql
 -- SHA256 11fe3776a604adeed52ef5740aff37d497cc78026624896355d964f7cc7ad6c6
@@ -528,4 +528,33 @@ EXECUTE kuaixie_order_status_stmt;
 DEALLOCATE PREPARE kuaixie_order_status_stmt;
 SET @kuaixie_order_status_ddl = NULL;
 -- END 011-order-status-width.proposed.sql
+
+-- BEGIN 012-default-address-trigger.proposed.sql
+-- SHA256 5497892b02344fd99a03c00c17b0abbdaa255592a219170e73e17ab1ee3f7379
+-- Fix MySQL 1442: a trigger cannot UPDATE the same table as its invoking statement.
+-- The application serializes address changes with the owning t_profiles row lock,
+-- clears old defaults explicitly, then inserts/updates the selected address.
+-- These validation-only triggers reject a conflicting default; they never edit another row.
+-- No historical address or business balance is modified by this migration.
+DROP TRIGGER IF EXISTS trg_t_addresses_default_ins;
+DROP TRIGGER IF EXISTS trg_t_addresses_default_upd;
+DELIMITER //
+CREATE TRIGGER trg_t_addresses_default_ins
+BEFORE INSERT ON t_addresses
+FOR EACH ROW
+BEGIN
+ IF NEW.is_default=1 AND EXISTS(SELECT 1 FROM t_addresses a WHERE a.user_id=NEW.user_id AND a.is_default=1) THEN
+  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Default address already exists; use the serialized address service';
+ END IF;
+END//
+CREATE TRIGGER trg_t_addresses_default_upd
+BEFORE UPDATE ON t_addresses
+FOR EACH ROW
+BEGIN
+ IF NEW.is_default=1 AND EXISTS(SELECT 1 FROM t_addresses a WHERE a.user_id=NEW.user_id AND a.is_default=1 AND a.id<>OLD.id) THEN
+  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Default address already exists; use the serialized address service';
+ END IF;
+END//
+DELIMITER ;
+-- END 012-default-address-trigger.proposed.sql
 

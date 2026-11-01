@@ -4,7 +4,7 @@
 
 此清单只核对 Java 声明和 SDK 字面量路径；不证明权限、数据库、外部服务或页面业务已验收。核心 API 工作台目录与全量清单分开维护。
 
-当前 Java 接口 231 项；SDK 字面量请求 131 项；其中 0 项未找到当前控制器。
+当前 Java 接口 232 项；SDK 字面量请求 131 项；其中 0 项未找到当前控制器。
 
 ## SDK 中缺少后端声明的请求
 
@@ -229,6 +229,7 @@
 | POST | `/portal/admin/payment-refunds/{id}/review` | PaymentRefundController.java |
 | POST | `/portal/admin/payment-refunds/{id}/dispatch` | PaymentRefundController.java |
 | POST | `/portal/admin/payment-refunds/{id}/refresh` | PaymentRefundController.java |
+| GET | `/portal/admin/contact-delivery/health` | ContactDeliveryHealthController.java |
 | GET | `/me/shop` | ShopController.java |
 | POST | `/me/shop/applications` | ShopController.java |
 | PUT | `/me/shop` | ShopController.java |

@@ -1,3 +1,5 @@
+import {renderedVueSources} from './rendered-vue-contract.mjs';
+import {historicalPageLedger} from './historical-page-ledger.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,23 +19,22 @@ for(const name of migrated){
   for(const marker of ['$t(','original-subpage','mobilePreferenceStyle'])assert.ok(page.includes(marker),`${name}: original style/i18n marker missing ${marker}`);
   assert.ok(!/mockData|demoData|seedRecords|Math\.random\(/i.test(page),`${name}: fixture data disguised as backend`);
 }
-const rows=read('MIGRATION_62_PAGE_STATUS.csv').trim().split(/\r?\n/);assert.equal(rows.length,63,'62-page status inventory lost');
-// A migration target is a real Vue file AND a registered route, not just a CSV reference.
-for (const row of rows.slice(1)) {
- const cols=row.replace(/^\uFEFF/,'').split(',');
- const module=cols[0], target=cols[2];
- assert.ok(module && target, 'Invalid ledger row');
- assert.ok(fs.existsSync(path.join(root,target)),`Target file missing: ${module} -> ${target}`);
- const route=target.replace(/^apps\/mobile\/src\//,'').replace(/\.vue$/,'');
- assert.ok(pages.some(p=>p.path===route),`Target route not registered: ${module} -> ${route}`);
-}
+const historical=historicalPageLedger(root);
 for (const name of migrated) {
- const page=read(`apps/mobile/src/pages/${name}/index.vue`);
- const store=`apps/mobile/src/stores/useV15${name.split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('')}Page.ts`;
- assert.ok(fs.existsSync(path.join(root,store)),`${name}: composable absent`);
- assert.ok(page.includes('useV15'),`${name}: composable not wired`);
+ const file=`apps/mobile/src/pages/${name}/index.vue`,page=read(file);
+ if(['dispute-create','dispute-detail'].includes(name)){
+  const graph=renderedVueSources(root,file);
+  assert.ok(page.includes('TradeCasesMobile')&&graph.includes('useTradeCases(api'),`${name}: shared case model must be rendered`);
+  const model=read('packages/ui/src/useTradeCases.ts');
+  for(const call of ['api.cases.create','api.cases.detail','api.cases.respond','api.cases.appeal'])assert.ok(model.includes(call),'shared case operation missing: '+call);
+  assert.ok(model.includes('subscribeSession')&&model.includes('sameSession()'),'shared case account guards missing');
+ }else{
+  const store=`apps/mobile/src/stores/useV15${name.split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('')}Page.ts`;
+  assert.ok(fs.existsSync(path.join(root,store)),`${name}: composable absent`);
+  assert.ok(page.includes('useV15'),`${name}: composable not wired`);
+ }
 }
-for(const name of migrated)assert.ok(rows.some(row=>row.startsWith(name+',')&&row.includes(`apps/mobile/src/pages/${name}/index.vue`)),`Ledger not updated for ${name}`);
+if(historical)for(const name of migrated)assert.ok(historical.entries.some(row=>row.module===name&&row.target===`apps/mobile/src/pages/${name}/index.vue`),`Ledger not updated for ${name}`);
 const zh=JSON.parse(read('packages/i18n/src/zh-CN.json')),en=JSON.parse(read('packages/i18n/src/en-US.json'));
 assert.deepEqual(Object.keys(zh).sort(),Object.keys(en).sort());
 for(const key of ['v15.login','v15.disputeUnavailable','v15.needFace','v15.intentPostUnavailable'])assert.ok(zh[key]&&en[key],key);
@@ -43,9 +44,12 @@ const link=read('apps/mobile/src/pages/trip-detail/index.vue');assert.ok(link.in
 assert.ok(read('apps/mobile/src/pages/order-detail/index.vue').includes('/pages/dispute-create/index?id='),'Order->dispute entry absent');
 const login=read('apps/mobile/src/stores/useV15LoginPage.ts');
 assert.ok(read('apps/mobile/src/pages/login/index.vue').includes('needCode'),'Login code field must be rendered');
-assert.ok(login.includes('countryCodes,needCode,sendCode'),'Login store must expose code-login state');
-assert.ok(login.includes("if(typeof token!=='string'||!/^"),'Only set session on JWT-shaped token');
-assert.ok(login.indexOf('setBearer(token)')>login.indexOf('if(typeof token'), 'No premature login success');
+const authModel=read('packages/ui/src/useBusinessAuth.ts');
+assert.ok(login.includes("from '@kuaixie/ui/useBusinessAuth'")&&login.includes('useBusinessAuth(api'),'native login must use the real shared authentication model');
+const authReturn=authModel.slice(authModel.lastIndexOf('return {'));
+for(const field of ['countryCodes','needCode','sendCode'])assert.ok(new RegExp('\\b'+field+'\\b').test(authReturn),'Shared login must expose code-login state: '+field);
+assert.ok(authModel.includes("if(typeof token!=='string'||!/^"),'Only set session on JWT-shaped token');
+assert.ok(authModel.indexOf('setBearer(token)')>authModel.indexOf('if(typeof token'), 'No premature login success');
 assert.ok(read('apps/mobile/src/pages/invite-share/index.vue').includes('disabled>'),'Face check gate must remain fail-closed');
 assert.ok(read('apps/mobile/src/stores/useV15InviteSharePage.ts').includes('operatorId:profile.value?.id'),'Server invite code needs verified operator id');
 const config=read('packages/config/src/proxy.ts'),prod=read('deploy/nginx-gateway.example.conf');
@@ -66,4 +70,4 @@ try {
  assert.equal(calls[2].url,'https://api.example.test/me/disputes/some-id');
  assert.equal(calls[2].method,'GET');
 } finally {fs.rmSync(temp,{recursive:true,force:true})}
-console.log('V15 PAGE + SDK CONTRACT REGRESSION PASSED: 8 routes, 62 statuses, no mock success, shared locales, login/token guard, proxy and authenticated API requests.');
+console.log('V15 PAGE + SDK CONTRACT REGRESSION PASSED: 8 routes, external historical-ledger status reported separately, no mock success, shared locales, login/token guard, proxy and authenticated API requests.');

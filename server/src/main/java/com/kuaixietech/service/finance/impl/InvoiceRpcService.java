@@ -34,14 +34,19 @@ import org.springframework.transaction.annotation.Transactional;
   return "OK:INVOICE:"+amount.toPlainString();
  }
  @Transactional public String adminIssueInvoice(String invoiceId,boolean approve,String invoiceNo,String fileUrl,String reason){
-  admin.adminGuard(approve?"invoice_issued":"invoice_rejected","invoice",invoiceId,!trim(invoiceNo).isEmpty()?trim(invoiceNo):!trim(reason).isEmpty()?trim(reason):"-");
+  guard.requireAdmin();
   Map<String,Object> inv=mapper.lockInvoice(invoiceId);
   if(inv==null)return "ERR:NO_TARGET";
   if(!"pending".equals(inv.get("status")))return "ERR:ALREADY_SETTLED";
-  if(approve&&trim(invoiceNo).isEmpty())return "ERR:NO_NOTE";
-  if(!approve&&trim(reason).isEmpty())return "ERR:NO_NOTE";
-  if(mapper.issue(invoiceId,approve,trim(invoiceNo),trim(fileUrl).isEmpty()?null:trim(fileUrl),trim(reason))!=1)throw new IllegalStateException("invoice write conflict");
-  mapper.notifyUser(UUID.randomUUID().toString(),String.valueOf(inv.get("user_id")),approve?"invoice_issued":"invoice_rejected",approve?"电子发票已开具":"开票申请被驳回",approve?"发票号 "+trim(invoiceNo)+" 已开具并将送达邮箱 "+inv.get("email")+"，请在「我的发票」查看与重发。":trim(reason)+"。修改信息后可重新提交。");
-  return approve?"OK:ISSUED":"OK:REJECTED";
+  // A number and a caller-supplied URL do not establish a genuine tax invoice.
+  // Neither issuer integration nor external invoice verification/email delivery
+  // exists here, so never label it issued or promise that an email was sent.
+  if(approve)return "ERR:INVOICE_ISSUER_UNAVAILABLE";
+  if(trim(reason).isEmpty())return "ERR:NO_NOTE";
+  if(trim(reason).length()>255)return "ERR:BAD_NOTE";
+  admin.adminGuard("invoice_rejected","invoice",invoiceId,trim(reason));
+  if(mapper.reject(invoiceId,trim(reason))!=1)throw new IllegalStateException("invoice write conflict");
+  mapper.notifyUser(UUID.randomUUID().toString(),String.valueOf(inv.get("user_id")),"invoice_rejected","开票申请被驳回",trim(reason));
+  return "OK:REJECTED";
  }
 }

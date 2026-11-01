@@ -9,7 +9,13 @@
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin && node ../../scripts/verify-wechat-output.mjs --mode build --sync-config",
     "dev:app": "uni -p app",
-    "build:app": "uni build -p app"
+    "build:app": "uni build -p app",
+    "predev:h5": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check",
+    "prebuild:h5": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check",
+    "predev:mp-weixin": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check",
+    "prebuild:mp-weixin": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check",
+    "predev:app": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check",
+    "prebuild:app": "node ../../scripts/ensure-hbuilderx-compiler.mjs --check"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-5030320261023001",
@@ -29,5 +35,8 @@
     "@dcloudio/vite-plugin-uni": "3.0.0-5030320261023001",
     "typescript": "~5.9.3",
     "vite": "5.2.8"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

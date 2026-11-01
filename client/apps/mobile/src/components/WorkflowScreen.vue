@@ -24,10 +24,10 @@ function changeInsurance(event:unknown){const value=Number(uniEventValue(event))
    <view v-if="!page.fields.length" class="flow-note">{{ $t('fast.noFields') }}</view>
    <view v-for="field in page.fields" :key="field.name" class="flow-field">
     <view class="flow-label"><text>{{ page.fieldLabel(field.name) }}</text><text v-if="page.required(field.name)" class="flow-required">*</text></view>
-    <picker v-if="field.name==='insuranceChoice'" :range="[$t('v15.insure'),$t('v15.waive')]" @change="changeInsurance"><view class="flow-input">{{page.form[field.name]==='yes'?$t('v15.insure'):page.form[field.name]==='waived'?$t('v15.waive'):$t('v15.insurance')}}</view></picker>
-    <switch v-else-if="field.type==='boolean'" :checked="page.form[field.name]===true" color="#0ea5e9" @change="changeField(field.name,$event)" />
-    <textarea v-else-if="page.isLong(field.name)" class="flow-input flow-area" :value="String(page.form[field.name]??'')" :maxlength="3000" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
-    <input v-else class="flow-input" :value="String(page.form[field.name]??'')" :type="field.type==='number'?'digit':'text'" :password="page.isSecret(field.name)" :maxlength="300" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
+    <picker :disabled="page.busy" v-if="field.name==='insuranceChoice'" :range="[$t('v15.insure'),$t('v15.waive')]" @change="changeInsurance"><view class="flow-input">{{page.form[field.name]==='yes'?$t('v15.insure'):page.form[field.name]==='waived'?$t('v15.waive'):$t('v15.insurance')}}</view></picker>
+    <switch :disabled="page.busy" v-else-if="field.type==='boolean'" :checked="page.form[field.name]===true" color="#0ea5e9" @change="changeField(field.name,$event)" />
+    <textarea :disabled="page.busy" v-else-if="page.isLong(field.name)" class="flow-input flow-area" :value="String(page.form[field.name]??'')" :maxlength="3000" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
+    <input :disabled="page.busy" v-else class="flow-input" :value="String(page.form[field.name]??'')" :type="field.type==='number'?'digit':'text'" :password="page.isSecret(field.name)" :maxlength="300" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
    </view>
    <template v-if="page.current.path==='/rpc/award_pk'&&page.form.insuranceChoice==='yes'"><button :disabled="page.busy" @click="page.loadInsuranceSubject">{{$t('insurance.loadSubject')}}</button><InsuranceSelectionMobile v-if="page.insuranceSubject" subject-type="pk_quote" :subject-id="page.insuranceSubject.subjectId" :item-name="page.insuranceSubject.itemName" :declared-value="page.insuranceSubject.declaredValue" @selected="page.update('insuranceQuoteId',$event?.id)"/></template>
    <view class="flow-note">{{ $t('fast.serverOnly') }}</view>

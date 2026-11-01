@@ -902,7 +902,7 @@
     {
       "table": "t_announcements",
       "column": "active",
-      "description": "active",
+      "description": "公告是否启用，1是、0否",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -919,7 +919,7 @@
     {
       "table": "t_announcements",
       "column": "body",
-      "description": "body",
+      "description": "公告默认语言正文",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -935,7 +935,7 @@
     {
       "table": "t_announcements",
       "column": "body_i18n",
-      "description": "body_i18n",
+      "description": "多语言公告正文，JSON对象，按语言代码存储",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -948,7 +948,7 @@
     {
       "table": "t_announcements",
       "column": "created_at",
-      "description": "created_at",
+      "description": "公告创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -964,7 +964,7 @@
     {
       "table": "t_announcements",
       "column": "created_by",
-      "description": "created_by",
+      "description": "公告创建人用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -980,7 +980,7 @@
     {
       "table": "t_announcements",
       "column": "id",
-      "description": "id",
+      "description": "公告主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -997,7 +997,7 @@
     {
       "table": "t_announcements",
       "column": "kind",
-      "description": "kind",
+      "description": "公告类型代码，默认system",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -1014,7 +1014,7 @@
     {
       "table": "t_announcements",
       "column": "pinned",
-      "description": "pinned",
+      "description": "是否置顶，1是、0否",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -1031,7 +1031,7 @@
     {
       "table": "t_announcements",
       "column": "title",
-      "description": "title",
+      "description": "公告默认语言标题",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -1048,7 +1048,7 @@
     {
       "table": "t_announcements",
       "column": "title_i18n",
-      "description": "title_i18n",
+      "description": "多语言公告标题，JSON对象，按语言代码存储",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -1061,7 +1061,7 @@
     {
       "table": "t_assist_requests",
       "column": "assistant_id",
-      "description": "assistant_id",
+      "description": "承接协带的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1076,7 +1076,7 @@
     {
       "table": "t_assist_requests",
       "column": "created_at",
-      "description": "created_at",
+      "description": "协带申请创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -1089,7 +1089,7 @@
     {
       "table": "t_assist_requests",
       "column": "finished_at",
-      "description": "finished_at",
+      "description": "协带完成并结算的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1104,7 +1104,7 @@
     {
       "table": "t_assist_requests",
       "column": "handover_a_at",
-      "description": "handover_a_at",
+      "description": "首次交接凭证提交时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1119,7 +1119,7 @@
     {
       "table": "t_assist_requests",
       "column": "handover_a_city",
-      "description": "handover_a_city",
+      "description": "首次交接所在城市",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1134,7 +1134,7 @@
     {
       "table": "t_assist_requests",
       "column": "handover_a_urls",
-      "description": "handover_a_urls",
+      "description": "原带单人向协带人交接的照片地址JSON数组",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1149,7 +1149,7 @@
     {
       "table": "t_assist_requests",
       "column": "handover_b_city",
-      "description": "handover_b_city",
+      "description": "最终交付所在城市",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1164,7 +1164,7 @@
     {
       "table": "t_assist_requests",
       "column": "handover_b_urls",
-      "description": "handover_b_urls",
+      "description": "协带人向买家交付的照片地址JSON数组",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1179,7 +1179,7 @@
     {
       "table": "t_assist_requests",
       "column": "id",
-      "description": "id",
+      "description": "协带申请主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -1194,7 +1194,7 @@
     {
       "table": "t_assist_requests",
       "column": "note",
-      "description": "note",
+      "description": "协带需求说明",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1209,7 +1209,7 @@
     {
       "table": "t_assist_requests",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1224,7 +1224,7 @@
     {
       "table": "t_assist_requests",
       "column": "requester_id",
-      "description": "requester_id",
+      "description": "发起协带的原带单人用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1239,7 +1239,7 @@
     {
       "table": "t_assist_requests",
       "column": "settled_amount",
-      "description": "settled_amount",
+      "description": "实际结算分润金额，单位人民币元",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1254,7 +1254,7 @@
     {
       "table": "t_assist_requests",
       "column": "share_rate",
-      "description": "share_rate",
+      "description": "协带分润百分比，按货款与运费之和计算，代码允许20至60",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -1269,7 +1269,7 @@
     {
       "table": "t_assist_requests",
       "column": "status",
-      "description": "status",
+      "description": "协带状态：pending待承接、accepted已承接、carrying携带中、done已完成、cancelled已取消",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -2649,7 +2649,7 @@
     {
       "table": "t_channel_configs",
       "column": "channel_type",
-      "description": "channel_type",
+      "description": "渠道类型：sms短信、email邮件、wx_subscribe微信订阅、privacy_number隐私号、logistics物流、payment支付、ai人工智能、rtc实时通信",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2666,7 +2666,7 @@
     {
       "table": "t_channel_configs",
       "column": "config",
-      "description": "config",
+      "description": "渠道参数JSON对象；可能包含凭据，管理端按敏感键名脱敏，不代表已加密",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2681,7 +2681,7 @@
     {
       "table": "t_channel_configs",
       "column": "created_at",
-      "description": "created_at",
+      "description": "创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -2697,7 +2697,7 @@
     {
       "table": "t_channel_configs",
       "column": "enabled",
-      "description": "enabled",
+      "description": "是否启用该供应商配置，1启用、0停用",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2714,7 +2714,7 @@
     {
       "table": "t_channel_configs",
       "column": "id",
-      "description": "id",
+      "description": "渠道配置主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -2731,7 +2731,7 @@
     {
       "table": "t_channel_configs",
       "column": "provider",
-      "description": "provider",
+      "description": "渠道供应商标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2747,7 +2747,7 @@
     {
       "table": "t_channel_configs",
       "column": "remark",
-      "description": "remark",
+      "description": "配置说明",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2763,7 +2763,7 @@
     {
       "table": "t_channel_configs",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -2779,7 +2779,7 @@
     {
       "table": "t_channel_configs",
       "column": "updated_by",
-      "description": "updated_by",
+      "description": "最后更新配置的管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2794,7 +2794,7 @@
     {
       "table": "t_channel_secrets_probe",
       "column": "channel",
-      "description": "channel",
+      "description": "渠道标识：wechat_subscribe、sms、email或ai_call",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2810,7 +2810,7 @@
     {
       "table": "t_channel_secrets_probe",
       "column": "probed_at",
-      "description": "probed_at",
+      "description": "最近记录探测状态的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -2825,7 +2825,7 @@
     {
       "table": "t_channel_secrets_probe",
       "column": "ready",
-      "description": "ready",
+      "description": "渠道密钥是否标记就绪，1就绪、0未就绪；不代表真实调用成功",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -3463,7 +3463,7 @@
     {
       "table": "t_currency_payment_receipts",
       "column": "base_minor",
-      "description": "base_minor",
+      "description": "对应基准充值金额的最小货币单位整数，人民币以分计",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3480,7 +3480,7 @@
     {
       "table": "t_currency_payment_receipts",
       "column": "id",
-      "description": "id",
+      "description": "回执主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -3497,7 +3497,7 @@
     {
       "table": "t_currency_payment_receipts",
       "column": "merchant_id",
-      "description": "merchant_id",
+      "description": "支付商户配置ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3514,7 +3514,7 @@
     {
       "table": "t_currency_payment_receipts",
       "column": "payment_currency",
-      "description": "payment_currency",
+      "description": "回执支付币种代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3612,7 +3612,7 @@
     {
       "table": "t_currency_payments",
       "column": "base_currency",
-      "description": "base_currency",
+      "description": "基准充值币种代码，默认CNY",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3662,7 +3662,7 @@
     {
       "table": "t_currency_payments",
       "column": "checkout_value",
-      "description": "checkout_value",
+      "description": "收银台跳转地址、二维码文本或客户端支付参数，可能含临时支付数据，访问应受控",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3694,7 +3694,7 @@
     {
       "table": "t_currency_payments",
       "column": "id",
-      "description": "id",
+      "description": "支付单主键，32位标识",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -3715,7 +3715,7 @@
     {
       "table": "t_currency_payments",
       "column": "last_checked_at",
-      "description": "last_checked_at",
+      "description": "最近核查时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3783,7 +3783,7 @@
     {
       "table": "t_currency_payments",
       "column": "paid_at",
-      "description": "paid_at",
+      "description": "支付成功核验入账时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -3799,7 +3799,7 @@
     {
       "table": "t_currency_payments",
       "column": "payment_currency",
-      "description": "payment_currency",
+      "description": "支付币种代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3870,7 +3870,7 @@
     {
       "table": "t_currency_payments",
       "column": "quote_id",
-      "description": "quote_id",
+      "description": "锁定的支付报价ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3903,7 +3903,7 @@
     {
       "table": "t_currency_payments",
       "column": "status",
-      "description": "status",
+      "description": "支付状态：creating创建中、pending待支付、paid已核验到账",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -3922,7 +3922,7 @@
     {
       "table": "t_currency_payments",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -3993,7 +3993,8 @@
         "server/src/main/java/com/kuaixietech/service/portal/impl/PortalServiceImpl.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
-        "server/src/main/resources/mapper/order_fulfillment/PeerRpcMapper.xml"
+        "server/src/main/resources/mapper/order_fulfillment/PeerRpcMapper.xml",
+        "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4422,7 +4423,8 @@
         "server/src/main/java/com/kuaixietech/service/portal/impl/PortalServiceImpl.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
-        "server/src/main/resources/mapper/trading/DemandReleaseMapper.xml"
+        "server/src/main/resources/mapper/trading/DemandReleaseMapper.xml",
+        "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4818,7 +4820,7 @@
     {
       "table": "t_dispute_events",
       "column": "action",
-      "description": "action",
+      "description": "争议操作标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4834,7 +4836,7 @@
     {
       "table": "t_dispute_events",
       "column": "actor_id",
-      "description": "actor_id",
+      "description": "执行操作的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4850,7 +4852,7 @@
     {
       "table": "t_dispute_events",
       "column": "actor_role",
-      "description": "actor_role",
+      "description": "操作者在争议中的角色标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4866,7 +4868,7 @@
     {
       "table": "t_dispute_events",
       "column": "after_stage",
-      "description": "after_stage",
+      "description": "操作后的争议阶段",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4882,7 +4884,7 @@
     {
       "table": "t_dispute_events",
       "column": "before_stage",
-      "description": "before_stage",
+      "description": "操作前的争议阶段，首次事件可为空",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4898,7 +4900,7 @@
     {
       "table": "t_dispute_events",
       "column": "created_at",
-      "description": "created_at",
+      "description": "事件创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4914,7 +4916,7 @@
     {
       "table": "t_dispute_events",
       "column": "dispute_id",
-      "description": "dispute_id",
+      "description": "关联争议案件ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4930,7 +4932,7 @@
     {
       "table": "t_dispute_events",
       "column": "id",
-      "description": "id",
+      "description": "争议事件主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4946,7 +4948,7 @@
     {
       "table": "t_dispute_events",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4962,7 +4964,7 @@
     {
       "table": "t_dispute_events",
       "column": "payload",
-      "description": "payload",
+      "description": "事件输入与结果等JSON载荷，可能含争议证据及请求摘要，访问应受控",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -4978,7 +4980,7 @@
     {
       "table": "t_dispute_events",
       "column": "request_id",
-      "description": "request_id",
+      "description": "操作请求幂等标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "aftersales",
@@ -5377,7 +5379,7 @@
     {
       "table": "t_enterprise_license_files",
       "column": "created_at",
-      "description": "created_at",
+      "description": "附件记录创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -5392,7 +5394,7 @@
     {
       "table": "t_enterprise_license_files",
       "column": "id",
-      "description": "id",
+      "description": "营业执照附件主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -5407,7 +5409,7 @@
     {
       "table": "t_enterprise_license_files",
       "column": "position_no",
-      "description": "position_no",
+      "description": "附件显示顺序编号",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -5422,7 +5424,7 @@
     {
       "table": "t_enterprise_license_files",
       "column": "storage_url",
-      "description": "storage_url",
+      "description": "营业执照文件存储地址，属认证资料，访问应受控",
       "usage": "restricted",
       "origin": "proposed",
       "domain": "store",
@@ -5437,7 +5439,7 @@
     {
       "table": "t_enterprise_license_files",
       "column": "user_id",
-      "description": "user_id",
+      "description": "提交营业执照的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -5452,7 +5454,7 @@
     {
       "table": "t_error_logs",
       "column": "created_at",
-      "description": "created_at",
+      "description": "异常记录时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -5467,7 +5469,7 @@
     {
       "table": "t_error_logs",
       "column": "extra",
-      "description": "extra",
+      "description": "异常补充上下文JSON，避免记录凭据及敏感原文",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5480,7 +5482,7 @@
     {
       "table": "t_error_logs",
       "column": "id",
-      "description": "id",
+      "description": "自增异常日志主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -5496,7 +5498,7 @@
     {
       "table": "t_error_logs",
       "column": "message",
-      "description": "message",
+      "description": "异常消息正文",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5511,7 +5513,7 @@
     {
       "table": "t_error_logs",
       "column": "page",
-      "description": "page",
+      "description": "发生异常的页面路径或地址",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5526,7 +5528,7 @@
     {
       "table": "t_error_logs",
       "column": "resolved_at",
-      "description": "resolved_at",
+      "description": "标记处理完成的时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -5542,7 +5544,7 @@
     {
       "table": "t_error_logs",
       "column": "scope",
-      "description": "scope",
+      "description": "异常来源或作用域",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5557,7 +5559,7 @@
     {
       "table": "t_error_logs",
       "column": "stack",
-      "description": "stack",
+      "description": "异常堆栈文本，可能含运行上下文，避免泄露敏感数据",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5570,7 +5572,7 @@
     {
       "table": "t_error_logs",
       "column": "status",
-      "description": "status",
+      "description": "处理状态：open待处理、resolved已处理",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5586,7 +5588,7 @@
     {
       "table": "t_error_logs",
       "column": "user_id",
-      "description": "user_id",
+      "description": "关联用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -5856,7 +5858,7 @@
     {
       "table": "t_fx_sources",
       "column": "endpoint",
-      "description": "endpoint",
+      "description": "汇率数据接口地址",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -5872,7 +5874,7 @@
     {
       "table": "t_fx_sources",
       "column": "id",
-      "description": "id",
+      "description": "汇率源配置主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -5904,7 +5906,7 @@
     {
       "table": "t_fx_sources",
       "column": "max_age_seconds",
-      "description": "max_age_seconds",
+      "description": "可接受汇率数据的最长年龄，单位秒",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -5936,7 +5938,7 @@
     {
       "table": "t_fx_sources",
       "column": "transaction_enabled",
-      "description": "transaction_enabled",
+      "description": "是否允许该汇率源用于实际交易报价，1允许、0禁止",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -5952,7 +5954,7 @@
     {
       "table": "t_fx_sources",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -6097,7 +6099,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "certificate_url",
-      "description": "certificate_url",
+      "description": "保险凭证地址，含投保资料，访问应受控",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6113,7 +6115,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "checkout_url",
-      "description": "checkout_url",
+      "description": "保险方收银台地址，可能包含临时访问参数",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6128,7 +6130,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "coverage_ends_at",
-      "description": "coverage_ends_at",
+      "description": "保障结束时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6146,7 +6148,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "coverage_ref",
-      "description": "coverage_ref",
+      "description": "保险保障记录引用标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6163,7 +6165,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "coverage_starts_at",
-      "description": "coverage_starts_at",
+      "description": "保障起始时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6181,7 +6183,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "created_at",
-      "description": "created_at",
+      "description": "申请创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6199,7 +6201,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "disclosures_accepted_at",
-      "description": "disclosures_accepted_at",
+      "description": "用户确认告知事项的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6214,7 +6216,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "id",
-      "description": "id",
+      "description": "投保申请主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6234,7 +6236,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "insurer_code",
-      "description": "insurer_code",
+      "description": "保险机构代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6250,7 +6252,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "last_checked_at",
-      "description": "last_checked_at",
+      "description": "最近向保险方核查的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6269,7 +6271,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "last_error_code",
-      "description": "last_error_code",
+      "description": "最近核查的安全错误码",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6287,7 +6289,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6305,7 +6307,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "policy_number",
-      "description": "policy_number",
+      "description": "保险方核验返回的保单号",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6322,7 +6324,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "provider_application_ref",
-      "description": "provider_application_ref",
+      "description": "保险方申请引用标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6339,7 +6341,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "quote_id",
-      "description": "quote_id",
+      "description": "采用的保险报价ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6356,7 +6358,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "request_id",
-      "description": "request_id",
+      "description": "用户投保请求幂等标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6371,7 +6373,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "status",
-      "description": "status",
+      "description": "投保状态：reserved已预留、dispatching提交中、awaiting_provider待保险方确认、scheduled待生效、active已生效、rejected拒保、cancelled已取消、expired已过期",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6390,7 +6392,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "terms_accepted_at",
-      "description": "terms_accepted_at",
+      "description": "用户确认保险条款的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6405,7 +6407,7 @@
     {
       "table": "t_goods_insurance_applications",
       "column": "user_id",
-      "description": "user_id",
+      "description": "投保用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6423,7 +6425,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "config_json",
-      "description": "config_json",
+      "description": "保险产品配置JSON，含适配器、产品代码、凭据引用前缀、条款及服务域名等；不应存放密钥明文",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6439,7 +6441,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "enabled",
-      "description": "enabled",
+      "description": "产品是否启用，1启用、0停用",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6455,7 +6457,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "id",
-      "description": "id",
+      "description": "保险产品标识",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6471,7 +6473,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "insurer_code",
-      "description": "insurer_code",
+      "description": "承保保险机构代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6486,7 +6488,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "revision",
-      "description": "revision",
+      "description": "保险产品配置版本号",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6502,7 +6504,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6515,7 +6517,7 @@
     {
       "table": "t_goods_insurance_products",
       "column": "updated_by",
-      "description": "updated_by",
+      "description": "最后更新产品的管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6530,7 +6532,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "created_at",
-      "description": "created_at",
+      "description": "报价创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6545,7 +6547,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "currency",
-      "description": "currency",
+      "description": "保险保费币种代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6561,7 +6563,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "declared_value",
-      "description": "declared_value",
+      "description": "货物申报价值，按输入货物价格主单位记录；当前订单货款为人民币元",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6577,7 +6579,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "expires_at",
-      "description": "expires_at",
+      "description": "报价失效时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6593,7 +6595,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "id",
-      "description": "id",
+      "description": "保险报价主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -6610,7 +6612,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "item_name",
-      "description": "item_name",
+      "description": "投保货物名称",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6626,7 +6628,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "platform",
-      "description": "platform",
+      "description": "发起报价的客户端平台：web、h5、app或mp_weixin",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6641,7 +6643,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "premium",
-      "description": "premium",
+      "description": "保险方报价保费，单位为currency对应币种的主单位",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6657,7 +6659,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "product_id",
-      "description": "product_id",
+      "description": "保险产品标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6673,7 +6675,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "product_revision",
-      "description": "product_revision",
+      "description": "报价时保险产品配置版本号",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6689,7 +6691,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "provider_ref",
-      "description": "provider_ref",
+      "description": "保险方返回的报价引用标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6704,7 +6706,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "snapshot_json",
-      "description": "snapshot_json",
+      "description": "报价时保险产品配置JSON快照，含凭据引用，访问应受控",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6720,7 +6722,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "subject_id",
-      "description": "subject_id",
+      "description": "对应行程、竞价报价或订单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6736,7 +6738,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "subject_type",
-      "description": "subject_type",
+      "description": "报价标的类型：trip行程、pk_quote竞价报价、order订单",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6752,7 +6754,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "terms_version",
-      "description": "terms_version",
+      "description": "保险方返回的条款版本标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6768,7 +6770,7 @@
     {
       "table": "t_goods_insurance_quotes",
       "column": "user_id",
-      "description": "user_id",
+      "description": "申请报价的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -6901,7 +6903,7 @@
     {
       "table": "t_integration_config_values",
       "column": "category",
-      "description": "category",
+      "description": "集成能力类别代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -6916,7 +6918,7 @@
     {
       "table": "t_integration_config_values",
       "column": "config_revision",
-      "description": "config_revision",
+      "description": "该配置值所属版本号",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -6931,7 +6933,7 @@
     {
       "table": "t_integration_config_values",
       "column": "created_at",
-      "description": "created_at",
+      "description": "加密配置值创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -6944,7 +6946,7 @@
     {
       "table": "t_integration_config_values",
       "column": "field_cipher",
-      "description": "field_cipher",
+      "description": "AES-GCM加密的配置值，认证上下文绑定模式、类别、供应商、版本和字段；禁止作为明文展示",
       "usage": "restricted",
       "origin": "proposed",
       "domain": "integration",
@@ -6959,7 +6961,7 @@
     {
       "table": "t_integration_config_values",
       "column": "field_key",
-      "description": "field_key",
+      "description": "配置字段键名",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -6974,7 +6976,7 @@
     {
       "table": "t_integration_config_values",
       "column": "mode",
-      "description": "mode",
+      "description": "集成运行模式：SANDBOX沙箱或LIVE真实环境",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -6989,7 +6991,7 @@
     {
       "table": "t_integration_config_values",
       "column": "provider",
-      "description": "provider",
+      "description": "集成供应商代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7004,7 +7006,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "category",
-      "description": "category",
+      "description": "集成能力类别代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7019,7 +7021,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "config_revision",
-      "description": "config_revision",
+      "description": "当前引用的供应商配置值版本号",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7034,7 +7036,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "enabled",
-      "description": "enabled",
+      "description": "供应商在该模式下是否启用，1启用、0停用",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7049,7 +7051,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "mode",
-      "description": "mode",
+      "description": "集成运行模式：SANDBOX沙箱或LIVE真实环境",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7064,7 +7066,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "provider",
-      "description": "provider",
+      "description": "集成供应商代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7079,7 +7081,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -7094,7 +7096,7 @@
     {
       "table": "t_integration_mode_configs",
       "column": "updated_by",
-      "description": "updated_by",
+      "description": "最后更新配置的管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7109,7 +7111,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "category",
-      "description": "category",
+      "description": "集成能力类别代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7124,7 +7126,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "mode",
-      "description": "mode",
+      "description": "集成运行模式：SANDBOX沙箱或LIVE真实环境",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7139,7 +7141,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "revision",
-      "description": "revision",
+      "description": "类别选择状态版本号，用于并发变更校验",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7154,7 +7156,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "selected_provider",
-      "description": "selected_provider",
+      "description": "当前为该类别选择的供应商代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7169,7 +7171,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -7184,7 +7186,7 @@
     {
       "table": "t_integration_mode_scopes",
       "column": "updated_by",
-      "description": "updated_by",
+      "description": "最后更新选择的管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7373,7 +7375,7 @@
     {
       "table": "t_integration_runtime_state",
       "column": "current_mode",
-      "description": "current_mode",
+      "description": "当前集成运行模式：SANDBOX沙箱或LIVE真实环境",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7388,7 +7390,7 @@
     {
       "table": "t_integration_runtime_state",
       "column": "id",
-      "description": "id",
+      "description": "运行状态单例主键，代码使用1",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -7403,7 +7405,7 @@
     {
       "table": "t_integration_runtime_state",
       "column": "revision",
-      "description": "revision",
+      "description": "运行模式版本号，用于并发变更校验",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7418,7 +7420,7 @@
     {
       "table": "t_integration_runtime_state",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "integration",
@@ -7433,7 +7435,7 @@
     {
       "table": "t_integration_runtime_state",
       "column": "updated_by",
-      "description": "updated_by",
+      "description": "最后切换模式的管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "integration",
@@ -7824,7 +7826,6 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
-        "server/src/main/resources/mapper/finance/InvoiceRpcMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
@@ -7873,7 +7874,6 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
-        "server/src/main/resources/mapper/finance/InvoiceRpcMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
@@ -7888,9 +7888,7 @@
       "domain": "finance",
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
-      "sqlCandidates": [
-        "server/src/main/resources/mapper/finance/InvoiceRpcMapper.xml"
-      ],
+      "sqlCandidates": [],
       "status": "pending",
       "acceptance": {}
     },
@@ -8385,7 +8383,7 @@
     {
       "table": "t_locales",
       "column": "active",
-      "description": "active",
+      "description": "是否启用该语言，1启用、0停用",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8401,7 +8399,7 @@
     {
       "table": "t_locales",
       "column": "code",
-      "description": "code",
+      "description": "语言或地区代码，作为主键",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8417,7 +8415,7 @@
     {
       "table": "t_locales",
       "column": "created_at",
-      "description": "created_at",
+      "description": "语言配置创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "operations",
@@ -8432,7 +8430,7 @@
     {
       "table": "t_locales",
       "column": "fallback_code",
-      "description": "fallback_code",
+      "description": "翻译缺失时使用的回退语言代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8448,7 +8446,7 @@
     {
       "table": "t_locales",
       "column": "label_zh",
-      "description": "label_zh",
+      "description": "语言的中文显示名称",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8464,7 +8462,7 @@
     {
       "table": "t_locales",
       "column": "native_name",
-      "description": "native_name",
+      "description": "该语言的本地名称",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8480,7 +8478,7 @@
     {
       "table": "t_locales",
       "column": "sort_order",
-      "description": "sort_order",
+      "description": "语言选项排序值",
       "usage": "business",
       "origin": "proposed",
       "domain": "operations",
@@ -8561,7 +8559,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "events_json",
-      "description": "events_json",
+      "description": "物流轨迹事件JSON，结构随查询适配器返回内容确定",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -8574,7 +8572,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "latest_state",
-      "description": "latest_state",
+      "description": "最近一次查询返回的物流状态文本，含义由服务商定义",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -8587,7 +8585,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID，每单一条物流缓存",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -8600,7 +8598,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "provider",
-      "description": "provider",
+      "description": "物流服务商或承运商标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -8613,7 +8611,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "refreshed_at",
-      "description": "refreshed_at",
+      "description": "最近刷新物流信息的时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -8626,7 +8624,7 @@
     {
       "table": "t_logistics_tracking",
       "column": "tracking_no",
-      "description": "tracking_no",
+      "description": "物流运单号",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -9273,7 +9271,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "action",
-      "description": "action",
+      "description": "执行事件标识，当前写入wallet_refunded表示钱包已退款",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9288,7 +9286,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "actor_id",
-      "description": "actor_id",
+      "description": "执行操作的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9303,7 +9301,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "created_at",
-      "description": "created_at",
+      "description": "事件创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -9318,7 +9316,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "detail",
-      "description": "detail",
+      "description": "执行结果说明，用于区分平台钱包退款与外部银行退款",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9333,7 +9331,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "execution_id",
-      "description": "execution_id",
+      "description": "关联托管退款执行记录ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9348,7 +9346,7 @@
     {
       "table": "t_order_escrow_refund_events",
       "column": "id",
-      "description": "id",
+      "description": "托管退款事件主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -9363,7 +9361,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "amount",
-      "description": "amount",
+      "description": "实际退回买家钱包的货款金额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9379,7 +9377,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "buyer_escrow_after",
-      "description": "buyer_escrow_after",
+      "description": "退款后买家托管余额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9395,7 +9393,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "buyer_escrow_before",
-      "description": "buyer_escrow_before",
+      "description": "退款前买家托管余额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9411,7 +9409,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "buyer_id",
-      "description": "buyer_id",
+      "description": "接收退款的买家用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9427,7 +9425,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "case_id",
-      "description": "case_id",
+      "description": "关联售后争议案件ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9442,7 +9440,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "created_at",
-      "description": "created_at",
+      "description": "退款执行记录创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -9458,7 +9456,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "currency",
-      "description": "currency",
+      "description": "金额币种代码，当前为CNY",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9474,7 +9472,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "id",
-      "description": "id",
+      "description": "托管退款执行主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -9490,7 +9488,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "note",
-      "description": "note",
+      "description": "运营执行退款时填写的说明",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9505,7 +9503,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "operator_id",
-      "description": "operator_id",
+      "description": "执行退款的运营管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9520,7 +9518,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9536,7 +9534,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "original_goods_amount",
-      "description": "original_goods_amount",
+      "description": "核验的订单原始货款金额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9552,7 +9550,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "request_hash",
-      "description": "request_hash",
+      "description": "执行请求内容哈希，用于校验重试参数一致性",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9567,7 +9565,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "request_id",
-      "description": "request_id",
+      "description": "执行请求幂等标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9582,7 +9580,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "requires_accounting",
-      "description": "requires_accounting",
+      "description": "是否需要进入核算阶段，1表示已退完剩余货款",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9598,7 +9596,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "service_fee_held",
-      "description": "service_fee_held",
+      "description": "仍保留托管的服务费金额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9614,7 +9612,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "shipping_held",
-      "description": "shipping_held",
+      "description": "仍保留托管的运费金额，单位元",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9630,7 +9628,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "source_deposit_id",
-      "description": "source_deposit_id",
+      "description": "作为托管资金来源的保证金记录ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9646,7 +9644,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "source_round",
-      "description": "source_round",
+      "description": "退款依据的争议裁决轮次",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9661,7 +9659,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "source_snapshot",
-      "description": "source_snapshot",
+      "description": "核验的托管资金来源JSON快照，用于资金审计，访问应受控",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -9676,7 +9674,7 @@
     {
       "table": "t_order_escrow_refunds",
       "column": "wallet_ledger_id",
-      "description": "wallet_ledger_id",
+      "description": "实际退款入账对应的钱包流水ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11689,7 +11687,7 @@
     {
       "table": "t_payment_merchants",
       "column": "created_at",
-      "description": "created_at",
+      "description": "创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -11702,7 +11700,7 @@
     {
       "table": "t_payment_merchants",
       "column": "credential_prefix",
-      "description": "credential_prefix",
+      "description": "支付凭据配置引用前缀，不是密钥明文",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11750,7 +11748,7 @@
     {
       "table": "t_payment_merchants",
       "column": "id",
-      "description": "id",
+      "description": "支付商户配置主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -11766,7 +11764,7 @@
     {
       "table": "t_payment_merchants",
       "column": "method",
-      "description": "method",
+      "description": "支付方式标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11814,7 +11812,7 @@
     {
       "table": "t_payment_merchants",
       "column": "quote_ttl_seconds",
-      "description": "quote_ttl_seconds",
+      "description": "报价有效期上限，单位秒",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11830,7 +11828,7 @@
     {
       "table": "t_payment_merchants",
       "column": "revision",
-      "description": "revision",
+      "description": "商户配置版本号，用于检测报价后配置变化",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11878,7 +11876,7 @@
     {
       "table": "t_payment_merchants",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -11906,7 +11904,7 @@
     {
       "table": "t_payment_quotes",
       "column": "base_currency",
-      "description": "base_currency",
+      "description": "基准金额币种代码，默认CNY",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11937,7 +11935,7 @@
     {
       "table": "t_payment_quotes",
       "column": "created_at",
-      "description": "created_at",
+      "description": "报价创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -11968,7 +11966,7 @@
     {
       "table": "t_payment_quotes",
       "column": "fx_rate",
-      "description": "fx_rate",
+      "description": "从基准币种换算为支付币种的汇率",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -11983,7 +11981,7 @@
     {
       "table": "t_payment_quotes",
       "column": "id",
-      "description": "id",
+      "description": "支付报价主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12016,7 +12014,7 @@
     {
       "table": "t_payment_quotes",
       "column": "merchant_revision",
-      "description": "merchant_revision",
+      "description": "报价时商户配置版本号",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12048,7 +12046,7 @@
     {
       "table": "t_payment_quotes",
       "column": "payment_currency",
-      "description": "payment_currency",
+      "description": "实际支付币种代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12096,7 +12094,7 @@
     {
       "table": "t_payment_quotes",
       "column": "rate_as_of",
-      "description": "rate_as_of",
+      "description": "汇率数据对应时间",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12158,7 +12156,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "action",
-      "description": "action",
+      "description": "退款操作或渠道结果标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12174,7 +12172,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "actor_id",
-      "description": "actor_id",
+      "description": "执行操作的用户ID，渠道自动事件可为空",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12189,7 +12187,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "created_at",
-      "description": "created_at",
+      "description": "事件创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12205,7 +12203,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "detail",
-      "description": "detail",
+      "description": "退款事件说明，记录核验结果而非渠道敏感报文",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12221,7 +12219,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "id",
-      "description": "id",
+      "description": "退款事件主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12237,7 +12235,7 @@
     {
       "table": "t_payment_refund_events",
       "column": "refund_id",
-      "description": "refund_id",
+      "description": "关联退款单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12253,7 +12251,7 @@
     {
       "table": "t_payment_refunds",
       "column": "active_slot",
-      "description": "active_slot",
+      "description": "自动生成的退款占用槽；撤回或驳回且未派发并已释放钱包预留时为空，其余为1，用于限制同笔支付重复退款",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12269,7 +12267,7 @@
     {
       "table": "t_payment_refunds",
       "column": "base_currency",
-      "description": "base_currency",
+      "description": "退款基准币种代码，当前退款仅支持CNY",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12286,7 +12284,7 @@
     {
       "table": "t_payment_refunds",
       "column": "base_minor",
-      "description": "base_minor",
+      "description": "基准退款金额的最小货币单位整数，CNY时单位分",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12303,7 +12301,7 @@
     {
       "table": "t_payment_refunds",
       "column": "created_at",
-      "description": "created_at",
+      "description": "创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12319,7 +12317,7 @@
     {
       "table": "t_payment_refunds",
       "column": "dispatched_at",
-      "description": "dispatched_at",
+      "description": "占用渠道派发请求的时间，记录后不得当作未派发申请重试",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12334,7 +12332,7 @@
     {
       "table": "t_payment_refunds",
       "column": "id",
-      "description": "id",
+      "description": "退款单主键，32位标识",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12351,7 +12349,7 @@
     {
       "table": "t_payment_refunds",
       "column": "last_error_code",
-      "description": "last_error_code",
+      "description": "最近渠道操作的安全错误码",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12367,7 +12365,7 @@
     {
       "table": "t_payment_refunds",
       "column": "merchant_snapshot",
-      "description": "merchant_snapshot",
+      "description": "原支付商户配置JSON快照，用于原路退款，敏感配置受控访问",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12384,7 +12382,7 @@
     {
       "table": "t_payment_refunds",
       "column": "payment_currency",
-      "description": "payment_currency",
+      "description": "原渠道支付及退款币种代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12401,7 +12399,7 @@
     {
       "table": "t_payment_refunds",
       "column": "payment_id",
-      "description": "payment_id",
+      "description": "原充值支付单ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12418,7 +12416,7 @@
     {
       "table": "t_payment_refunds",
       "column": "payment_minor",
-      "description": "payment_minor",
+      "description": "渠道退款金额的最小货币单位整数，当前支持CNY分",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12435,7 +12433,7 @@
     {
       "table": "t_payment_refunds",
       "column": "provider_refund_id",
-      "description": "provider_refund_id",
+      "description": "渠道退款流水号",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12451,7 +12449,7 @@
     {
       "table": "t_payment_refunds",
       "column": "provider_transaction_id",
-      "description": "provider_transaction_id",
+      "description": "原渠道支付交易流水号",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12467,7 +12465,7 @@
     {
       "table": "t_payment_refunds",
       "column": "reason",
-      "description": "reason",
+      "description": "用户申请退款原因",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12484,7 +12482,7 @@
     {
       "table": "t_payment_refunds",
       "column": "request_id",
-      "description": "request_id",
+      "description": "用户退款请求幂等标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12499,7 +12497,7 @@
     {
       "table": "t_payment_refunds",
       "column": "review_note",
-      "description": "review_note",
+      "description": "管理员审核说明",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12515,7 +12513,7 @@
     {
       "table": "t_payment_refunds",
       "column": "reviewed_at",
-      "description": "reviewed_at",
+      "description": "审核时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12530,7 +12528,7 @@
     {
       "table": "t_payment_refunds",
       "column": "reviewed_by",
-      "description": "reviewed_by",
+      "description": "审核管理员用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12545,7 +12543,7 @@
     {
       "table": "t_payment_refunds",
       "column": "status",
-      "description": "status",
+      "description": "退款状态：requested待审核、approved已批准、rejected已驳回、cancelled已撤回、dispatching派发中、processing渠道处理中、succeeded成功、closed关闭",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12562,7 +12560,7 @@
     {
       "table": "t_payment_refunds",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -12577,7 +12575,7 @@
     {
       "table": "t_payment_refunds",
       "column": "user_id",
-      "description": "user_id",
+      "description": "申请退款的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -12593,7 +12591,7 @@
     {
       "table": "t_payment_refunds",
       "column": "wallet_released",
-      "description": "wallet_released",
+      "description": "退款预留的钱包余额是否已释放，1已释放、0未释放",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -13788,7 +13786,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "buyer_id",
-      "description": "buyer_id",
+      "description": "买家用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13804,7 +13802,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "created_at",
-      "description": "created_at",
+      "description": "创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -13821,7 +13819,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "currency",
-      "description": "currency",
+      "description": "金额币种代码，当前下单写入CNY",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13838,7 +13836,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "goods_amount",
-      "description": "goods_amount",
+      "description": "商品货款总额，单位为currency对应币种的主单位",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13855,7 +13853,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "order_id",
-      "description": "order_id",
+      "description": "关联订单ID，作为预留记录主键",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13874,7 +13872,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "product_id",
-      "description": "product_id",
+      "description": "下单商品ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13893,7 +13891,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "quantity",
-      "description": "quantity",
+      "description": "下单商品数量",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13911,7 +13909,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "request_hash",
-      "description": "request_hash",
+      "description": "下单请求内容哈希，用于核对幂等请求一致性",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13926,7 +13924,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "service_fee",
-      "description": "service_fee",
+      "description": "订单服务费，单位为currency对应币种的主单位",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13943,7 +13941,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "snapshot",
-      "description": "snapshot",
+      "description": "下单时商品与订单约定JSON快照，用于核对计价和归属",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13959,7 +13957,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "stock_state",
-      "description": "stock_state",
+      "description": "库存占用状态：held已预留、consumed已消耗、released已释放",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13978,7 +13976,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "store_id",
-      "description": "store_id",
+      "description": "下单时商品归属店铺ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -13994,7 +13992,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "trip_id",
-      "description": "trip_id",
+      "description": "用于履约的行程ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -14010,7 +14008,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "unit_price",
-      "description": "unit_price",
+      "description": "商品成交单价，单位为currency对应币种的主单位",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -14026,7 +14024,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -14043,7 +14041,7 @@
     {
       "table": "t_product_order_reservations",
       "column": "vendor_id",
-      "description": "vendor_id",
+      "description": "商品卖家及带单人用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -14605,6 +14603,7 @@
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/PeerRpcMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
+        "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml",
         "server/src/main/resources/mapper/assist/Batch12AssistMapper.xml"
       ],
       "status": "pending",
@@ -15474,7 +15473,7 @@
     {
       "table": "t_proof_recipes",
       "column": "active",
-      "description": "active",
+      "description": "规则是否启用，1是、0否",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15489,7 +15488,7 @@
     {
       "table": "t_proof_recipes",
       "column": "country_code",
-      "description": "country_code",
+      "description": "适用国家或地区代码，空值表示未指定",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15504,7 +15503,7 @@
     {
       "table": "t_proof_recipes",
       "column": "created_at",
-      "description": "created_at",
+      "description": "凭证规则创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -15519,7 +15518,7 @@
     {
       "table": "t_proof_recipes",
       "column": "id",
-      "description": "id",
+      "description": "凭证规则主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -15534,7 +15533,7 @@
     {
       "table": "t_proof_recipes",
       "column": "items",
-      "description": "items",
+      "description": "规则要求的凭证材料项目，JSON结构",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15549,7 +15548,7 @@
     {
       "table": "t_proof_recipes",
       "column": "note",
-      "description": "note",
+      "description": "凭证规则补充说明",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15564,7 +15563,7 @@
     {
       "table": "t_proof_recipes",
       "column": "sort_order",
-      "description": "sort_order",
+      "description": "规则排序值",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15579,7 +15578,7 @@
     {
       "table": "t_proof_recipes",
       "column": "transport_mode",
-      "description": "transport_mode",
+      "description": "适用交通方式代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15594,7 +15593,7 @@
     {
       "table": "t_proof_recipes",
       "column": "trip_type",
-      "description": "trip_type",
+      "description": "适用行程类型代码",
       "usage": "business",
       "origin": "proposed",
       "domain": "trade",
@@ -15609,7 +15608,7 @@
     {
       "table": "t_proof_recipes",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "凭证规则最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "trade",
@@ -17374,7 +17373,7 @@
     {
       "table": "t_store_products",
       "column": "created_at",
-      "description": "created_at",
+      "description": "关联创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "store",
@@ -17392,7 +17391,7 @@
     {
       "table": "t_store_products",
       "column": "created_by",
-      "description": "created_by",
+      "description": "建立店铺商品关联的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -17407,7 +17406,7 @@
     {
       "table": "t_store_products",
       "column": "product_id",
-      "description": "product_id",
+      "description": "商品ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -17426,7 +17425,7 @@
     {
       "table": "t_store_products",
       "column": "store_id",
-      "description": "store_id",
+      "description": "店铺ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "store",
@@ -18619,7 +18618,8 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/service/portal/impl/PortalServiceImpl.java",
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
-        "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
+        "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
+        "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
       "acceptance": {}
@@ -18986,7 +18986,8 @@
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
-        "server/src/main/resources/mapper/trading/IntentOrderMapper.xml"
+        "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
+        "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
       "acceptance": {}
@@ -18994,7 +18995,7 @@
     {
       "table": "t_upload_bindings",
       "column": "created_at",
-      "description": "created_at",
+      "description": "绑定创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "catalog",
@@ -19009,7 +19010,7 @@
     {
       "table": "t_upload_bindings",
       "column": "created_by",
-      "description": "created_by",
+      "description": "建立文件绑定的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19024,7 +19025,7 @@
     {
       "table": "t_upload_bindings",
       "column": "domain_type",
-      "description": "domain_type",
+      "description": "使用文件的领域类型标识",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19039,7 +19040,7 @@
     {
       "table": "t_upload_bindings",
       "column": "resource_id",
-      "description": "resource_id",
+      "description": "使用文件的领域资源ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19054,7 +19055,7 @@
     {
       "table": "t_upload_bindings",
       "column": "upload_id",
-      "description": "upload_id",
+      "description": "上传文件记录ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19070,7 +19071,7 @@
     {
       "table": "t_upload_deletions",
       "column": "created_at",
-      "description": "created_at",
+      "description": "删除请求创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "catalog",
@@ -19085,7 +19086,7 @@
     {
       "table": "t_upload_deletions",
       "column": "id",
-      "description": "id",
+      "description": "文件删除请求主键，由上传文件标识确定",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "catalog",
@@ -19100,7 +19101,7 @@
     {
       "table": "t_upload_deletions",
       "column": "last_error_code",
-      "description": "last_error_code",
+      "description": "对象存储删除确认失败的安全错误码",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19115,7 +19116,7 @@
     {
       "table": "t_upload_deletions",
       "column": "status",
-      "description": "status",
+      "description": "删除状态：deleting删除中或待存储确认、deleted已确认删除",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19130,7 +19131,7 @@
     {
       "table": "t_upload_deletions",
       "column": "updated_at",
-      "description": "updated_at",
+      "description": "删除状态最后更新时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "catalog",
@@ -19145,7 +19146,7 @@
     {
       "table": "t_upload_deletions",
       "column": "upload_id",
-      "description": "upload_id",
+      "description": "待删除的上传文件记录ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19160,7 +19161,7 @@
     {
       "table": "t_upload_deletions",
       "column": "user_id",
-      "description": "user_id",
+      "description": "发起删除的文件所属用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "catalog",
@@ -19250,6 +19251,7 @@
         "server/src/main/java/com/kuaixietech/integration/EmailOutboxStore.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationAdminController.java",
         "server/src/main/java/com/kuaixietech/integration/SmsOutboxStore.java",
+        "server/src/main/java/com/kuaixietech/scheduler/ContactDeliveryHealthController.java",
         "server/src/main/resources/mapper/account/AuthLoginMapper.xml",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml"
       ],
@@ -19342,6 +19344,7 @@
         "server/src/main/java/com/kuaixietech/integration/EmailOutboxStore.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationAdminController.java",
         "server/src/main/java/com/kuaixietech/integration/SmsOutboxStore.java",
+        "server/src/main/java/com/kuaixietech/scheduler/ContactDeliveryHealthController.java",
         "server/src/main/resources/mapper/account/AuthLoginMapper.xml",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml"
       ],
@@ -19548,7 +19551,7 @@
     {
       "table": "t_withdrawals",
       "column": "admin_note",
-      "description": "admin_note",
+      "description": "提现审核管理备注",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -19564,7 +19567,7 @@
     {
       "table": "t_withdrawals",
       "column": "amount",
-      "description": "amount",
+      "description": "申请提现金额，单位元，保留两位小数",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -19580,7 +19583,7 @@
     {
       "table": "t_withdrawals",
       "column": "channel",
-      "description": "channel",
+      "description": "提现渠道代码，默认manual",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -19595,7 +19598,7 @@
     {
       "table": "t_withdrawals",
       "column": "created_at",
-      "description": "created_at",
+      "description": "提现申请创建时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -19610,7 +19613,7 @@
     {
       "table": "t_withdrawals",
       "column": "id",
-      "description": "id",
+      "description": "提现申请主键",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -19626,7 +19629,7 @@
     {
       "table": "t_withdrawals",
       "column": "reviewed_at",
-      "description": "reviewed_at",
+      "description": "提现审核时间",
       "usage": "system-derived",
       "origin": "proposed",
       "domain": "finance",
@@ -19641,7 +19644,7 @@
     {
       "table": "t_withdrawals",
       "column": "reviewed_by",
-      "description": "reviewed_by",
+      "description": "审核人用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -19656,7 +19659,7 @@
     {
       "table": "t_withdrawals",
       "column": "status",
-      "description": "status",
+      "description": "提现申请处理状态代码，默认pending",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",
@@ -19672,7 +19675,7 @@
     {
       "table": "t_withdrawals",
       "column": "user_id",
-      "description": "user_id",
+      "description": "申请提现的用户ID",
       "usage": "business",
       "origin": "proposed",
       "domain": "finance",

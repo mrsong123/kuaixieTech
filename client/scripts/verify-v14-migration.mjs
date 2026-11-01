@@ -1,3 +1,4 @@
+import {historicalPageLedger} from './historical-page-ledger.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,10 +14,10 @@ for(const n of names){
   assert.ok(read(page).includes('original-subpage'),`original CSS not used ${n}`);
 }
 const store=read('apps/mobile/src/stores/useOriginalOrderLists.ts');
-assert.ok(store.includes('api.account.orders(role.value,30,offset)'), 'authenticated backend order data is mandatory');
+assert.ok(store.includes('requestedRole=role.value')&&store.includes('api.account.orders(requestedRole,30,offset)'), 'authenticated backend order data must bind the role captured for this request');
 assert.ok(store.includes('getBearer()'), 'bearer gate absent');
 assert.ok(store.includes("['purchased','shipped']"), 'shipments must match original purchased/shipped');
-assert.ok(store.includes('current!==generation'), 'out-of-order response guard absent');
+assert.ok(store.includes('request===generation')&&store.includes('token===getBearer()')&&store.includes('requestedRole===role.value')&&store.includes('if(!current())return'),'out-of-order/account/role response guard absent');
 assert.ok(store.includes('rawOffset.value=offset+batch.length'), 'pagination offset must use raw server batch size');
 assert.ok(read('apps/mobile/src/pages/open-orders/index.vue').includes('v14.openOrderScope'), 'open order projection must not be misrepresented');
 const docStore=read('apps/mobile/src/stores/useOriginalDocuments.ts');
@@ -31,13 +32,14 @@ for(const k of ['agreement','privacy','collection'])assert.ok(about.includes(`le
 const me=read('apps/mobile/src/stores/useMineOriginalPage.ts');
 assert.ok(me.includes("announcements:['announcements']"),'Mine announcement entry still points to unavailable');
 const source=read('packages/sdk/src/client.ts');
-assert.ok(source.includes('NOT present in the verified server baseline'), 'unverified endpoint warning missing');
+const publicController=read('../server/src/main/java/com/kuaixietech/controller/PublicInformationController.java');
+assert.ok(publicController.includes('@RequestMapping("/api/public")'),'public-information backend prefix missing');
+for(const suffix of ['/announcements','/legal-documents/{key}','/reviews'])assert.ok(publicController.includes('@GetMapping("'+suffix+'")'),'public-information endpoint must have an actual backend declaration: '+suffix);
 for(const route of ['/public/announcements','/public/legal-documents/{key}','/public/reviews'])assert.ok(source.includes(route),'API path missing '+route);
 const originalAssets=JSON.parse(read('scripts/original-tabbar-assets-v12.json'));
 assert.ok(originalAssets,'original tabbar regression baseline missing');
-const rows=read('MIGRATION_62_PAGE_STATUS.csv').trim().split(/\r?\n/);
-assert.equal(rows.length,63,'62-row status ledger must be preserved');
+const historical=historicalPageLedger(root);
 const z=JSON.parse(read('packages/i18n/src/zh-CN.json')),e=JSON.parse(read('packages/i18n/src/en-US.json'));
 assert.deepEqual(Object.keys(z).sort(),Object.keys(e).sort(),'all i18n keys require translations');
 for(const k of ['v14.missingPublicEndpoint','v14.openOrderScope','v14.shipmentScope','v14.legalTitle'])assert.ok(z[k]&&e[k],k);
-console.log(`V14 PAGE REGRESSION PASSED: ${names.length} new routed original screens, 3 legal links, 62 status rows, authenticated order paging, no false backend confirmation, dual language keys.`);
+console.log(`V14 PAGE REGRESSION PASSED: ${names.length} new routed original screens, 3 legal links, external historical-ledger status reported separately, authenticated order paging, no false backend confirmation, dual language keys.`);

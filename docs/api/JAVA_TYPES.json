@@ -1,0 +1,4411 @@
+{
+  "com.kuaixietech.aftersalesfunds.AftersalesEscrowFunds.Execute": {
+    "name": "Execute",
+    "qualifiedName": "com.kuaixietech.aftersalesfunds.AftersalesEscrowFunds.Execute",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Appeal": {
+    "name": "Appeal",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Appeal",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=4000)"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Create": {
+    "name": "Create",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Create",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"quality|wrong_item|missing|damaged\")"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=4000)"
+        ]
+      },
+      {
+        "name": "expectResolution",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"refund_part|refund_full|resend|compensate\")"
+        ]
+      },
+      {
+        "name": "refundAmount",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.01\")",
+          "@Digits(integer=10,fraction=2)"
+        ]
+      },
+      {
+        "name": "evidenceUrls",
+        "type": "List< String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=4)",
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 7
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Decision": {
+    "name": "Decision",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Decision",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "outcome",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"reject|refund_part|refund_full|resend|compensate\")"
+        ]
+      },
+      {
+        "name": "refundAmount",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.01\")",
+          "@Digits(integer=10,fraction=2)"
+        ]
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "depositOwner",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"return_original|buyer|vendor|none\")"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Escalate": {
+    "name": "Escalate",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Escalate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 12
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Finish": {
+    "name": "Finish",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Finish",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.cases.CaseModels.Respond": {
+    "name": "Respond",
+    "qualifiedName": "com.kuaixietech.cases.CaseModels.Respond",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1024)"
+        ]
+      },
+      {
+        "name": "evidenceUrls",
+        "type": "List< String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=4)",
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "expectedRound",
+        "type": "int",
+        "annotations": [
+          "@Min(1)"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/cases/CaseModels.java",
+      "line": 11
+    }
+  },
+  "com.kuaixietech.commerce.ProductCheckoutModels.Input": {
+    "name": "Input",
+    "qualifiedName": "com.kuaixietech.commerce.ProductCheckoutModels.Input",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "productId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "quantity",
+        "type": "Integer",
+        "annotations": [
+          "@NotNull",
+          "@Min(1)",
+          "@Max(100)"
+        ]
+      },
+      {
+        "name": "contactName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "contactPhone",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"\\\\+?[0-9 -]{6,24}\")"
+        ]
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=512)"
+        ]
+      },
+      {
+        "name": "expectDate",
+        "type": "LocalDate",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@Size(max=1024)"
+        ]
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"yes|waived\")"
+        ]
+      },
+      {
+        "name": "insuranceQuoteId",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "expectedUnitPrice",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.01\")",
+          "@Digits(integer=10,fraction=2)"
+        ]
+      },
+      {
+        "name": "expectedBuyerEscrow",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.01\")",
+          "@Digits(integer=10,fraction=2)"
+        ]
+      },
+      {
+        "name": "expectedProductFingerprint",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"[a-f0-9]{64}\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutModels.java",
+      "line": 7
+    }
+  },
+  "com.kuaixietech.commerce.ProductCheckoutModels.Quote": {
+    "name": "Quote",
+    "qualifiedName": "com.kuaixietech.commerce.ProductCheckoutModels.Quote",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "productId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "storeId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "itemName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "itemSpec",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "unitPrice",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "quantity",
+        "type": "int",
+        "annotations": []
+      },
+      {
+        "name": "goodsAmount",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "serviceFee",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insurancePremium",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "buyerEscrow",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "vendorDeposit",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "currency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "pricingVersion",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "intentHours",
+        "type": "int",
+        "annotations": []
+      },
+      {
+        "name": "productFingerprint",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutModels.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.controller.AccountCentreController.ProfileUpdate": {
+    "name": "ProfileUpdate",
+    "qualifiedName": "com.kuaixietech.controller.AccountCentreController.ProfileUpdate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "nickname",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AccountCentreController.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.BanBody": {
+    "name": "BanBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.BanBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "ban",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 25
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.BroadcastBody": {
+    "name": "BroadcastBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.BroadcastBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "body",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "scope",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "userIds",
+        "type": "List<String>",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 26
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.CategoryCreate": {
+    "name": "CategoryCreate",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.CategoryCreate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "parentId",
+        "type": "Long",
+        "annotations": []
+      },
+      {
+        "name": "level",
+        "type": "Integer",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 30
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.CategoryId": {
+    "name": "CategoryId",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.CategoryId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Long",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 31
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.ChannelToggle": {
+    "name": "ChannelToggle",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.ChannelToggle",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 35
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.DemandCloseBody": {
+    "name": "DemandCloseBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.DemandCloseBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 27
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.ErrorId": {
+    "name": "ErrorId",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.ErrorId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Long",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 37
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.IdBody": {
+    "name": "IdBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.IdBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 24
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.InviteBody": {
+    "name": "InviteBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.InviteBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 32
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.ListBody": {
+    "name": "ListBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.ListBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "limit",
+        "type": "Integer",
+        "annotations": []
+      },
+      {
+        "name": "keyword",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "offset",
+        "type": "Integer",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.PoolFormBody": {
+    "name": "PoolFormBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.PoolFormBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 29
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.PostRemove": {
+    "name": "PostRemove",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.PostRemove",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "postId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 36
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.RecipeBody": {
+    "name": "RecipeBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.RecipeBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "tripType",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "transportMode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "items",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 33
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.RecipeToggle": {
+    "name": "RecipeToggle",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.RecipeToggle",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 34
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.ScoreBody": {
+    "name": "ScoreBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.ScoreBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "delta",
+        "type": "Integer",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 28
+    }
+  },
+  "com.kuaixietech.controller.AdminConsoleRpcController.VerifyBody": {
+    "name": "VerifyBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminConsoleRpcController.VerifyBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+      "line": 23
+    }
+  },
+  "com.kuaixietech.controller.AdminFinanceRpcController.BalanceBody": {
+    "name": "BalanceBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminFinanceRpcController.BalanceBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "delta",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.controller.AdminFinanceRpcController.LimitBody": {
+    "name": "LimitBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminFinanceRpcController.LimitBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "limit",
+        "type": "Integer",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.controller.AdminFinanceRpcController.PoolBody": {
+    "name": "PoolBody",
+    "qualifiedName": "com.kuaixietech.controller.AdminFinanceRpcController.PoolBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+      "line": 14
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.HelpBody": {
+    "name": "HelpBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.HelpBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "contact",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "captchaId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "captchaCode",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 26
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.LoginBody": {
+    "name": "LoginBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.LoginBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "contact",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 21
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.RegisterBody": {
+    "name": "RegisterBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.RegisterBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "contact",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "role",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "inviteCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "enterpriseName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "businessLicenseNo",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 25
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.ResetBody": {
+    "name": "ResetBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.ResetBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "contact",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "newPassword",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 24
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.SendCodeBody": {
+    "name": "SendCodeBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.SendCodeBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "contact",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "countryCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "purpose",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "captchaId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "captchaCode",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 23
+    }
+  },
+  "com.kuaixietech.controller.AuthLoginController.WechatBody": {
+    "name": "WechatBody",
+    "qualifiedName": "com.kuaixietech.controller.AuthLoginController.WechatBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/AuthLoginController.java",
+      "line": 22
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.ArrivalProof": {
+    "name": "ArrivalProof",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.ArrivalProof",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "snapshotUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 32
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.ConfirmMeetup": {
+    "name": "ConfirmMeetup",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.ConfirmMeetup",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 29
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.EnterpriseDecision": {
+    "name": "EnterpriseDecision",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.EnterpriseDecision",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 21
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.EvidenceRead": {
+    "name": "EvidenceRead",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.EvidenceRead",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 27
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.GrantPoints": {
+    "name": "GrantPoints",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.GrantPoints",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "points",
+        "type": "Integer",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 22
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.InvoiceDecision": {
+    "name": "InvoiceDecision",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.InvoiceDecision",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "invoiceId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "invoiceNo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "fileUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.InvoiceRequest": {
+    "name": "InvoiceRequest",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.InvoiceRequest",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "titleType",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "titleName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "taxNo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "remark",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.IssueMeetup": {
+    "name": "IssueMeetup",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.IssueMeetup",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 28
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.LocaleRemove": {
+    "name": "LocaleRemove",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.LocaleRemove",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 25
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.LocaleToggle": {
+    "name": "LocaleToggle",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.LocaleToggle",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 24
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.LocaleUpsert": {
+    "name": "LocaleUpsert",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.LocaleUpsert",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "nativeName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "labelZh",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "sort",
+        "type": "Integer",
+        "annotations": []
+      },
+      {
+        "name": "fallback",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 23
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.PrivacyCall": {
+    "name": "PrivacyCall",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.PrivacyCall",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "result",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 26
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.ProposeFee": {
+    "name": "ProposeFee",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.ProposeFee",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "fee",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 30
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.RespondFee": {
+    "name": "RespondFee",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.RespondFee",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "accept",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "counter",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "expectedFee",
+        "type": "BigDecimal",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 31
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.RowId": {
+    "name": "RowId",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.RowId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.controller.Batch10RpcController.ViolationQuery": {
+    "name": "ViolationQuery",
+    "qualifiedName": "com.kuaixietech.controller.Batch10RpcController.ViolationQuery",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "limit",
+        "type": "Integer",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Boarding": {
+    "name": "Boarding",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Boarding",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "snapshotUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Cancel": {
+    "name": "Cancel",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Cancel",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "reasonType",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "forceMajeure",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "proofUrls",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Decision": {
+    "name": "Decision",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Decision",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Delivery": {
+    "name": "Delivery",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Delivery",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "faceId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.InviteCode": {
+    "name": "InviteCode",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.InviteCode",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 23
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.OrderId": {
+    "name": "OrderId",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.OrderId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.PeerId": {
+    "name": "PeerId",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.PeerId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "target",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 21
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Purchase": {
+    "name": "Purchase",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Purchase",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "evidence",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "meta",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 14
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.Shipment": {
+    "name": "Shipment",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.Shipment",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "carrier",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "tracking",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "labelUrls",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "lat",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "lng",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.controller.Batch11RpcController.VerifyContact": {
+    "name": "VerifyContact",
+    "qualifiedName": "com.kuaixietech.controller.Batch11RpcController.VerifyContact",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "target",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+      "line": 22
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.AssistId": {
+    "name": "AssistId",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.AssistId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 29
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.CallId": {
+    "name": "CallId",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.CallId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "callId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 32
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.Carrier": {
+    "name": "Carrier",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.Carrier",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "realName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "idCardNo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "passportNo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "phoneCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "inviteCode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 36
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.Comment": {
+    "name": "Comment",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.Comment",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "postId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "content",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 34
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.CreateAssist": {
+    "name": "CreateAssist",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.CreateAssist",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "rate",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 28
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.Enterprise": {
+    "name": "Enterprise",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.Enterprise",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "enterpriseName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "businessLicenseNo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "proofUrls",
+        "type": "List<String>",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 35
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.Handover": {
+    "name": "Handover",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.Handover",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "urlsJson",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 30
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.MatchJoin": {
+    "name": "MatchJoin",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.MatchJoin",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "applicationId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 37
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.OrderId": {
+    "name": "OrderId",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.OrderId",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 31
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.RejectCall": {
+    "name": "RejectCall",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.RejectCall",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "callId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "asCallee",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 33
+    }
+  },
+  "com.kuaixietech.controller.Batch12RpcController.VerifyCode": {
+    "name": "VerifyCode",
+    "qualifiedName": "com.kuaixietech.controller.Batch12RpcController.VerifyCode",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "target",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+      "line": 38
+    }
+  },
+  "com.kuaixietech.controller.IdentitySettingsController.ChangePassword": {
+    "name": "ChangePassword",
+    "qualifiedName": "com.kuaixietech.controller.IdentitySettingsController.ChangePassword",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "oldPassword",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "newPassword",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.controller.IdentitySettingsController.RebindContact": {
+    "name": "RebindContact",
+    "qualifiedName": "com.kuaixietech.controller.IdentitySettingsController.RebindContact",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "newTarget",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.controller.IdentitySettingsController.ResetOwnPassword": {
+    "name": "ResetOwnPassword",
+    "qualifiedName": "com.kuaixietech.controller.IdentitySettingsController.ResetOwnPassword",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "target",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "newPassword",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.controller.InviteReadRpcController.Code": {
+    "name": "Code",
+    "qualifiedName": "com.kuaixietech.controller.InviteReadRpcController.Code",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.controller.InviteReadRpcController.Operator": {
+    "name": "Operator",
+    "qualifiedName": "com.kuaixietech.controller.InviteReadRpcController.Operator",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "operatorId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+      "line": 14
+    }
+  },
+  "com.kuaixietech.controller.InviteReadRpcController.Root": {
+    "name": "Root",
+    "qualifiedName": "com.kuaixietech.controller.InviteReadRpcController.Root",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "root",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+      "line": 12
+    }
+  },
+  "com.kuaixietech.controller.KycRpcController.BuyerKyc": {
+    "name": "BuyerKyc",
+    "qualifiedName": "com.kuaixietech.controller.KycRpcController.BuyerKyc",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "realName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "idCardNo",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+      "line": 11
+    }
+  },
+  "com.kuaixietech.controller.KycRpcController.FaceIssue": {
+    "name": "FaceIssue",
+    "qualifiedName": "com.kuaixietech.controller.KycRpcController.FaceIssue",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "scene",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+      "line": 14
+    }
+  },
+  "com.kuaixietech.controller.KycRpcController.FaceRecord": {
+    "name": "FaceRecord",
+    "qualifiedName": "com.kuaixietech.controller.KycRpcController.FaceRecord",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "scene",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "snapshotUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "deviceInfo",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "challengeCode",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.controller.KycRpcController.KycDoc": {
+    "name": "KycDoc",
+    "qualifiedName": "com.kuaixietech.controller.KycRpcController.KycDoc",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "docType",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "storageUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "challengeCode",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+      "line": 12
+    }
+  },
+  "com.kuaixietech.controller.KycRpcController.ReviewKyc": {
+    "name": "ReviewKyc",
+    "qualifiedName": "com.kuaixietech.controller.KycRpcController.ReviewKyc",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "userId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.AcceptOrderBody": {
+    "name": "AcceptOrderBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.AcceptOrderBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "deposit",
+        "type": "BigDecimal",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.AwardBody": {
+    "name": "AwardBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.AwardBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "quoteId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "expectedBuyerEscrow",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "insuranceQuoteId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.AwardQuoteBody": {
+    "name": "AwardQuoteBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.AwardQuoteBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "quoteId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insuranceQuoteId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.DemandBody": {
+    "name": "DemandBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.DemandBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 21
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.PublishBody": {
+    "name": "PublishBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.PublishBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "amount",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "source",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.controller.TradeRpcController.QuoteBody": {
+    "name": "QuoteBody",
+    "qualifiedName": "com.kuaixietech.controller.TradeRpcController.QuoteBody",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "price",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "promiseDays",
+        "type": "Integer",
+        "annotations": []
+      },
+      {
+        "name": "purchasePlace",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.coupler.CouplerModels.Mode": {
+    "name": "Mode",
+    "qualifiedName": "com.kuaixietech.coupler.CouplerModels.Mode",
+    "kind": "enum",
+    "fields": [],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/coupler/CouplerModels.java",
+      "line": 7
+    },
+    "values": [
+      "SANDBOX",
+      "LIVE"
+    ]
+  },
+  "com.kuaixietech.coupler.CouplerModels.Runtime": {
+    "name": "Runtime",
+    "qualifiedName": "com.kuaixietech.coupler.CouplerModels.Runtime",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "mode",
+        "type": "Mode",
+        "annotations": []
+      },
+      {
+        "name": "revision",
+        "type": "long",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/coupler/CouplerModels.java",
+      "line": 8
+    }
+  },
+  "com.kuaixietech.coupler.CouplerModels.Save": {
+    "name": "Save",
+    "qualifiedName": "com.kuaixietech.coupler.CouplerModels.Save",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "values",
+        "type": "Map< String, String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=80)",
+          "@NotBlank",
+          "@NotNull",
+          "@Size(max=16000)"
+        ]
+      },
+      {
+        "name": "clearFields",
+        "type": "List<String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=80)"
+        ]
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "selected",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "expectedRevision",
+        "type": "long",
+        "annotations": [
+          "@Min(0)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/coupler/CouplerModels.java",
+      "line": 10
+    }
+  },
+  "com.kuaixietech.coupler.CouplerModels.Switch": {
+    "name": "Switch",
+    "qualifiedName": "com.kuaixietech.coupler.CouplerModels.Switch",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "mode",
+        "type": "Mode",
+        "annotations": [
+          "@NotNull"
+        ]
+      },
+      {
+        "name": "expectedRevision",
+        "type": "long",
+        "annotations": [
+          "@Min(0)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/coupler/CouplerModels.java",
+      "line": 9
+    }
+  },
+  "com.kuaixietech.entity.communication.SupportDtos.AgentReply": {
+    "name": "AgentReply",
+    "qualifiedName": "com.kuaixietech.entity.communication.SupportDtos.AgentReply",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "content",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=2000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/communication/SupportDtos.java",
+      "line": 6
+    }
+  },
+  "com.kuaixietech.entity.communication.SupportDtos.Send": {
+    "name": "Send",
+    "qualifiedName": "com.kuaixietech.entity.communication.SupportDtos.Send",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "content",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=2000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/communication/SupportDtos.java",
+      "line": 5
+    }
+  },
+  "com.kuaixietech.entity.portal.IntentInput": {
+    "name": "IntentInput",
+    "qualifiedName": "com.kuaixietech.entity.portal.IntentInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "itemName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=120)"
+        ]
+      },
+      {
+        "name": "itemSpec",
+        "type": "String",
+        "annotations": [
+          "@Size(max=160)"
+        ]
+      },
+      {
+        "name": "quantity",
+        "type": "Integer",
+        "annotations": [
+          "@NotNull",
+          "@Min(1)",
+          "@Max(100)"
+        ]
+      },
+      {
+        "name": "unit",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"piece|box|bottle|kg\")"
+        ]
+      },
+      {
+        "name": "categoryId",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"[0-9]{1,18}\")"
+        ]
+      },
+      {
+        "name": "expectUnitPrice",
+        "type": "BigDecimal",
+        "annotations": [
+          "@NotNull",
+          "@DecimalMin(\"0.01\")",
+          "@DecimalMax(\"1000000\")",
+          "@Digits(integer=7,fraction=2)"
+        ]
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@Size(max=1024)"
+        ]
+      },
+      {
+        "name": "contactName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "contactPhone",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"\\\\+?[0-9 -]{6,24}\")"
+        ]
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=512)"
+        ]
+      },
+      {
+        "name": "expectDate",
+        "type": "LocalDate",
+        "annotations": []
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"yes|waived\")"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "expectedBuyerEscrow",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.01\")",
+          "@Digits(integer=8,fraction=2)"
+        ]
+      },
+      {
+        "name": "insuranceQuoteId",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/IntentInput.java",
+      "line": 8
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.DemandCreate": {
+    "name": "DemandCreate",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.DemandCreate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "annotations": [
+          "@Size(max=4000)"
+        ]
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": [
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "expectPrice",
+        "type": "BigDecimal",
+        "annotations": [
+          "@DecimalMin(\"0.0\")"
+        ]
+      },
+      {
+        "name": "tripType",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"any|domestic|international\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 9
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.ReviewDemand": {
+    "name": "ReviewDemand",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.ReviewDemand",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "demandId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "approved",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.ReviewPost": {
+    "name": "ReviewPost",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.ReviewPost",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "postId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "approved",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.ReviewTrip": {
+    "name": "ReviewTrip",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.ReviewTrip",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "tripId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "approved",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.SocialPostCreate": {
+    "name": "SocialPostCreate",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.SocialPostCreate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "caption",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=4000)"
+        ]
+      },
+      {
+        "name": "mediaKind",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"text|image|video\")"
+        ]
+      },
+      {
+        "name": "mediaUrl",
+        "type": "String",
+        "annotations": [
+          "@Size(max=800)"
+        ]
+      },
+      {
+        "name": "posterUrl",
+        "type": "String",
+        "annotations": [
+          "@Size(max=800)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.entity.portal.PortalDtos.TripCreate": {
+    "name": "TripCreate",
+    "qualifiedName": "com.kuaixietech.entity.portal.PortalDtos.TripCreate",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "destination",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=128)"
+        ]
+      },
+      {
+        "name": "originCity",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "departDate",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "returnDate",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "tripType",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"domestic|international\")"
+        ]
+      },
+      {
+        "name": "transportMode",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"road|rail|air|other\")"
+        ]
+      },
+      {
+        "name": "capacityQty",
+        "type": "Integer",
+        "annotations": [
+          "@Min(1)",
+          "@Max(100)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/entity/portal/PortalDtos.java",
+      "line": 11
+    }
+  },
+  "com.kuaixietech.insurance.InsuranceModels.Application": {
+    "name": "Application",
+    "qualifiedName": "com.kuaixietech.insurance.InsuranceModels.Application",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "status",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insurerName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "productName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "premium",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "currency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "checkoutUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "policyNumber",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "certificateUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "claimsUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "coverageRef",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "termsVersion",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "startsAt",
+        "type": "Instant",
+        "annotations": []
+      },
+      {
+        "name": "endsAt",
+        "type": "Instant",
+        "annotations": []
+      },
+      {
+        "name": "platform",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "paymentMode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "protectionStatus",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/insurance/InsuranceModels.java",
+      "line": 33
+    }
+  },
+  "com.kuaixietech.insurance.InsuranceModels.ApplyInput": {
+    "name": "ApplyInput",
+    "qualifiedName": "com.kuaixietech.insurance.InsuranceModels.ApplyInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "orderId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "quoteId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[a-fA-F0-9-]{36}\")"
+        ]
+      },
+      {
+        "name": "termsAccepted",
+        "type": "boolean",
+        "annotations": [
+          "@AssertTrue"
+        ]
+      },
+      {
+        "name": "disclosuresAccepted",
+        "type": "boolean",
+        "annotations": [
+          "@AssertTrue"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/insurance/InsuranceModels.java",
+      "line": 23
+    }
+  },
+  "com.kuaixietech.insurance.InsuranceModels.ProductInput": {
+    "name": "ProductInput",
+    "qualifiedName": "com.kuaixietech.insurance.InsuranceModels.ProductInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"[a-zA-Z0-9_-]{1,64}\")"
+        ]
+      },
+      {
+        "name": "insurerCode",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "insurerName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "adapter",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "providerProductCode",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=128)"
+        ]
+      },
+      {
+        "name": "credentialPrefix",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[A-Z][A-Z0-9_]{2,39}\")"
+        ]
+      },
+      {
+        "name": "termsUrl",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "exclusionsUrl",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "claimsUrl",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      },
+      {
+        "name": "serviceHosts",
+        "type": "Set< String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(min=1,max=10)",
+          "@Pattern(regexp=\"[a-z0-9.-]{1,253}\")"
+        ]
+      },
+      {
+        "name": "checkoutHosts",
+        "type": "Set< String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(min=1,max=10)",
+          "@Pattern(regexp=\"[a-z0-9.-]{1,253}\")"
+        ]
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/insurance/InsuranceModels.java",
+      "line": 11
+    }
+  },
+  "com.kuaixietech.insurance.InsuranceModels.Quote": {
+    "name": "Quote",
+    "qualifiedName": "com.kuaixietech.insurance.InsuranceModels.Quote",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "productId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "insurerName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "productName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "declaredValue",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "premium",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "currency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "termsUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "exclusionsUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "claimsUrl",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "termsVersion",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "expiresAt",
+        "type": "Instant",
+        "annotations": []
+      },
+      {
+        "name": "paymentMode",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "protectionStatus",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/insurance/InsuranceModels.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.insurance.InsuranceModels.QuoteInput": {
+    "name": "QuoteInput",
+    "qualifiedName": "com.kuaixietech.insurance.InsuranceModels.QuoteInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "productId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "subjectType",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"trip|pk_quote|order\")"
+        ]
+      },
+      {
+        "name": "subjectId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "itemName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=255)"
+        ]
+      },
+      {
+        "name": "declaredValue",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[0-9]{1,7}(\\\\.[0-9]{1,2})?\")"
+        ]
+      },
+      {
+        "name": "platform",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"web|h5|app|mp_weixin\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/insurance/InsuranceModels.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.integration.IntegrationConfiguration.Input": {
+    "name": "Input",
+    "qualifiedName": "com.kuaixietech.integration.IntegrationConfiguration.Input",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "remark",
+        "type": "String",
+        "annotations": [
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "values",
+        "type": "Map< String, String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=30)",
+          "@NotBlank",
+          "@NotNull",
+          "@Size(max=16000)"
+        ]
+      },
+      {
+        "name": "clearFields",
+        "type": "List<String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=30)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.Checkout": {
+    "name": "Checkout",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.Checkout",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "value",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 28
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.ConfirmInput": {
+    "name": "ConfirmInput",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.ConfirmInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "quoteId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 24
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.FxInput": {
+    "name": "FxInput",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.FxInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=80)"
+        ]
+      },
+      {
+        "name": "kind",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "endpoint",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "credentialPrefix",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"[A-Z][A-Z0-9_]{2,39}\")"
+        ]
+      },
+      {
+        "name": "maxAgeSeconds",
+        "type": "int",
+        "annotations": [
+          "@Min(60)",
+          "@Max(172800)"
+        ]
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "transactionEnabled",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.MerchantInput": {
+    "name": "MerchantInput",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.MerchantInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=80)"
+        ]
+      },
+      {
+        "name": "adapter",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "method",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "platform",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "currencies",
+        "type": "List<String>",
+        "annotations": [
+          "@NotEmpty"
+        ]
+      },
+      {
+        "name": "credentialPrefix",
+        "type": "String",
+        "annotations": [
+          "@Pattern(regexp=\"[A-Z][A-Z0-9_]{2,39}\")"
+        ]
+      },
+      {
+        "name": "spreadBps",
+        "type": "int",
+        "annotations": [
+          "@Min(0)",
+          "@Max(2000)"
+        ]
+      },
+      {
+        "name": "quoteTtlSeconds",
+        "type": "int",
+        "annotations": [
+          "@Min(30)",
+          "@Max(900)"
+        ]
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "settings",
+        "type": "Map<String,String>",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 10
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.Payment": {
+    "name": "Payment",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.Payment",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "status",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "baseCurrency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "baseAmount",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "paymentCurrency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "paymentAmount",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "merchantName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "checkout",
+        "type": "Checkout",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 29
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.Quote": {
+    "name": "Quote",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.Quote",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "id",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "merchantId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "merchantName",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "method",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "platform",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "baseCurrency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "baseAmount",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "paymentCurrency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "paymentAmount",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "rate",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "spreadBps",
+        "type": "int",
+        "annotations": []
+      },
+      {
+        "name": "rateSource",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "rateAsOf",
+        "type": "Instant",
+        "annotations": []
+      },
+      {
+        "name": "expiresAt",
+        "type": "Instant",
+        "annotations": []
+      },
+      {
+        "name": "settlementCurrency",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 25
+    }
+  },
+  "com.kuaixietech.payments.PaymentModels.QuoteInput": {
+    "name": "QuoteInput",
+    "qualifiedName": "com.kuaixietech.payments.PaymentModels.QuoteInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "merchantId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "paymentCurrency",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "amountCny",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[0-9]{1,7}(\\\\.[0-9]{1,2})?\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/payments/PaymentModels.java",
+      "line": 22
+    }
+  },
+  "com.kuaixietech.refunds.RefundModels.Create": {
+    "name": "Create",
+    "qualifiedName": "com.kuaixietech.refunds.RefundModels.Create",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "paymentId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[a-f0-9]{32}\")"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"(?i)[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\")"
+        ]
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/refunds/RefundModels.java",
+      "line": 6
+    }
+  },
+  "com.kuaixietech.refunds.RefundModels.Review": {
+    "name": "Review",
+    "qualifiedName": "com.kuaixietech.refunds.RefundModels.Review",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/refunds/RefundModels.java",
+      "line": 7
+    }
+  },
+  "com.kuaixietech.service.account.impl.KycRpcMigrationService.FaceChallenge": {
+    "name": "FaceChallenge",
+    "qualifiedName": "com.kuaixietech.service.account.impl.KycRpcMigrationService.FaceChallenge",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "challengeId",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "code",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+      "line": 56
+    }
+  },
+  "com.kuaixietech.service.account.impl.SavedCommerceService.AddressInput": {
+    "name": "AddressInput",
+    "qualifiedName": "com.kuaixietech.service.account.impl.SavedCommerceService.AddressInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "contactName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "contactPhone",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[+0-9() -]{5,32}\")"
+        ]
+      },
+      {
+        "name": "province",
+        "type": "String",
+        "annotations": [
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "annotations": [
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "district",
+        "type": "String",
+        "annotations": [
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "detail",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=512)"
+        ]
+      },
+      {
+        "name": "isDefault",
+        "type": "boolean",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
+      "line": 13
+    }
+  },
+  "com.kuaixietech.service.account.impl.SavedCommerceService.CartInput": {
+    "name": "CartInput",
+    "qualifiedName": "com.kuaixietech.service.account.impl.SavedCommerceService.CartInput",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "quantity",
+        "type": "int",
+        "annotations": [
+          "@Min(1)",
+          "@Max(10000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
+      "line": 14
+    }
+  },
+  "com.kuaixietech.service.catalog.support.ProductPublishingService.Input": {
+    "name": "Input",
+    "qualifiedName": "com.kuaixietech.service.catalog.support.ProductPublishingService.Input",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=255)"
+        ]
+      },
+      {
+        "name": "spec",
+        "type": "String",
+        "annotations": [
+          "@Size(max=255)"
+        ]
+      },
+      {
+        "name": "region",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=64)"
+        ]
+      },
+      {
+        "name": "price",
+        "type": "BigDecimal",
+        "annotations": [
+          "@NotNull",
+          "@DecimalMin(\"0.01\")",
+          "@DecimalMax(\"9999999999.99\")",
+          "@Digits(integer=10,fraction=2)"
+        ]
+      },
+      {
+        "name": "stock",
+        "type": "Integer",
+        "annotations": [
+          "@NotNull",
+          "@Min(0)",
+          "@Max(1000000)"
+        ]
+      },
+      {
+        "name": "categoryId",
+        "type": "Long",
+        "annotations": [
+          "@Positive"
+        ]
+      },
+      {
+        "name": "imageUrls",
+        "type": "List< String>",
+        "annotations": [
+          "@NotNull",
+          "@Size(max=9)",
+          "@NotBlank",
+          "@Size(max=800)"
+        ]
+      },
+      {
+        "name": "note",
+        "type": "String",
+        "annotations": [
+          "@Size(max=1024)"
+        ]
+      },
+      {
+        "name": "expectedStock",
+        "type": "Integer",
+        "annotations": [
+          "@Min(0)",
+          "@Max(1000000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
+      "line": 20
+    }
+  },
+  "com.kuaixietech.service.catalog.support.ProductPublishingService.State": {
+    "name": "State",
+    "qualifiedName": "com.kuaixietech.service.catalog.support.ProductPublishingService.State",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "status",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"on|off\")"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
+      "line": 26
+    }
+  },
+  "com.kuaixietech.service.community.impl.Batch12ContentModerationService.Screening": {
+    "name": "Screening",
+    "qualifiedName": "com.kuaixietech.service.community.impl.Batch12ContentModerationService.Screening",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "decision",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "codes",
+        "type": "List<String>",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/community/impl/Batch12ContentModerationService.java",
+      "line": 10
+    }
+  },
+  "com.kuaixietech.service.trading.support.IntentPricing.Quote": {
+    "name": "Quote",
+    "qualifiedName": "com.kuaixietech.service.trading.support.IntentPricing.Quote",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "goodsAmount",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "serviceFee",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "insurancePremium",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "buyerEscrow",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "vendorDeposit",
+        "type": "BigDecimal",
+        "annotations": []
+      },
+      {
+        "name": "currency",
+        "type": "String",
+        "annotations": []
+      },
+      {
+        "name": "pricingVersion",
+        "type": "String",
+        "annotations": []
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/service/trading/support/IntentPricing.java",
+      "line": 18
+    }
+  },
+  "com.kuaixietech.shops.ShopService.Application": {
+    "name": "Application",
+    "qualifiedName": "com.kuaixietech.shops.ShopService.Application",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "businessName",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "creditCode",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"[0-9A-HJ-NPQRTUWXY]{18}\")"
+        ]
+      },
+      {
+        "name": "representative",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=100)"
+        ]
+      },
+      {
+        "name": "licenseUploadId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "invitationCode",
+        "type": "String",
+        "annotations": [
+          "@Size(max=16)"
+        ]
+      },
+      {
+        "name": "channel",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"web|h5|app|mp_weixin\")"
+        ]
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+      "line": 15
+    }
+  },
+  "com.kuaixietech.shops.ShopService.Edit": {
+    "name": "Edit",
+    "qualifiedName": "com.kuaixietech.shops.ShopService.Edit",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=200)"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "annotations": [
+          "@Size(max=1000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+      "line": 17
+    }
+  },
+  "com.kuaixietech.shops.ShopService.Link": {
+    "name": "Link",
+    "qualifiedName": "com.kuaixietech.shops.ShopService.Link",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "productId",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+      "line": 19
+    }
+  },
+  "com.kuaixietech.shops.ShopService.Review": {
+    "name": "Review",
+    "qualifiedName": "com.kuaixietech.shops.ShopService.Review",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "approve",
+        "type": "boolean",
+        "annotations": []
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+      "line": 16
+    }
+  },
+  "com.kuaixietech.shops.ShopService.State": {
+    "name": "State",
+    "qualifiedName": "com.kuaixietech.shops.ShopService.State",
+    "kind": "record",
+    "fields": [
+      {
+        "name": "status",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Pattern(regexp=\"active|paused|suspended\")"
+        ]
+      },
+      {
+        "name": "expectedStatus",
+        "type": "String",
+        "annotations": [
+          "@NotBlank"
+        ]
+      },
+      {
+        "name": "reason",
+        "type": "String",
+        "annotations": [
+          "@NotBlank",
+          "@Size(max=1000)"
+        ]
+      }
+    ],
+    "source": {
+      "file": "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+      "line": 18
+    }
+  }
+}

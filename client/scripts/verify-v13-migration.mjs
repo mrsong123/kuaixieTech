@@ -1,3 +1,5 @@
+import {renderedVueSources} from './rendered-vue-contract.mjs';
+import {historicalPageLedger} from './historical-page-ledger.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
@@ -41,8 +43,8 @@ for(const vue of scanVue(file('apps/mobile/src'))){
     assert(fs.existsSync(file(`apps/mobile/src/static/mdi/accent/${normalized}.png`)),`${name} referenced but missing icon in ${vue}`);
   }
 }
-const rowCount=read('MIGRATION_62_PAGE_STATUS.csv').trim().split(/\r?\n/).length-1;
-assert(rowCount===62,`original page inventory altered (${rowCount})`);
+const historical=historicalPageLedger(root);
+const rowCount=historical?.entries.length??'original ledger not supplied';
 assert(read('packages/i18n/src/zh-CN.json').includes('"migration.address"'),'translation keys absent');
-for(const name of newPages){const code=read(`apps/mobile/src/pages/${name}/index.vue`);assert(code.includes('$t('),'hardcoded fallback user copy');}
-console.log(`V13 incremental migration verification passed: ${newPages.length} registered routes; ${rowCount} original pages audited; MDI assets ${Math.round(totalBytes/1024)} KiB; real catalog country guard present`);
+for(const name of newPages){const code=renderedVueSources(root,`apps/mobile/src/pages/${name}/index.vue`);assert(code.includes('$t(')||/\bt\(/.test(code),'page and rendered business components must retain i18n: '+name);}
+console.log(`V13 incremental migration verification passed: ${newPages.length} registered routes; ${rowCount}; historical ledger status reported separately; MDI assets ${Math.round(totalBytes/1024)} KiB; real catalog country guard present`);

@@ -36,12 +36,14 @@ public class LegacyAdminRpcService {
     if(reason.isEmpty())return "ERR:NO_NOTE";
     if(delta==null||delta.abs().compareTo(new BigDecimal("0.01"))<0)return "ERR:BAD_AMOUNT";
     if(delta.abs().compareTo(new BigDecimal("100000"))>0)return "ERR:TOO_LARGE";
-    String actor=adminGuard("balance_adjusted","profile",targetId,"调账 "+delta+" 元；理由："+reason);
-    if(actor.equals(targetId))return "ERR:CANNOT_SELF";
+    String actor=guard.requireAdmin();
+    if(actor.equalsIgnoreCase(targetId))return "ERR:CANNOT_SELF";
     BigDecimal after=money.addBalance(targetId,delta,"adjust",null,"运营调账："+reason);
+    if(after==null)throw new IllegalStateException("ADMIN_BALANCE_TARGET_UNAVAILABLE");
+    audit(actor,"balance_adjusted","profile",targetId,"调账 "+delta+" 元；理由："+reason);
     mapper.notifyUser(UUID.randomUUID().toString(),targetId,"balance_adjusted","余额变动通知",
-       "平台为你调整余额 "+delta+" 元，当前余额 "+(after==null?"0":after)+" 元。说明："+reason,null);
-    return "OK:BALANCE:"+(after==null?"0":after);
+       "平台为你调整余额 "+delta+" 元，当前余额 "+after+" 元。说明："+reason,null);
+    return "OK:BALANCE:"+after;
   }
   /** Read-only commission audit: never expose rows to a non-admin principal. */
   @Transactional(readOnly=true)

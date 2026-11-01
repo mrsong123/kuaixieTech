@@ -3,6 +3,8 @@ package com.kuaixietech.integration;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import com.kuaixietech.scheduler.ContactDeliveryDiagnostic;
+import com.kuaixietech.scheduler.ContactDeliveryAttempt;
 
 @Service
 public class EmailOutboxDispatcher {
@@ -25,8 +27,17 @@ public class EmailOutboxDispatcher {
             || configuration.exists("aliyun", "directmail");
     }
 
+    private volatile ContactDeliveryDiagnostic configurationStatus=ContactDeliveryDiagnostic.state("email","not_checked","configuration","CONTACT_NOT_CHECKED");
+    public ContactDeliveryDiagnostic configurationStatus(){return configurationStatus;}
     public boolean configured() {
-        return configuration.runtime("aliyun", "directmail") != null;
+        try {
+            if(couplerMode!=null)couplerMode.requireLiveNewCall("email_dispatch");
+            var fields=configuration.runtime("aliyun","directmail");
+            if(fields!=null)protocols.validateConfiguration(fields);
+            boolean managed=fields!=null||configuration.exists("aliyun","directmail");
+            configurationStatus=ContactDeliveryDiagnostic.state("email",fields!=null?"ready":managed?"paused":"idle","configuration",fields!=null?"CONTACT_PROVIDER_CONFIGURED":managed?"CONTACT_CONFIGURATION_DISABLED_OR_UNSELECTED":"EMAIL_PROVIDER_NOT_CONFIGURED");
+            return fields!=null;
+        }catch(RuntimeException e){configurationStatus=ContactDeliveryDiagnostic.failure("email","configuration",e);if(configurationStatus.paused())return false;throw e;}
     }
 
     public void run() {
@@ -44,11 +55,14 @@ public class EmailOutboxDispatcher {
                     throw new IllegalStateException("EMAIL_RECEIPT_UNCONFIRMED");
                 }
                 store.result(row.get("id"), receipt.accepted() ? "sent" : "failed", receipt.providerReference());
+                if(!receipt.accepted())throw new ContactDeliveryAttempt("EMAIL_PROVIDER_REJECTED",null);
+            } catch (ContactDeliveryAttempt e) { throw e;
             } catch (IllegalArgumentException e) {
                 store.invalid(row.get("id"));
+                throw new ContactDeliveryAttempt("EMAIL_INPUT_REJECTED",e);
             } catch (RuntimeException e) {
-                // Keep the original blocked attempt on timeout, malformed acknowledgement or DB uncertainty.
-                return;
+                // Keep the original blocked attempt, and expose uncertainty without leaking its target or OTP.
+                throw new ContactDeliveryAttempt("EMAIL_DISPATCH_UNCONFIRMED",e);
             }
         }
     }

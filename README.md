@@ -1,3 +1,7 @@
+> 当前状态（2026-11-01全面盘点）：项目尚未完整业务落地。已在隔离MySQL中实际启动并验证33项基础HTTP/SQL流程，但真实短信、支付、保险、用户业务库和各端真机仍待验。请先看[完整功能状态与执行清单](docs/PROJECT_FUNCTION_INVENTORY.md)、[Windows/HBuilderX编译步骤](client/apps/mobile/HBUILDERX_SETUP.md)及[验证码诊断](docs/CONTACT_DELIVERY_DIAGNOSIS.md)。编译或SDK存在不能代表功能已完成。
+
+> 独立联调文档：[API 接口文档](docs/API_REFERENCE.md)（真实路由、认证、请求/响应、配置与未接通边界）。
+
 # 快协随行购
 
 前端工作区在 `client/`，包括 PC 官网、运营后台、UniApp H5、小程序与 App，共享 SDK 在 `client/packages/sdk/`。Java 21 / Spring Boot 后端在 `server/`。

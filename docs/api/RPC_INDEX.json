@@ -1,0 +1,2763 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "d6ee6fe4b979c94850adc1867bc5a35c1ba08e13e4fff5dfe4ff8249cbd4d4b2",
+  "count": 84,
+  "scope": "Explicit @PostMapping under /api/rpc; route presence is not external provider or complete business acceptance.",
+  "failureMarkerScope": "Literal direct controller/service returns only; delegated helper errors and thrown exceptions are not exhaustive.",
+  "routes": [
+    {
+      "key": "accept_order_atomic",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/accept_order_atomic",
+      "clientPath": "/rpc/accept_order_atomic",
+      "controllerMethod": "TradeRpcController.acceptOrder",
+      "requestDeclaration": "@RequestBody AcceptOrderBody r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 22
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "acceptOrderAtomic",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 42
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:DEPOSIT_MISMATCH",
+        "ERR:INSUFFICIENT_BALANCE",
+        "ERR:NOT_CARRIER",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_adjust_balance",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_adjust_balance",
+      "clientPath": "/rpc/admin_adjust_balance",
+      "controllerMethod": "AdminFinanceRpcController.adjust",
+      "requestDeclaration": "@RequestBody BalanceBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+        "line": 16
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "adjustBalance",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 34
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_AMOUNT",
+        "ERR:CANNOT_SELF",
+        "ERR:NO_NOTE",
+        "ERR:TOO_LARGE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "带管理员审计的内部钱包调整；不是充值到账、提现打款或银行回单。"
+    },
+    {
+      "key": "admin_ban_user",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_ban_user",
+      "clientPath": "/rpc/admin_ban_user",
+      "controllerMethod": "AdminConsoleRpcController.ban",
+      "requestDeclaration": "@RequestBody BanBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 43
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "banUser",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 129
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:CANNOT_SELF",
+        "ERR:NO_NOTE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_broadcast",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_broadcast",
+      "clientPath": "/rpc/admin_broadcast",
+      "controllerMethod": "AdminConsoleRpcController.broadcast",
+      "requestDeclaration": "@RequestBody BroadcastBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 44
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "broadcast",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 85
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_BODY",
+        "ERR:BAD_SCOPE",
+        "ERR:BAD_TITLE",
+        "ERR:NO_TARGET"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "写入站内通知；返回SENT计数不等于短信/邮件/微信订阅外部送达。"
+    },
+    {
+      "key": "admin_close_demand",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_close_demand",
+      "clientPath": "/rpc/admin_close_demand",
+      "controllerMethod": "AdminConsoleRpcController.closeDemand",
+      "requestDeclaration": "@RequestBody DemandCloseBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 45
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "closeDemand",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 97
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY_SETTLED",
+        "ERR:NO_DEMAND",
+        "ERR:NO_NOTE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_commission_rows",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_commission_rows",
+      "clientPath": "/rpc/admin_commission_rows",
+      "controllerMethod": "AdminFinanceRpcController.commissions",
+      "requestDeclaration": "@RequestBody LimitBody b",
+      "returnJavaType": "List<Map<String,Object>>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+        "line": 18
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "commissionRows",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 50
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_console_list",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_console_list",
+      "clientPath": "/rpc/admin_console_list",
+      "controllerMethod": "AdminConsoleRpcController.list",
+      "requestDeclaration": "@RequestBody ListBody b",
+      "returnJavaType": "List<Map<String,Object>>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 39
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "list",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 35
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_create_category",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_create_category",
+      "clientPath": "/rpc/admin_create_category",
+      "controllerMethod": "AdminConsoleRpcController.createCategory",
+      "requestDeclaration": "@RequestBody CategoryCreate b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 48
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "createCategory",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 101
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_LEVEL",
+        "ERR:BAD_NAME"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_create_invite",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_create_invite",
+      "clientPath": "/rpc/admin_create_invite",
+      "controllerMethod": "AdminConsoleRpcController.createInvite",
+      "requestDeclaration": "@RequestBody InviteBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 50
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "createInvite",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 111
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_CODE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_deactivate_category",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_deactivate_category",
+      "clientPath": "/rpc/admin_deactivate_category",
+      "controllerMethod": "AdminConsoleRpcController.deactivateCategory",
+      "requestDeclaration": "@RequestBody CategoryId b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 49
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "deactivateCategory",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 95
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ID",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_dissolve_pool",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_dissolve_pool",
+      "clientPath": "/rpc/admin_dissolve_pool",
+      "controllerMethod": "AdminFinanceRpcController.dissolve",
+      "requestDeclaration": "@RequestBody PoolBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminFinanceRpcController.java",
+        "line": 17
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "dissolvePool",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 57
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_POOL",
+        "ERR:NO_NOTE",
+        "ERR:NO_TRIP"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_fix_score",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_fix_score",
+      "clientPath": "/rpc/admin_fix_score",
+      "controllerMethod": "AdminConsoleRpcController.score",
+      "requestDeclaration": "@RequestBody ScoreBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 46
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "fixScore",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 109
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_DELTA",
+        "ERR:NO_NOTE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_force_form_pool",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_force_form_pool",
+      "clientPath": "/rpc/admin_force_form_pool",
+      "controllerMethod": "AdminConsoleRpcController.form",
+      "requestDeclaration": "@RequestBody PoolFormBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 47
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LegacyAdminRpcService",
+          "method": "forceFormPool",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/LegacyAdminRpcService.java",
+            "line": 117
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY_FORMED",
+        "ERR:NOT_POOL",
+        "ERR:NO_TRIP",
+        "ERR:POOL_EXPIRED"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_force_off_shelf",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_force_off_shelf",
+      "clientPath": "/rpc/admin_force_off_shelf",
+      "controllerMethod": "AdminConsoleRpcController.off",
+      "requestDeclaration": "@RequestBody IdBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 42
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "forceOffShelf",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 89
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ID",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_grant_points",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_grant_points",
+      "clientPath": "/rpc/admin_grant_points",
+      "controllerMethod": "Batch10RpcController.grantPoints",
+      "requestDeclaration": "@RequestBody GrantPoints b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 40
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OperationsRpcService",
+          "method": "adminGrantPoints",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/OperationsRpcService.java",
+            "line": 17
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_POINTS",
+        "ERR:NO_NOTE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_invite_tier_distribution",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_invite_tier_distribution",
+      "clientPath": "/rpc/admin_invite_tier_distribution",
+      "controllerMethod": "Batch10RpcController.tierDistribution",
+      "requestDeclaration": "",
+      "returnJavaType": "List<Map<String,Object>>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 38
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminReviewRpcService",
+          "method": "inviteTierDistribution",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminReviewRpcService.java",
+            "line": 13
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_issue_invoice",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_issue_invoice",
+      "clientPath": "/rpc/admin_issue_invoice",
+      "controllerMethod": "Batch10RpcController.issueInvoice",
+      "requestDeclaration": "@RequestBody InvoiceDecision b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 34
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "InvoiceRpcService",
+          "method": "adminIssueInvoice",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/finance/impl/InvoiceRpcService.java",
+            "line": 36
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY_SETTLED",
+        "ERR:BAD_NOTE",
+        "ERR:INVOICE_ISSUER_UNAVAILABLE",
+        "ERR:NO_NOTE",
+        "ERR:NO_TARGET"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "approve=true 固定拒绝 INVOICE_ISSUER_UNAVAILABLE；目前只允许真实申请和驳回，不能伪开票。"
+    },
+    {
+      "key": "admin_list_violations",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_list_violations",
+      "clientPath": "/rpc/admin_list_violations",
+      "controllerMethod": "Batch10RpcController.violations",
+      "requestDeclaration": "@RequestBody ViolationQuery b",
+      "returnJavaType": "List<Map<String,Object>>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 35
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminReviewRpcService",
+          "method": "violations",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminReviewRpcService.java",
+            "line": 11
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_locale_remove_rpc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_locale_remove_rpc",
+      "clientPath": "/rpc/admin_locale_remove_rpc",
+      "controllerMethod": "Batch10RpcController.localeRemove",
+      "requestDeclaration": "@RequestBody LocaleRemove b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 43
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LocaleRpcWrapperService",
+          "method": "remove",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/internationalization/impl/LocaleRpcWrapperService.java",
+            "line": 21
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_ADMIN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_locale_set_active_rpc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_locale_set_active_rpc",
+      "clientPath": "/rpc/admin_locale_set_active_rpc",
+      "controllerMethod": "Batch10RpcController.localeToggle",
+      "requestDeclaration": "@RequestBody LocaleToggle b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 42
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LocaleRpcWrapperService",
+          "method": "setActive",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/internationalization/impl/LocaleRpcWrapperService.java",
+            "line": 17
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_ADMIN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_locale_upsert_rpc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_locale_upsert_rpc",
+      "clientPath": "/rpc/admin_locale_upsert_rpc",
+      "controllerMethod": "Batch10RpcController.localeUpsert",
+      "requestDeclaration": "@RequestBody LocaleUpsert b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 41
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "LocaleRpcWrapperService",
+          "method": "upsert",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/internationalization/impl/LocaleRpcWrapperService.java",
+            "line": 13
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_ADMIN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_release_privacy",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_release_privacy",
+      "clientPath": "/rpc/admin_release_privacy",
+      "controllerMethod": "AdminConsoleRpcController.releasePrivacy",
+      "requestDeclaration": "",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 55
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "releasePrivacy",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 151
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_remove_post",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_remove_post",
+      "clientPath": "/rpc/admin_remove_post",
+      "controllerMethod": "AdminConsoleRpcController.removePost",
+      "requestDeclaration": "@RequestBody PostRemove b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 54
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "removePost",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 146
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_resolve_cancel",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_resolve_cancel",
+      "clientPath": "/rpc/admin_resolve_cancel",
+      "controllerMethod": "Batch11RpcController.resolve",
+      "requestDeclaration": "@RequestBody Decision x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 30
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "CancellationRpcService",
+          "method": "adminResolveCancel",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/CancellationRpcService.java",
+            "line": 79
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:DISPUTE_OPEN",
+        "ERR:NO_NOTE",
+        "ERR:NO_ORDER",
+        "ERR:NO_PENDING"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_resolve_error",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_resolve_error",
+      "clientPath": "/rpc/admin_resolve_error",
+      "controllerMethod": "AdminConsoleRpcController.resolveError",
+      "requestDeclaration": "@RequestBody ErrorId b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 56
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "resolveError",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 157
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ID"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_review_buyer_kyc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_review_buyer_kyc",
+      "clientPath": "/rpc/admin_review_buyer_kyc",
+      "controllerMethod": "KycRpcController.review",
+      "requestDeclaration": "@RequestBody ReviewKyc body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+        "line": 22
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "KycRpcMigrationService",
+          "method": "adminReviewBuyerKyc",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+            "line": 44
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_ID",
+        "ERR:NO_PERM",
+        "ERR:NO_USER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_review_enterprise",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_review_enterprise",
+      "clientPath": "/rpc/admin_review_enterprise",
+      "controllerMethod": "Batch10RpcController.enterprise",
+      "requestDeclaration": "@RequestBody EnterpriseDecision b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 39
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminReviewRpcService",
+          "method": "reviewEnterprise",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminReviewRpcService.java",
+            "line": 15
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:NOT_ENTERPRISE",
+        "ERR:NO_NOTE",
+        "ERR:NO_USER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_review_violation",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_review_violation",
+      "clientPath": "/rpc/admin_review_violation",
+      "controllerMethod": "Batch10RpcController.reviewViolation",
+      "requestDeclaration": "@RequestBody RowId b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 36
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminReviewRpcService",
+          "method": "reviewViolation",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminReviewRpcService.java",
+            "line": 12
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_set_carrier_verify",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_set_carrier_verify",
+      "clientPath": "/rpc/admin_set_carrier_verify",
+      "controllerMethod": "AdminConsoleRpcController.carrier",
+      "requestDeclaration": "@RequestBody VerifyBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 40
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "setCarrierVerify",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 73
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_NOTE",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_set_trip_verify",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_set_trip_verify",
+      "clientPath": "/rpc/admin_set_trip_verify",
+      "controllerMethod": "AdminConsoleRpcController.trip",
+      "requestDeclaration": "@RequestBody VerifyBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 41
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "setTripVerify",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 81
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_stats",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_stats",
+      "clientPath": "/rpc/admin_stats",
+      "controllerMethod": "Batch10RpcController.adminStats",
+      "requestDeclaration": "",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 37
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminReviewRpcService",
+          "method": "stats",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminReviewRpcService.java",
+            "line": 14
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "admin_toggle_channel",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_toggle_channel",
+      "clientPath": "/rpc/admin_toggle_channel",
+      "controllerMethod": "AdminConsoleRpcController.toggleChannel",
+      "requestDeclaration": "@RequestBody ChannelToggle b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 53
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "toggleChannel",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 140
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ID",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "旧专业配置enabled切换不等于47类耦合器目录均已接业务消费者。"
+    },
+    {
+      "key": "admin_toggle_recipe",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_toggle_recipe",
+      "clientPath": "/rpc/admin_toggle_recipe",
+      "controllerMethod": "AdminConsoleRpcController.toggleRecipe",
+      "requestDeclaration": "@RequestBody RecipeToggle b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 52
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "toggleRecipe",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 134
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NO_ID",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅切换后台模板active状态；模板消费链尚未闭环。"
+    },
+    {
+      "key": "admin_upsert_recipe",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/admin_upsert_recipe",
+      "clientPath": "/rpc/admin_upsert_recipe",
+      "controllerMethod": "AdminConsoleRpcController.upsertRecipe",
+      "requestDeclaration": "@RequestBody RecipeBody b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/AdminConsoleRpcController.java",
+        "line": 51
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "AdminConsoleService",
+          "method": "upsertRecipe",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/AdminConsoleService.java",
+            "line": 119
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_ITEMS",
+        "ERR:BAD_MODE",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "后台模板CRUD存在，但当前采购取证服务未读取此模板驱动流程。"
+    },
+    {
+      "key": "award_pk",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/award_pk",
+      "clientPath": "/rpc/award_pk",
+      "controllerMethod": "TradeRpcController.awardPk",
+      "requestDeclaration": "@RequestBody AwardBody r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 31
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "awardPk",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 121
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:BUYER_BALANCE",
+        "ERR:BUYER_VERIFICATION_REQUIRED",
+        "ERR:CARRIER_BALANCE",
+        "ERR:INSURANCE_CHOICE_REQUIRED",
+        "ERR:INSURANCE_SELECTION_CONFLICT",
+        "ERR:NOT_OWNER",
+        "ERR:NOT_TOP3",
+        "ERR:NO_DEMAND",
+        "ERR:NO_QUOTE",
+        "ERR:ORDER_EXISTS",
+        "ERR:QUOTE_CONFIRMATION_REQUIRED",
+        "ERR:SELF_TRADE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "使用后端确认报价与钱包托管；保险选择yes还需实际保险报价，零生产保险适配器时不可投保。"
+    },
+    {
+      "key": "batch12/accept_assist",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/accept_assist",
+      "clientPath": "/rpc/batch12/accept_assist",
+      "controllerMethod": "Batch12RpcController.accept",
+      "requestDeclaration": "@RequestBody AssistId r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 40
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AssistRpcService",
+          "method": "acceptAssist",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/assist/impl/Batch12AssistRpcService.java",
+            "line": 29
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_CARRIER",
+        "ERR:NO_ROW",
+        "ERR:SELF",
+        "ERR:TAKEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/accept_order_call",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/accept_order_call",
+      "clientPath": "/rpc/batch12/accept_order_call",
+      "controllerMethod": "Batch12RpcController.acceptCall",
+      "requestDeclaration": "@RequestBody CallId r",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 45
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12CallRpcService",
+          "method": "acceptOrderCall",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/communication/impl/Batch12CallRpcService.java",
+            "line": 23
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:NOT_CALLEE",
+        "err:NOT_FOUND",
+        "err:STALE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅接受邀请，返回room_id；不是媒体已连通。",
+      "successObjectFields": [
+        "ok",
+        "room_id"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "batch12/add_post_comment",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/add_post_comment",
+      "clientPath": "/rpc/batch12/add_post_comment",
+      "controllerMethod": "Batch12RpcController.comment",
+      "requestDeclaration": "@RequestBody Comment r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 48
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12ContentModerationService",
+          "method": "addPostComment",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/community/impl/Batch12ContentModerationService.java",
+            "line": 37
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_CONTENT",
+        "ERR:CONTENT_BLOCKED",
+        "ERR:NO_POST"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/cancel_assist",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/cancel_assist",
+      "clientPath": "/rpc/batch12/cancel_assist",
+      "controllerMethod": "Batch12RpcController.cancel",
+      "requestDeclaration": "@RequestBody AssistId r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 41
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AssistRpcService",
+          "method": "cancelAssist",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/assist/impl/Batch12AssistRpcService.java",
+            "line": 37
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:NOT_OWNER",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/create_assist_request",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/create_assist_request",
+      "clientPath": "/rpc/batch12/create_assist_request",
+      "controllerMethod": "Batch12RpcController.create",
+      "requestDeclaration": "@RequestBody CreateAssist r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 39
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AssistRpcService",
+          "method": "createAssistRequest",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/assist/impl/Batch12AssistRpcService.java",
+            "line": 20
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_RATE",
+        "ERR:BAD_STATUS",
+        "ERR:EXISTS",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/finish_assist",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/finish_assist",
+      "clientPath": "/rpc/batch12/finish_assist",
+      "controllerMethod": "Batch12RpcController.finish",
+      "requestDeclaration": "@RequestBody Handover r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 43
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AssistRpcService",
+          "method": "finishAssist",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/assist/impl/Batch12AssistRpcService.java",
+            "line": 52
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:INSUFFICIENT_BALANCE",
+        "ERR:NOT_ASSISTANT",
+        "ERR:NO_PHOTO",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/get_or_bind_privacy_number",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/get_or_bind_privacy_number",
+      "clientPath": "/rpc/batch12/get_or_bind_privacy_number",
+      "controllerMethod": "Batch12RpcController.privacy",
+      "requestDeclaration": "@RequestBody OrderId r",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 54
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12PrivacyRpcService",
+          "method": "getOrBindPrivacyNumber",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/communication/impl/Batch12PrivacyRpcService.java",
+            "line": 13
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:BAD_STATUS",
+        "err:NOT_PARTY",
+        "err:NO_MY_PHONE",
+        "err:NO_NUMBER",
+        "err:NO_ORDER",
+        "err:NO_PEER",
+        "err:NO_PEER_PHONE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅本地号码池占用/复用，mode=local_pool；没有运营商绑定API闭环。",
+      "successObjectFields": [
+        "binding_id",
+        "virtual_number",
+        "expire_at",
+        "reused",
+        "mode"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "batch12/hangup_order_call",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/hangup_order_call",
+      "clientPath": "/rpc/batch12/hangup_order_call",
+      "controllerMethod": "Batch12RpcController.hangup",
+      "requestDeclaration": "@RequestBody CallId r",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 47
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12CallRpcService",
+          "method": "hangupOrderCall",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/communication/impl/Batch12CallRpcService.java",
+            "line": 35
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:FORBIDDEN",
+        "err:NOT_FOUND"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "应用信令关闭；duration_sec不是供应商真实媒体计费时长，未产生录音回执。",
+      "successObjectFields": [
+        "ok",
+        "duration_sec"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "batch12/match_join_application",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/match_join_application",
+      "clientPath": "/rpc/batch12/match_join_application",
+      "controllerMethod": "Batch12RpcController.match",
+      "requestDeclaration": "@RequestBody MatchJoin r",
+      "returnJavaType": "boolean",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 52
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AccountRpcService",
+          "method": "matchJoinApplication",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/Batch12AccountRpcService.java",
+            "line": 40
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/reject_order_call",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/reject_order_call",
+      "clientPath": "/rpc/batch12/reject_order_call",
+      "controllerMethod": "Batch12RpcController.rejectCall",
+      "requestDeclaration": "@RequestBody RejectCall r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 46
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12CallRpcService",
+          "method": "rejectOrderCall",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/communication/impl/Batch12CallRpcService.java",
+            "line": 29
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:FORBIDDEN",
+        "ERR:NOT_FOUND"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅拒绝/撤回应用信令。"
+    },
+    {
+      "key": "batch12/request_verification_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/request_verification_code",
+      "clientPath": "/rpc/batch12/request_verification_code",
+      "controllerMethod": "Batch12RpcController.code",
+      "requestDeclaration": "@RequestBody VerifyCode r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 53
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AccountRpcService",
+          "method": "requestVerificationCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/Batch12AccountRpcService.java",
+            "line": 49
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "仅生成验证码并入联系方式 outbox，返回OK不等于供应商受理或送达。"
+    },
+    {
+      "key": "batch12/screen_chat_content",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/screen_chat_content",
+      "clientPath": "/rpc/batch12/screen_chat_content",
+      "controllerMethod": "Batch12RpcController.screen",
+      "requestDeclaration": "@RequestBody Comment r",
+      "returnJavaType": "Batch12ContentModerationService.Screening",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 49
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12ContentModerationService",
+          "method": "screenChatContent",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/community/impl/Batch12ContentModerationService.java",
+            "line": 24
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "本地规则引擎筛查，非第三方内容风控调用。",
+      "successObjectFields": [
+        "decision",
+        "codes"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "batch12/start_order_call",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/start_order_call",
+      "clientPath": "/rpc/batch12/start_order_call",
+      "controllerMethod": "Batch12RpcController.startCall",
+      "requestDeclaration": "@RequestBody OrderId r",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 44
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12CallRpcService",
+          "method": "startOrderCall",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/communication/impl/Batch12CallRpcService.java",
+            "line": 12
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:BAD_STATUS",
+        "err:BUSY",
+        "err:NOT_PARTY",
+        "err:NO_ORDER",
+        "err:NO_PEER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "只有订单通话信令和站内通知；无真实RTC入会、媒体连接或录音验签回执。",
+      "successObjectFields": [
+        "call_id",
+        "room_id",
+        "peer"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "batch12/submit_assist_handover_a",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/submit_assist_handover_a",
+      "clientPath": "/rpc/batch12/submit_assist_handover_a",
+      "controllerMethod": "Batch12RpcController.handover",
+      "requestDeclaration": "@RequestBody Handover r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 42
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AssistRpcService",
+          "method": "submitAssistHandoverA",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/assist/impl/Batch12AssistRpcService.java",
+            "line": 44
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:NOT_OWNER",
+        "ERR:NO_PHOTO",
+        "ERR:NO_ROW"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "batch12/submit_carrier_kyc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/submit_carrier_kyc",
+      "clientPath": "/rpc/batch12/submit_carrier_kyc",
+      "controllerMethod": "Batch12RpcController.carrier",
+      "requestDeclaration": "@RequestBody Carrier r",
+      "returnJavaType": "boolean",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 51
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AccountRpcService",
+          "method": "submitCarrierKyc",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/Batch12AccountRpcService.java",
+            "line": 24
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "校验资料与本地验证码后进入人工审核，不含供应商实名核验。"
+    },
+    {
+      "key": "batch12/submit_enterprise_verify",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/batch12/submit_enterprise_verify",
+      "clientPath": "/rpc/batch12/submit_enterprise_verify",
+      "controllerMethod": "Batch12RpcController.enterprise",
+      "requestDeclaration": "@RequestBody Enterprise r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch12RpcController.java",
+        "line": 50
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "Batch12AccountRpcService",
+          "method": "submitEnterpriseVerify",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/Batch12AccountRpcService.java",
+            "line": 12
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_LICENSE",
+        "ERR:NOT_ENTERPRISE",
+        "ERR:NO_NAME",
+        "ERR:NO_PROOF"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "保存执照/附件并提交人工审核，不含工商/持牌服务商自动核验。"
+    },
+    {
+      "key": "close_pk",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/close_pk",
+      "clientPath": "/rpc/close_pk",
+      "controllerMethod": "TradeRpcController.closePk",
+      "requestDeclaration": "@RequestBody DemandBody r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 28
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "closePk",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 86
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:NOT_OWNER",
+        "ERR:NO_DEMAND",
+        "ERR:NO_QUOTES",
+        "ERR:WINDOW_OPEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "confirm_meetup",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/confirm_meetup",
+      "clientPath": "/rpc/confirm_meetup",
+      "controllerMethod": "Batch10RpcController.confirmMeetup",
+      "requestDeclaration": "@RequestBody ConfirmMeetup b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 47
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "MeetupRpcService",
+          "method": "confirmMeetup",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/MeetupRpcService.java",
+            "line": 31
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:CODE_MISMATCH",
+        "ERR:NOT_BUYER",
+        "ERR:NOT_MEETUP",
+        "ERR:NO_CODE_ISSUED",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "confirm_purchase",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/confirm_purchase",
+      "clientPath": "/rpc/confirm_purchase",
+      "controllerMethod": "Batch11RpcController.purchase",
+      "requestDeclaration": "@RequestBody Purchase x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 24
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OrderProofMigrationService",
+          "method": "confirmPurchase",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/OrderProofMigrationService.java",
+            "line": 38
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_EVIDENCE",
+        "ERR:BAD_STATUS",
+        "ERR:DATE_BAR",
+        "ERR:FACE_STALE",
+        "ERR:INSURANCE_NOT_EFFECTIVE",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_",
+        "ERR:NO_FACE",
+        "ERR:NO_LOCATION",
+        "ERR:NO_ORDER",
+        "ERR:NO_TAX_PROOF"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "confirm_ship",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/confirm_ship",
+      "clientPath": "/rpc/confirm_ship",
+      "controllerMethod": "Batch11RpcController.ship",
+      "requestDeclaration": "@RequestBody Shipment x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 25
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OrderProofMigrationService",
+          "method": "confirmShip",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/OrderProofMigrationService.java",
+            "line": 76
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:DISPUTE_OPEN",
+        "ERR:INSURANCE_NOT_EFFECTIVE",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_LABEL",
+        "ERR:NO_LOCATION",
+        "ERR:NO_ORDER",
+        "ERR:NO_TRACKING"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "consume_invite_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/consume_invite_code",
+      "clientPath": "/rpc/consume_invite_code",
+      "controllerMethod": "Batch11RpcController.consumeInvite",
+      "requestDeclaration": "@RequestBody InviteCode x",
+      "returnJavaType": "boolean",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 34
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "IdentityCodesRpcService",
+          "method": "consumeInviteCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/IdentityCodesRpcService.java",
+            "line": 18
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "create_publish_deposit",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/create_publish_deposit",
+      "clientPath": "/rpc/create_publish_deposit",
+      "controllerMethod": "TradeRpcController.createPublish",
+      "requestDeclaration": "@RequestBody PublishBody r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 35
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "createPublishDeposit",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 205
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_AMOUNT",
+        "ERR:INSUFFICIENT_BALANCE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "内部钱包冻结发布保证金；无真实外部收款动作。"
+    },
+    {
+      "key": "get_invite_code_owner",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/get_invite_code_owner",
+      "clientPath": "/rpc/get_invite_code_owner",
+      "controllerMethod": "InviteReadRpcController.owner",
+      "requestDeclaration": "@RequestBody Code body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+        "line": 16
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "InviteReadRpcService",
+          "method": "getInviteCodeOwner",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/growth/impl/InviteReadRpcService.java",
+            "line": 17
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "get_operator_invite_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/get_operator_invite_code",
+      "clientPath": "/rpc/get_operator_invite_code",
+      "controllerMethod": "InviteReadRpcController.operator",
+      "requestDeclaration": "@RequestBody Operator body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+        "line": 17
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "InviteReadRpcService",
+          "method": "getOperatorInviteCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/growth/impl/InviteReadRpcService.java",
+            "line": 20
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "get_order_evidence",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/get_order_evidence",
+      "clientPath": "/rpc/get_order_evidence",
+      "controllerMethod": "Batch10RpcController.orderEvidence",
+      "requestDeclaration": "@RequestBody EvidenceRead b",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 44
+      },
+      "access": "已认证活跃管理员；服务内部校验，不能由请求isAdmin/userId替代",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "EvidencePrivacyRpcService",
+          "method": "getOrderEvidence",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/EvidencePrivacyRpcService.java",
+            "line": 13
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "管理员取证聚合读取；外部图像/生物识别结论不由此产生。",
+      "successObjectFields": [
+        "order",
+        "trip",
+        "faces"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "get_peer_profile",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/get_peer_profile",
+      "clientPath": "/rpc/get_peer_profile",
+      "controllerMethod": "Batch11RpcController.getPeer",
+      "requestDeclaration": "@RequestBody PeerId x",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 32
+      },
+      "access": "本人或存在订单/会话关系的对象",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "PeerRpcService",
+          "method": "getPeerProfile",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/PeerRpcService.java",
+            "line": 22
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:NOT_FOUND",
+        "err:NOT_RELATED"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。",
+      "successObjectFields": [
+        "id",
+        "nickname",
+        "avatar_url",
+        "city",
+        "performance_score",
+        "star_avg",
+        "star_count",
+        "deal_count",
+        "carrier_verify_status",
+        "buyer_verify_status",
+        "carrier_tier",
+        "invite_tier",
+        "user_role",
+        "created_at",
+        "phone_masked"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "identity/change_password",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/identity/change_password",
+      "clientPath": "/rpc/identity/change_password",
+      "controllerMethod": "IdentitySettingsController.changePassword",
+      "requestDeclaration": "@RequestBody ChangePassword input",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+        "line": 18
+      },
+      "access": "已认证本人；另需IdentityProviderClient配置",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "IdentitySettingsService",
+          "method": "changePassword",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/IdentitySettingsServiceImpl.java",
+            "line": 25
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_OLD",
+        "ERR:WEAK_PWD"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "依赖已配置IdentityProviderClient；与/auth/login本地BCrypt登录实现不同，不能据本地登录成功推定可用。"
+    },
+    {
+      "key": "identity/rebind_contact",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/identity/rebind_contact",
+      "clientPath": "/rpc/identity/rebind_contact",
+      "controllerMethod": "IdentitySettingsController.rebind",
+      "requestDeclaration": "@RequestBody RebindContact input",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+        "line": 26
+      },
+      "access": "已认证本人；另需IdentityProviderClient配置",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "IdentitySettingsService",
+          "method": "rebindContact",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/IdentitySettingsServiceImpl.java",
+            "line": 47
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_CHANNEL",
+        "ERR:BAD_CODE",
+        "ERR:BAD_TARGET",
+        "ERR:NO_AUTH",
+        "ERR:TAKEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "依赖已配置IdentityProviderClient、目标唯一性和真实OTP；无provider时不可承诺换绑完成。"
+    },
+    {
+      "key": "identity/reset_own_password_by_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/identity/reset_own_password_by_code",
+      "clientPath": "/rpc/identity/reset_own_password_by_code",
+      "controllerMethod": "IdentitySettingsController.resetPassword",
+      "requestDeclaration": "@RequestBody ResetOwnPassword input",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/IdentitySettingsController.java",
+        "line": 22
+      },
+      "access": "已认证本人；另需IdentityProviderClient配置",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "IdentitySettingsService",
+          "method": "resetOwnPasswordByCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/IdentitySettingsServiceImpl.java",
+            "line": 31
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_CODE",
+        "ERR:TARGET_MISMATCH",
+        "ERR:WEAK_PWD"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "依赖已配置IdentityProviderClient及当前用户匹配的真实OTP，非公开任意用户重置。"
+    },
+    {
+      "key": "issue_face_challenge",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/issue_face_challenge",
+      "clientPath": "/rpc/issue_face_challenge",
+      "controllerMethod": "KycRpcController.challenge",
+      "requestDeclaration": "@RequestBody FaceIssue body",
+      "returnJavaType": "KycRpcMigrationService.FaceChallenge",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+        "line": 25
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "KycRpcMigrationService",
+          "method": "issueFaceChallenge",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+            "line": 58
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "生成应用内留证口令，返回 challengeId/code；不是人脸核验供应商认证。",
+      "successObjectFields": [
+        "challengeId",
+        "code"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "issue_meetup_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/issue_meetup_code",
+      "clientPath": "/rpc/issue_meetup_code",
+      "controllerMethod": "Batch10RpcController.issueMeetup",
+      "requestDeclaration": "@RequestBody IssueMeetup b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 46
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "MeetupRpcService",
+          "method": "issueMeetupCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/MeetupRpcService.java",
+            "line": 18
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:NOT_MEETUP",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "list_team_members",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/list_team_members",
+      "clientPath": "/rpc/list_team_members",
+      "controllerMethod": "InviteReadRpcController.members",
+      "requestDeclaration": "@RequestBody Root body",
+      "returnJavaType": "List<Map<String,Object>>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/InviteReadRpcController.java",
+        "line": 15
+      },
+      "access": "本人root或管理员；非授权root返回空数组",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "InviteReadRpcService",
+          "method": "listTeamMembers",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/growth/impl/InviteReadRpcService.java",
+            "line": 12
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "log_privacy_call",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/log_privacy_call",
+      "clientPath": "/rpc/log_privacy_call",
+      "controllerMethod": "Batch10RpcController.callLog",
+      "requestDeclaration": "@RequestBody PrivacyCall b",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 45
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "EvidencePrivacyRpcService",
+          "method": "logPrivacyCall",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/EvidencePrivacyRpcService.java",
+            "line": 23
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:BAD_RESULT",
+        "err:NOT_PARTY",
+        "err:NO_BINDING"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "客户端提交 dialed/connected/unreachable 日志；不是运营商回执或真实通话证明。",
+      "successObjectFields": [
+        "ok",
+        "log_id"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "open_peer_thread",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/open_peer_thread",
+      "clientPath": "/rpc/open_peer_thread",
+      "controllerMethod": "Batch11RpcController.openThread",
+      "requestDeclaration": "@RequestBody OrderId x",
+      "returnJavaType": "Map<String,Object>",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 31
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "PeerRpcService",
+          "method": "openPeerThread",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/PeerRpcService.java",
+            "line": 11
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:NOT_PARTY",
+        "err:NO_ORDER",
+        "err:NO_PEER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。",
+      "successObjectFields": [
+        "thread_id",
+        "peer_id",
+        "peer_nickname",
+        "reused"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "propose_shipping_fee",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/propose_shipping_fee",
+      "clientPath": "/rpc/propose_shipping_fee",
+      "controllerMethod": "Batch10RpcController.propose",
+      "requestDeclaration": "@RequestBody ProposeFee b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 48
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "ShippingNegotiationService",
+          "method": "proposeShippingFee",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/ShippingNegotiationService.java",
+            "line": 16
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY_AGREED",
+        "ERR:BAD_FEE",
+        "ERR:BAD_STATUS",
+        "ERR:NOT_VENDOR",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "quote_pk_award",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/quote_pk_award",
+      "clientPath": "/rpc/quote_pk_award",
+      "controllerMethod": "TradeRpcController.quoteAward",
+      "requestDeclaration": "@RequestBody AwardQuoteBody r",
+      "returnJavaType": "Object",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 34
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "quotePkAward",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 193
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "err:BAD_STATUS",
+        "err:BUYER_VERIFICATION_REQUIRED",
+        "err:NOT_OWNER",
+        "err:NO_QUOTE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "返回人民币托管报价；新版本平台insurancePremium=0，保险由外部机构报价并直接收费。",
+      "successObjectFields": [
+        "goodsAmount",
+        "serviceFee",
+        "insurancePremium",
+        "buyerEscrow",
+        "vendorDeposit",
+        "currency",
+        "pricingVersion"
+      ],
+      "successObjectFieldsBasis": "manually_checked_explicit_service_return_or_record; failure_branch_can_return_err"
+    },
+    {
+      "key": "record_arrival_proof",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/record_arrival_proof",
+      "clientPath": "/rpc/record_arrival_proof",
+      "controllerMethod": "Batch10RpcController.arrival",
+      "requestDeclaration": "@RequestBody ArrivalProof b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 50
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OperationsRpcService",
+          "method": "recordArrivalProof",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/operations/impl/OperationsRpcService.java",
+            "line": 26
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY_DONE",
+        "ERR:NOT_OWNER",
+        "ERR:NO_LOCATION",
+        "ERR:NO_SNAPSHOT",
+        "ERR:NO_TRIP"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "record_boarding_proof",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/record_boarding_proof",
+      "clientPath": "/rpc/record_boarding_proof",
+      "controllerMethod": "Batch11RpcController.boarding",
+      "requestDeclaration": "@RequestBody Boarding x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 26
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OrderProofMigrationService",
+          "method": "recordBoardingProof",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/OrderProofMigrationService.java",
+            "line": 92
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:NOT_OWNER",
+        "ERR:NOT_VERIFIED",
+        "ERR:NO_SNAPSHOT",
+        "ERR:NO_TRIP"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "record_delivery_proof",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/record_delivery_proof",
+      "clientPath": "/rpc/record_delivery_proof",
+      "controllerMethod": "Batch11RpcController.delivery",
+      "requestDeclaration": "@RequestBody Delivery x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 27
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OrderProofMigrationService",
+          "method": "recordDeliveryProof",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/OrderProofMigrationService.java",
+            "line": 101
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:FACE_MISMATCH",
+        "ERR:FACE_STALE",
+        "ERR:NOT_BUYER",
+        "ERR:NO_FACE",
+        "ERR:NO_LOCATION",
+        "ERR:NO_ORDER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "record_face_verification",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/record_face_verification",
+      "clientPath": "/rpc/record_face_verification",
+      "controllerMethod": "KycRpcController.record",
+      "requestDeclaration": "@RequestBody FaceRecord body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+        "line": 28
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "KycRpcMigrationService",
+          "method": "recordFaceVerification",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+            "line": 68
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "保存截图、设备和挑战留证；记录ID不表示供应商人脸比对通过。"
+    },
+    {
+      "key": "refund_publish_deposit",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/refund_publish_deposit",
+      "clientPath": "/rpc/refund_publish_deposit",
+      "controllerMethod": "TradeRpcController.refundPublish",
+      "requestDeclaration": "",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 38
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "refundPublishDeposit",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 216
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:HAS_UNFINISHED:",
+        "ERR:NO_FROZEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "内部钱包解冻发布保证金；无原支付渠道退款动作。"
+    },
+    {
+      "key": "request_cancel_v2",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/request_cancel_v2",
+      "clientPath": "/rpc/request_cancel_v2",
+      "controllerMethod": "Batch11RpcController.cancel",
+      "requestDeclaration": "@RequestBody Cancel x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 29
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "CancellationRpcService",
+          "method": "requestCancelV2",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/CancellationRpcService.java",
+            "line": 32
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_PROOF",
+        "ERR:BAD_STATUS",
+        "ERR:BUYER_NOT_FROZEN",
+        "ERR:DISPUTE_OPEN",
+        "ERR:NOT_PARTY",
+        "ERR:NO_ORDER",
+        "ERR:VENDOR_NOT_FROZEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "request_invoice",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/request_invoice",
+      "clientPath": "/rpc/request_invoice",
+      "controllerMethod": "Batch10RpcController.requestInvoice",
+      "requestDeclaration": "@RequestBody InvoiceRequest b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 33
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "InvoiceRpcService",
+          "method": "requestInvoice",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/finance/impl/InvoiceRpcService.java",
+            "line": 16
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:ALREADY",
+        "ERR:BAD_AMOUNT",
+        "ERR:BAD_EMAIL",
+        "ERR:BAD_KIND",
+        "ERR:BAD_STATUS",
+        "ERR:NOT_BUYER",
+        "ERR:NO_ORDER",
+        "ERR:NO_TAXNO",
+        "ERR:NO_TITLE"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅登记开票申请；没有税务服务商的实际开具、验真、交付回执。"
+    },
+    {
+      "key": "request_no_boarding_refund",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/request_no_boarding_refund",
+      "clientPath": "/rpc/request_no_boarding_refund",
+      "controllerMethod": "Batch11RpcController.refund",
+      "requestDeclaration": "@RequestBody OrderId x",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 28
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "OrderProofMigrationService",
+          "method": "requestNoBoardingRefund",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/OrderProofMigrationService.java",
+            "line": 112
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_STATUS",
+        "ERR:BOARDING_DONE",
+        "ERR:DISPUTE_OPEN",
+        "ERR:NOT_BUYER",
+        "ERR:NO_ORDER",
+        "ERR:NO_TRIP",
+        "ERR:WINDOW_OPEN"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "respond_shipping_fee",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/respond_shipping_fee",
+      "clientPath": "/rpc/respond_shipping_fee",
+      "controllerMethod": "Batch10RpcController.respond",
+      "requestDeclaration": "@RequestBody RespondFee b",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch10RpcController.java",
+        "line": 49
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "ShippingNegotiationService",
+          "method": "respondShippingFee",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/order_fulfillment/impl/ShippingNegotiationService.java",
+            "line": 29
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_FEE",
+        "ERR:BAD_STATUS",
+        "ERR:ESCROW_NOT_FROZEN",
+        "ERR:INSUFFICIENT_BALANCE",
+        "ERR:NOT_BUYER",
+        "ERR:NO_ORDER",
+        "ERR:SHIPPING_FEE_CHANGED_RECONFIRM"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "submit_buyer_kyc",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/submit_buyer_kyc",
+      "clientPath": "/rpc/submit_buyer_kyc",
+      "controllerMethod": "KycRpcController.submit",
+      "requestDeclaration": "@RequestBody BuyerKyc body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+        "line": 16
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "KycRpcMigrationService",
+          "method": "submitBuyerKyc",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+            "line": 20
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_IDCARD",
+        "ERR:BAD_NAME",
+        "ERR:NO_BACK",
+        "ERR:NO_FRONT",
+        "ERR:NO_HOLDING"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "提交人工审核资料，不能当作真实第三方实名通过。"
+    },
+    {
+      "key": "submit_pk_quote",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/submit_pk_quote",
+      "clientPath": "/rpc/submit_pk_quote",
+      "controllerMethod": "TradeRpcController.submitQuote",
+      "requestDeclaration": "@RequestBody QuoteBody r",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java",
+        "line": 25
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "TradeRpcMigrationService",
+          "method": "submitPkQuote",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/trading/impl/TradeRpcMigrationService.java",
+            "line": 63
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_DAYS",
+        "ERR:BAD_PRICE",
+        "ERR:CLOSED",
+        "ERR:LINE_MISMATCH",
+        "ERR:NOT_CARRIER",
+        "ERR:NO_DEMAND",
+        "ERR:SELF_QUOTE",
+        "ERR:WINDOW_OVER"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    },
+    {
+      "key": "upsert_kyc_doc_with_challenge",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/upsert_kyc_doc_with_challenge",
+      "clientPath": "/rpc/upsert_kyc_doc_with_challenge",
+      "controllerMethod": "KycRpcController.doc",
+      "requestDeclaration": "@RequestBody KycDoc body",
+      "returnJavaType": "String",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/KycRpcController.java",
+        "line": 19
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "KycRpcMigrationService",
+          "method": "upsertKycDocWithChallenge",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/KycRpcMigrationService.java",
+            "line": 34
+          }
+        }
+      ],
+      "literalFailureMarkers": [
+        "ERR:BAD_TYPE",
+        "ERR:BAD_URL"
+      ],
+      "failureEnumerationComplete": false,
+      "boundary": "仅保存认证资料与留证口令；人工/正式供应商认证另行进行。"
+    },
+    {
+      "key": "verify_contact_code",
+      "method": "POST",
+      "canonicalPath": "/api/rpc/verify_contact_code",
+      "clientPath": "/rpc/verify_contact_code",
+      "controllerMethod": "Batch11RpcController.verifyContact",
+      "requestDeclaration": "@RequestBody VerifyContact x",
+      "returnJavaType": "boolean",
+      "source": {
+        "path": "server/src/main/java/com/kuaixietech/controller/Batch11RpcController.java",
+        "line": 33
+      },
+      "access": "已认证活跃用户；角色、对象归属与状态按实际service逐项校验",
+      "implementationState": "explicit_http_route_with_local_service; real_acceptance_pending",
+      "delegates": [
+        {
+          "type": "IdentityCodesRpcService",
+          "method": "verifyContactCode",
+          "source": {
+            "path": "server/src/main/java/com/kuaixietech/service/account/impl/IdentityCodesRpcService.java",
+            "line": 10
+          }
+        }
+      ],
+      "literalFailureMarkers": [],
+      "failureEnumerationComplete": false,
+      "boundary": "存在显式controller到service调用；需按状态/权限/持久化与真实回执验收，不能仅凭路由认定业务闭环。"
+    }
+  ],
+  "unmappedClientLiteralRoutes": []
+}

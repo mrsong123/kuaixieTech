@@ -115,7 +115,7 @@ class EmailDeliveryTest {
         when(config.runtime("aliyun", "directmail")).thenReturn(fields());
         when(store.claim()).thenReturn(Map.of("id", 9L, "target", "buyer@example.net", "code", "123456", "remaining_minutes", 2));
         when(protocols.send(anyMap(), any(), any(), anyInt())).thenThrow(new IllegalStateException("timeout"));
-        new EmailOutboxDispatcher(config, store, protocols).run();
+        assertEquals("EMAIL_DISPATCH_UNCONFIRMED",assertThrows(IllegalStateException.class,()->new EmailOutboxDispatcher(config, store, protocols).run()).getMessage());
         verify(store, times(1)).claim();
         verify(store, never()).result(any(), any(), any());
         verify(store, never()).invalid(any());
@@ -162,8 +162,10 @@ class EmailDeliveryTest {
         var legacy = mock(LegacyCloudFunctionBridge.class);
         when(sms.configured()).thenThrow(new IllegalStateException("unreadable secret"));
         when(email.configured()).thenReturn(true);
-        var error = assertThrows(IllegalStateException.class, () -> new ContactCodeDeliveryScheduler(legacy, sms, email, true).run());
-        assertEquals("CONTACT_DELIVERY_PARTIALLY_UNAVAILABLE", error.getMessage());
+        var scheduler=new ContactCodeDeliveryScheduler(legacy,sms,email,true);
+        assertDoesNotThrow(scheduler::run);
+        assertEquals("degraded",scheduler.snapshot().state());
+        assertEquals("configuration",scheduler.snapshot().sms().stage());
         verify(email).run();
         verifyNoInteractions(legacy);
     }
@@ -184,7 +186,10 @@ class EmailDeliveryTest {
         when(sms.configured()).thenReturn(true);
         when(email.configured()).thenReturn(true);
         doThrow(new IllegalStateException("provider unavailable")).when(sms).run();
-        assertThrows(IllegalStateException.class, () -> new ContactCodeDeliveryScheduler(legacy, sms, email, true).run());
+        var scheduler=new ContactCodeDeliveryScheduler(legacy,sms,email,true);
+        assertDoesNotThrow(scheduler::run);
+        assertEquals("degraded",scheduler.snapshot().state());
+        assertEquals("dispatch",scheduler.snapshot().sms().stage());
         verify(email).run();
         verifyNoInteractions(legacy);
     }

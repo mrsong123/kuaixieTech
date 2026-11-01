@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {computed,ref,watch} from 'vue';
+import {computed,ref,watch,onBeforeUnmount} from 'vue';
+import {getBearer,subscribeSession} from '@kuaixie/sdk';
 import {t,uiErrorMessage} from '@kuaixie/i18n';
 import SupportAgentPanel from '../components/SupportAgentPanel.vue';
 import PortalModerationPanel from '../components/PortalModerationPanel.vue';
 import {ADMIN_GROUPS} from '../console/tabs';
 import {useAdminContext} from '../stores/context';
-const {api,section,stats,statsError,busy,loadStats}=useAdminContext();
+const {api,section,stats,statsError,busy,loadStats,sessionScope}=useAdminContext();
 const rows=ref<Record<string,unknown>[]>([]);
 const loadError=ref('');
 const loading=ref(false);
 const keyword=ref('');
 const notice=ref('');
-const invoiceNo=ref<Record<string,string>>({});
 const catName=ref('');
 const inviteCode=ref('');
 const inviteNote=ref('');
@@ -32,6 +32,9 @@ const commissions=ref<Record<string,unknown>[]>([]);
 const tiers=ref<Record<string,unknown>[]>([]);
 const evidenceText=ref('');
 const openKey=ref('');
+const pageSize=80,pageOffset=ref(0),hasNextPage=ref(false),filterPending=ref(false);
+const paged=computed(()=>!!listKind.value);
+const pageNumber=computed(()=>Math.floor(pageOffset.value/pageSize)+1);
 
 const isConsole=computed(()=>ADMIN_GROUPS.some(g=>g.tabs.some(tb=>tb.key===section.value)));
 const listKind=computed(()=>{
@@ -44,44 +47,35 @@ function cell(row:Record<string,unknown>,k:string){const v=row[k];if(v==null)ret
 function ask(title:string,fallback=''){const v=window.prompt(title,fallback);return v==null?null:v.trim()}
 function requireNote(){const n=ask(t('admin.console.noteRequired'));if(!n)throw new Error(t('admin.console.noteRequired'));return n}
 function requireAmount(key:string){const n=Number(ask(t(key)));if(!Number.isFinite(n)||n===0)throw new Error(t('admin.console.noteRequired'));return n}
-async function showEvidence(id:unknown){
-  const ev=await api.rpc('get_order_evidence',{orderId:id});
-  evidenceText.value=JSON.stringify(ev,null,2);
-}
+const mutationBusy=ref(false);let alive=true,listVersion=0,evidenceVersion=0;
+function capture(){return {token:getBearer(),session:sessionScope.value,section:section.value}}
+function current(owner:ReturnType<typeof capture>){return alive&&owner.token===getBearer()&&owner.session===sessionScope.value&&owner.section===section.value}
+function clearPrivate(){listVersion++;evidenceVersion++;rows.value=[];commissions.value=[];tiers.value=[];evidenceText.value='';notice.value='';loadError.value='';loading.value=false;keyword.value='';pageOffset.value=0;hasNextPage.value=false;filterPending.value=false;openKey.value='';bcTitle.value='';bcBody.value='';inviteNote.value='';recipeNote.value=''}
+const unsubscribe=subscribeSession(clearPrivate);
+onBeforeUnmount(()=>{alive=false;unsubscribe();clearPrivate()});
+async function showEvidence(id:unknown){const owner=capture(),version=++evidenceVersion;const ev=await api.rpc('get_order_evidence',{orderId:id});if(current(owner)&&version===evidenceVersion)evidenceText.value=JSON.stringify(ev,null,2)}
 async function run(fn:()=>Promise<unknown>,okKey='admin.console.actOk'){
-  notice.value='';
-  try{
-    const r=await fn();
-    if(typeof r==='string'&&r.startsWith('ERR')) throw new Error(r);
-    notice.value=t(okKey)+(typeof r==='string'&&r.startsWith('OK')?' '+r:'');
-    await refresh();
-    await loadStats();
-  }catch(e){notice.value=uiErrorMessage(e)}
+ if(!alive||mutationBusy.value||!getBearer())return;
+ const owner=capture();mutationBusy.value=true;notice.value='';
+ try{const result=await fn();if(!current(owner))return;if(typeof result==='string'&&result.startsWith('ERR'))throw new Error(result);notice.value=t(okKey)+(typeof result==='string'&&result.startsWith('OK')?' '+result:'');await refresh();if(current(owner))await loadStats()}
+ catch(e){if(current(owner))notice.value=uiErrorMessage(e)}finally{if(alive)mutationBusy.value=false}
 }
 async function refresh(){
-  loadError.value='';
-  const kind=listKind.value;
-  if(section.value==='overview'){await loadStats();return}
-  if(section.value==='distribution'){
-    loading.value=true;
-    try{
-      commissions.value=await api.rpc('admin_commission_rows',{limit:80}) as Record<string,unknown>[];
-      tiers.value=await api.rpc('admin_invite_tier_distribution',{}) as Record<string,unknown>[];
-    }catch(e){loadError.value=uiErrorMessage(e)}finally{loading.value=false}
-    return;
-  }
-  if(section.value==='violations'){
-    loading.value=true;
-    try{rows.value=await api.rpc('admin_list_violations',{limit:80}) as Record<string,unknown>[]}
-    catch(e){loadError.value=uiErrorMessage(e);rows.value=[]}finally{loading.value=false}
-    return;
-  }
-  if(!kind){rows.value=[];return}
-  loading.value=true;
-  try{rows.value=await api.rpc('admin_console_list',{kind,limit:80,keyword:keyword.value}) as Record<string,unknown>[]}
-  catch(e){loadError.value=uiErrorMessage(e);rows.value=[]}finally{loading.value=false}
+ if(!alive||!getBearer())return;const owner=capture(),version=++listVersion,kind=listKind.value,offset=pageOffset.value,query=keyword.value;loadError.value='';filterPending.value=false;
+ if(owner.section==='overview'){await loadStats();return}
+ if(!kind&&!['distribution','violations'].includes(owner.section)){rows.value=[];return}
+ loading.value=true;
+ try{
+  if(owner.section==='distribution'){const [entries,levels]=await Promise.all([api.rpc('admin_commission_rows',{limit:80}),api.rpc('admin_invite_tier_distribution',{})]);if(!current(owner)||version!==listVersion)return;commissions.value=entries as Record<string,unknown>[];tiers.value=levels as Record<string,unknown>[]}
+  else{const result=owner.section==='violations'?await api.rpc('admin_list_violations',{limit:80}):await api.rpc('admin_console_list',{kind,limit:pageSize+1,offset,keyword:query});if(!current(owner)||version!==listVersion||offset!==pageOffset.value||query!==keyword.value)return;const values=result as Record<string,unknown>[];hasNextPage.value=!!kind&&values.length>pageSize;rows.value=kind?values.slice(0,pageSize):values}
+ }catch(e){if(current(owner)&&version===listVersion){loadError.value=uiErrorMessage(e);rows.value=[];hasNextPage.value=false}}finally{if(current(owner)&&version===listVersion)loading.value=false}
 }
-watch(()=>section.value,()=>{keyword.value='';notice.value='';openKey.value='';void refresh()},{immediate:true});
+async function changePage(direction:-1|1){
+ if(!paged.value||loading.value||mutationBusy.value||direction===1&&!hasNextPage.value||direction===-1&&pageOffset.value===0)return;
+ pageOffset.value=Math.max(0,pageOffset.value+direction*pageSize);rows.value=[];evidenceText.value='';openKey.value='';await refresh();
+}
+watch(keyword,()=>{if(section.value!=='users')return;listVersion++;pageOffset.value=0;hasNextPage.value=false;rows.value=[];evidenceText.value='';openKey.value='';loading.value=false;filterPending.value=true},{flush:'sync'});
+watch(()=>section.value,()=>{clearPrivate();void refresh()},{immediate:true});
 const moneyKeys=['gmv_total','gmv_week','service_fee_mtd','commission_mtd'];
 const countKeys=['users_total','users_week','carriers_approved','buyers_verified','trips_active','orders_open','orders_done'];
 function metric(k:string){return t(k==='todo_products'?'admin.metric.pendingProducts':'v15.adminMetric.'+k)}
@@ -92,24 +86,24 @@ const COLUMNS:Record<string,string[]>={
   enterpriseKyc:['nickname','enterprise_name','enterprise_verify_status'],
   trips:['origin_city','destination','depart_date','verify_status','visibility'],
   orders:['order_no','item_name','status','goods_amount'],
-  cancels:['order_id','status','reason'],
-  disputes:['order_id','stage','status'],
-  invoices:['status','amount','title'],
+  cancels:['order_id','status','reason_detail'],
+  disputes:['order_id','stage','type'],
+  invoices:['status','amount','title_name'],
   demands:['title','city','visibility','status','expect_price'],
   users:['nickname','phone','user_role','banned_until'],
-  products:['name','shop_kind','shop_name','status','price'],
+  products:['name','region','stock','status','price'],
   categories:['name','level','active'],
-  community:['caption','status','kind'],
+  community:['title','status','kind'],
   pools:['destination','pool_status','depart_date'],
   withdrawals:['user_id','amount','status'],
-  errorLogs:['kind','status','created_at'],
-  channelConfigs:['name','enabled'],
+  errorLogs:['scope','message','status','created_at'],
+  channelConfigs:['channel_type','provider','enabled'],
   locales:['code','native_name','active'],
   proofRecipes:['trip_type','transport_mode','active'],
   finance:['kind','amount','created_at'],
   notifyQueue:['kind','title','created_at'],
   privacyPool:['virtual_number','status'],
-  invite:['code','note','used_count'],
+  invite:['code','note','used_by'],
   broadcast:['title','created_at'],
   violations:['kind','reviewed','created_at'],
 };
@@ -122,7 +116,8 @@ function cols(row:Record<string,unknown>){
 function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=openKey.value===k?'':k}
 </script>
 <template>
- <div v-if="isConsole" class="console-view">
+ <div v-if="isConsole" class="console-view" :aria-busy="mutationBusy">
+ <fieldset class="console-action-scope" :disabled="mutationBusy">
   <p v-if="notice" class="console-notice">{{ notice }}</p>
   <pre v-if="evidenceText" class="row-card">{{ evidenceText }}</pre>
   <p v-if="loadError" class="console-error">{{ loadError }}</p>
@@ -142,6 +137,7 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
   <SupportAgentPanel v-else-if="section==='support'"/>
 
   <template v-else-if="section==='distribution'">
+    <p class="console-muted">{{$t('admin.pagination.specializedLimit')}}</p>
     <div class="stat-grid">
       <div v-for="row in tiers" :key="String(row.tier)" class="stat-card"><span>{{ row.tier }}</span><strong>{{ row.people ?? 0 }}</strong><small>{{ row.paid_cny }}</small></div>
     </div>
@@ -152,7 +148,7 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
   <template v-else>
     <div class="console-toolbar">
       <button class="soft-button" :disabled="loading" @click="refresh">{{ $t('admin.console.refresh') }}</button>
-      <input v-if="section==='users'" v-model="keyword" :placeholder="$t('admin.console.search')" @keydown.enter="refresh"/>
+      <input v-if="section==='users'" v-model="keyword" :placeholder="$t('admin.console.search')" @keydown.enter="refresh"/><button v-if="section==='users'" class="soft-button" :disabled="loading" @click="refresh">{{$t('admin.pagination.search')}}</button>
     </div>
     <p v-if="section==='withdrawals'" class="console-warn">{{ $t('admin.console.withdrawReadonly') }}</p>
     <p v-if="section==='channelConfigs'" class="console-warn">{{ $t('admin.console.channelSecretOmit') }}</p>
@@ -195,7 +191,14 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
       <button class="primary-button" @click="run(()=>api.rpc('admin_release_privacy',{}))">{{ $t('admin.console.releasePrivacy') }}</button>
     </section>
 
-    <p v-if="!rows.length && !loading" class="console-muted">{{ $t('admin.console.empty') }}</p>
+    <p v-if="filterPending" class="console-muted">{{$t('admin.pagination.filterPending')}}</p>
+    <p v-if="!rows.length && !loading && !loadError && !filterPending" class="console-muted">{{ $t('admin.console.empty') }}</p>
+    <nav v-if="paged" class="console-pagination" :aria-label="$t('admin.pagination.label')">
+      <button type="button" class="soft-button" :disabled="loading||mutationBusy||pageOffset===0||filterPending" @click="changePage(-1)">{{$t('admin.pagination.previous')}}</button>
+      <span>{{$t('admin.pagination.page',{page:pageNumber})}} · {{$t('admin.pagination.rows',{count:rows.length})}}</span>
+      <button type="button" class="soft-button" :disabled="loading||mutationBusy||!hasNextPage||filterPending" @click="changePage(1)">{{$t('admin.pagination.next')}}</button>
+    </nav>
+    <p v-else-if="section==='violations'" class="console-muted">{{$t('admin.pagination.specializedLimit')}}</p>
     <table v-if="rows.length" class="desk-table">
       <thead>
         <tr>
@@ -231,10 +234,7 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
           <button class="danger-button" @click="run(()=>api.rpc('admin_set_trip_verify',{tripId:row.id,approve:false,note:t('admin.console.reject')}))">{{ $t('admin.console.reject') }}</button>
         </template>
         <button v-if="section==='orders'" class="soft-button" @click="run(()=>showEvidence(row.id))">{{ $t('admin.console.reviewChain') }}</button>
-        <template v-if="section==='products' && row.status==='pending'">
-          <button class="primary-button" @click="run(()=>api.rpc('admin_set_product_status',{id:row.id,approve:true,note:''}))">{{ $t('admin.console.approve') }}</button>
-          <button class="danger-button" @click="run(()=>api.rpc('admin_set_product_status',{id:row.id,approve:false,note:requireNote()}))">{{ $t('admin.console.reject') }}</button>
-        </template>
+        <p v-if="section==='products' && row.status==='pending'" class="console-warn">{{ $t('admin.console.productReviewUnavailable') }}</p>
         <button v-if="section==='products' && row.status==='on'" class="danger-button" @click="run(()=>api.rpc('admin_force_off_shelf',{id:row.id}))">{{ $t('admin.console.forceOff') }}</button>
         <button v-if="section==='categories' && row.active" class="danger-button" @click="run(()=>api.rpc('admin_deactivate_category',{id:row.id}))">{{ $t('admin.console.deactivate') }}</button>
         <button v-if="section==='proofRecipes'" class="soft-button" @click="run(()=>api.rpc('admin_toggle_recipe',{id:row.id,active:!row.active}))">{{ $t('admin.console.toggleRecipe') }}</button>
@@ -243,8 +243,8 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
           <button class="danger-button" @click="run(()=>api.rpc('admin_resolve_cancel',{orderId:row.order_id,approve:false,reason:requireNote()}))">{{ $t('admin.console.reject') }}</button>
         </template>
         <template v-if="section==='invoices' && row.status==='pending'">
-          <input v-model="invoiceNo[String(row.id)]" :placeholder="$t('admin.console.invoiceNo')"/>
-          <button class="primary-button" @click="run(()=>api.rpc('admin_issue_invoice',{invoiceId:row.id,approve:true,invoiceNo:invoiceNo[String(row.id)],fileUrl:'',reason:''}))">{{ $t('admin.console.issueInvoice') }}</button>
+
+          <p class="console-warn">{{ $t('admin.console.invoiceProviderUnavailable') }}</p>
           <button class="danger-button" @click="run(()=>api.rpc('admin_issue_invoice',{invoiceId:row.id,approve:false,invoiceNo:'',fileUrl:'',reason:t('admin.console.reject')}))">{{ $t('admin.console.reject') }}</button>
         </template>
         <button v-if="section==='violations' && !row.reviewed" class="primary-button" @click="run(()=>api.rpc('admin_review_violation',{id:row.id}))">{{ $t('admin.console.markReviewed') }}</button>
@@ -253,8 +253,8 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
           <button class="danger-button" @click="run(()=>api.rpc('admin_dissolve_pool',{tripId:row.id,reason:requireNote()}))">{{ $t('admin.console.dissolve') }}</button>
         </template>
         <template v-if="section==='demands' && row.status==='open' && row.visibility==='hidden'">
-          <button class="primary-button" @click="run(()=>api.rpc('admin_set_demand_visibility',{demandId:row.id,approve:true,note:''}))">{{ $t('admin.console.approve') }}</button>
-          <button class="danger-button" @click="run(()=>api.rpc('admin_set_demand_visibility',{demandId:row.id,approve:false,note:requireNote()}))">{{ $t('admin.console.reject') }}</button>
+          <button class="primary-button" @click="run(()=>api.portal.adminReviewDemand(String(row.id),true))">{{ $t('admin.console.approve') }}</button>
+          <button class="danger-button" @click="run(()=>api.portal.adminReviewDemand(String(row.id),false))">{{ $t('admin.console.reject') }}</button>
         </template>
         <button v-if="section==='demands' && (row.status==='open'||row.status==='awarded_pending')" class="danger-button" @click="run(()=>api.rpc('admin_close_demand',{demandId:row.id,reason:requireNote()}))">{{ $t('admin.console.closeDemand') }}</button>
         <button v-if="section==='community' && row.status!=='removed'" class="danger-button" @click="run(()=>api.rpc('admin_remove_post',{postId:row.id,reason:requireNote()}))">{{ $t('admin.console.removePost') }}</button>
@@ -277,5 +277,11 @@ function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=op
       </tbody>
     </table>
   </template>
+ </fieldset>
  </div>
 </template>
+
+<style scoped>
+.console-action-scope{border:0;padding:0;margin:0;min-width:0}
+.console-pagination{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}
+</style>

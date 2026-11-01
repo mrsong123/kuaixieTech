@@ -71,7 +71,7 @@ const {prefs,profile,wallet,unread,loading,error,signedIn,nickname,score,verifie
       <MineRow icon="i-mdi-email-open-outline" :label="$t('mine.joinApply')" @press="select('inviteApply')"/>
     </MineGroup>
     <MineGroup :title="$t('mine.groupOther')">
-      <MineRow icon="i-mdi-view-grid-outline" :label="$t('fast.myServices')" @press="select('services')"/>
+      <MineRow icon="i-mdi-format-list-bulleted" :label="$t('fast.myServices')" @press="select('services')"/>
       <MineRow v-if="isAdmin" icon="i-mdi-shield-account" :label="$t('mine.adminEntry')" :desc="$t('mine.adminDesc')" @press="select('admin')"/>
       <MineRow icon="i-mdi-palette-swatch-outline" :label="$t('settings.appearance')" :desc="$t('mine.appearanceDesc')" @press="select('appearance')"/>
       <MineRow icon="i-mdi-cog-outline" :label="$t('mine.settingsRow')" :desc="$t('mine.settingsDesc')" @press="select('settings')"/>

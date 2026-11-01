@@ -9,13 +9,20 @@ for(const [key,val] of Object.entries(styleBaseline.values)){
  const found=tokens.match(new RegExp('--'+key+'\\s*:\\s*([^;]+);'));
  if(!found||minify(found[1])!==minify(val))throw Error('Original CSS token drift: '+key);
 }
-const meooCss=styleBaseline.source && fs.existsSync(styleBaseline.source)?fs.readFileSync(styleBaseline.source,'utf8'):'';
-if(!meooCss)throw Error('Visual source template missing: '+styleBaseline.source);
-for(const [key,val] of Object.entries(styleBaseline.values)){
- const found=meooCss.match(new RegExp('--'+key+'\\s*:\\s*([^;]+);'));
- if(!found||minify(found[1])!==minify(val))throw Error('Downloads meoo token drift: '+key);
-}
-console.log('OK Original CSS token exact comparison: '+Object.keys(styleBaseline.values).length+' tokens (UniApp + Downloads meoo)');
+const sourceArg=process.argv.indexOf('--source');
+if(sourceArg>=0&&!process.argv[sourceArg+1])throw Error('--source requires an original CSS file path');
+const originalSource=sourceArg>=0?path.resolve(process.argv[sourceArg+1]):styleBaseline.source;
+const requireOriginal=process.argv.includes('--require-original-source')||sourceArg>=0;
+if(originalSource&&fs.existsSync(originalSource)){
+ const meooCss=fs.readFileSync(originalSource,'utf8');
+ for(const [key,val]of Object.entries(styleBaseline.values)){
+  const found=meooCss.match(new RegExp('--'+key+'\\s*:\\s*([^;]+);'));
+  if(!found||minify(found[1])!==minify(val))throw Error('Original reference token drift: '+key);
+ }
+ console.log('HISTORICAL_SOURCE_VERIFIED: '+Object.keys(styleBaseline.values).length+' exact original-reference tokens');
+}else if(requireOriginal)throw Error('Required historical CSS source missing: '+originalSource);
+else console.log('HISTORICAL_SOURCE_UNAVAILABLE: original Downloads CSS not supplied; external original-source comparison NOT RUN. Use --require-original-source --source <file> for strict historical verification.');
+console.log('CURRENT_MOBILE_TOKEN_CHECK_PASSED: '+Object.keys(styleBaseline.values).length+' values match the committed baseline; historical-source status is reported separately.');
 const plaza=read('apps/mobile/src/pages/index/index.vue');
 const mine=read('apps/mobile/src/pages/me/index.vue');
 const store=read('apps/mobile/src/stores/useIndexPage.ts');

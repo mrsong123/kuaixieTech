@@ -16,7 +16,7 @@
     "build:app": "pnpm --filter @kuaixie/mobile build:app",
     "typecheck:sdk": "tsc --noEmit -p packages/sdk/tsconfig.json",
     "test:contracts": "node scripts/verify-contracts.mjs",
-    "postinstall": "node scripts/verify-workspace.mjs && node scripts/verify-contracts.mjs && node scripts/verify-i18n.mjs && node scripts/verify-preferences.mjs && node scripts/verify-mobile-v5.mjs && node scripts/verify-modules.mjs && node scripts/verify-fast-migration.mjs && node scripts/verify-paths.mjs && node scripts/verify-workspace-resolution.mjs && node scripts/ensure-hbuilderx-compiler.mjs && node scripts/verify-v8-migration.mjs && node scripts/verify-v9-account.mjs && node scripts/verify-original-fidelity.mjs && node scripts/verify-original-css-v11.mjs && node scripts/verify-original-geometry-v12.mjs && node scripts/verify-original-tabbar-v12.mjs && node scripts/verify-v13-migration.mjs && node scripts/verify-v14-migration.mjs && node scripts/verify-v15-migration.mjs && node scripts/verify-cross-platform.mjs",
+    "postinstall": "node scripts/ensure-hbuilderx-compiler.mjs --repair",
     "check": "pnpm typecheck:sdk && pnpm test:contracts && pnpm test:i18n && pnpm typecheck:i18n && pnpm test:i18n:runtime && pnpm test:m2 && pnpm typecheck:preferences && pnpm test:preferences && pnpm test:mobile-original && pnpm test:mobile-v5 && pnpm check:modules && pnpm check:paths && pnpm check:resolution && pnpm test:migration && pnpm test:v8 && pnpm test:v9 && pnpm test:original-fidelity && pnpm test:original-css && pnpm test:original-geometry && pnpm test:original-assets && pnpm test:v13 && pnpm test:v14 && pnpm test:v15",
     "build:all": "pnpm build:pc && pnpm build:admin && pnpm build:mobile && pnpm build:mp-weixin",
     "test:platforms": "node scripts/verify-cross-platform.mjs",
@@ -59,14 +59,22 @@
     "test:insurance-session": "node scripts/verify-insurance-session.mjs",
     "test:native-file-session": "node scripts/verify-native-file-session.mjs",
     "test:wallet-session": "node scripts/verify-wallet-session.mjs",
-    "test:mobile-business": "node scripts/verify-mobile-business.mjs"
+    "test:mobile-business": "node scripts/verify-mobile-business.mjs",
+    "verify:legacy-install": "node scripts/verify-workspace.mjs && node scripts/verify-contracts.mjs && node scripts/verify-i18n.mjs && node scripts/verify-preferences.mjs && node scripts/verify-mobile-v5.mjs && node scripts/verify-modules.mjs && node scripts/verify-fast-migration.mjs && node scripts/verify-paths.mjs && node scripts/verify-workspace-resolution.mjs && node scripts/ensure-hbuilderx-compiler.mjs && node scripts/verify-v8-migration.mjs && node scripts/verify-v9-account.mjs && node scripts/verify-original-fidelity.mjs && node scripts/verify-original-css-v11.mjs && node scripts/verify-original-geometry-v12.mjs && node scripts/verify-original-tabbar-v12.mjs && node scripts/verify-v13-migration.mjs && node scripts/verify-v14-migration.mjs && node scripts/verify-v15-migration.mjs && node scripts/verify-cross-platform.mjs",
+    "setup:mobile": "node scripts/ensure-hbuilderx-compiler.mjs --repair",
+    "doctor:mobile": "node scripts/ensure-hbuilderx-compiler.mjs --check",
+    "test:compiler-setup": "node scripts/verify-compiler-setup.mjs",
+    "test:saved-session": "node scripts/verify-saved-session.mjs",
+    "test:workflow-session": "node scripts/verify-workflow-session.mjs",
+    "test:admin-console-session": "node scripts/verify-admin-console-session.mjs",
+    "test:contact-delivery-health": "node scripts/verify-contact-delivery-health.mjs"
   },
   "devDependencies": {
     "typescript": "~5.9.3"
   },
   "description": "快协随行购多端 pnpm 工作区（PC / 运营后台 / UniApp H5 / 微信小程序 / App 基座 / 共享 SDK）",
   "engines": {
-    "node": ">=20.19.0",
+    "node": ">=22.12.0",
     "pnpm": ">=10.26.0 <11"
   }
 }

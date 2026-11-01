@@ -82,7 +82,8 @@ import org.springframework.transaction.annotation.Transactional;
    if(Boolean.TRUE.equals(row.get("settled_to_balance"))||"1".equals(str(row.get("settled_to_balance")))){
     if("cny".equals(str(row.get("currency")))){
      BigDecimal amount=decimal(row.get("amount")).movePointLeft(2).setScale(2,RoundingMode.HALF_UP);
-     money.addBalance(inviter,amount.negate(),"commission_rev",orderId,why);
+     if(money.addBalance(inviter,amount.negate(),"commission_rev",orderId,why)==null)
+       throw new IllegalStateException("REWARD_REVOCATION_WALLET_UNAVAILABLE");
      m.reduceCommission(inviter,amount);
      notifyUser(inviter,"invite_reward_revoked","提成已追回","一笔已计佣订单被判违约/退款，¥"+amount+" 提成已从余额扣回。"+s(reason));
     }

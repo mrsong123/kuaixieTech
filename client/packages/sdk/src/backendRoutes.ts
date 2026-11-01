@@ -1072,6 +1072,11 @@ export const declaredBackendRoutes = [
   },
   {
     "method": "GET",
+    "path": "/portal/admin/contact-delivery/health",
+    "controller": "server/src/main/java/com/kuaixietech/scheduler/ContactDeliveryHealthController.java"
+  },
+  {
+    "method": "GET",
     "path": "/me/shop",
     "controller": "server/src/main/java/com/kuaixietech/shops/ShopController.java"
   },

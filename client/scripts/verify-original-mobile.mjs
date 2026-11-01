@@ -20,17 +20,17 @@ for(const name of expected){
  assert.match(source,/<style scoped>/);
 }
 const home=load('apps/mobile/src/pages/index/index.vue')+load('apps/mobile/src/stores/useIndexPage.ts');
-assert.ok(home.includes('api.portal.demands(100)')); 
+assert.ok(home.includes('api.portal.demands(100)'));
 assert.ok(home.includes('api.catalog.trips(100)'));
-assert.ok(home.includes('api.portal.verifiedRole()')); 
-assert.ok(home.includes('portal.square.search')); 
-assert.ok(home.includes('mobileTripDetails')); 
+assert.ok(home.includes('api.portal.verifiedRole()'));
+assert.ok(home.includes('v-model="search"')&&home.includes("$t('home.searchPlaceholder')"),'plaza must retain a localized search input bound to the real search model');
+assert.ok(home.includes('mobileTripDetails'));
 const util=load('apps/mobile/src/router/index.ts');
 for(const tab of expected)assert.ok(util.includes(tab),'Navigation missing tab: '+tab);
 for(const sub of ['discover','route','tools'])assert.ok(util.includes(sub),'Secondary page not reachable: '+sub);
 const app=load('apps/mobile/src/App.vue');
 assert.ok(app.includes('subscribeLocale'));
-assert.ok(app.includes('prototype.nav.square')&&app.includes('portal.tabs.community')); 
+assert.ok(app.includes('prototype.nav.square')&&app.includes('portal.tabs.community'));
 const pc=load('apps/pc/src/App.vue')+load('apps/pc/src/stores/useSiteStore.ts');
 assert.ok(pc.includes('@kuaixie/sdk'),'PC official site lost real backend catalog');
 const dict=JSON.parse(load('packages/i18n/src/zh-CN.json'));

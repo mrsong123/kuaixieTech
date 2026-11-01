@@ -1,0 +1,520 @@
+{
+  "startedAt": "2026-11-01T15:38:28.470337+00:00",
+  "scope": "disposable mysql:8.4 on 127.0.0.1:13307; synthetic data only",
+  "baseCommit": "643e42c24d529cae31d4f4a02fff45ac516b1034",
+  "httpPort": 18080,
+  "tableCount": 113,
+  "providerCallsRequestedBySmoke": 0,
+  "externalProviderAcceptance": "pending; no provider traffic instrumentation or credentials used",
+  "cases": [
+    {
+      "name": "anonymous catalog through gateway",
+      "method": "GET",
+      "path": "/public/categories",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "canonical catalog",
+      "method": "GET",
+      "path": "/api/public/categories",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "private profile denies anonymous",
+      "method": "GET",
+      "path": "/me/profile",
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "invalid bearer rejected",
+      "method": "GET",
+      "path": "/me/profile",
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "actual administrator password login",
+      "method": "POST",
+      "path": "/auth/login",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "expiresIn",
+        "isAdmin",
+        "userId"
+      ]
+    },
+    {
+      "name": "administrator own profile",
+      "method": "GET",
+      "path": "/me/profile",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "buyer_verify_status",
+        "carrier_verify_status",
+        "created_at",
+        "deal_count",
+        "enterprise_verify_status",
+        "id",
+        "nickname",
+        "performance_score",
+        "star_avg",
+        "user_role"
+      ]
+    },
+    {
+      "name": "contact delivery diagnostics",
+      "method": "GET",
+      "path": "/portal/admin/contact-delivery/health",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "blockedPolicy",
+        "checkedAt",
+        "configuration",
+        "dispatchConfigured",
+        "lastRun",
+        "providerDeliveryVerified",
+        "queue",
+        "sentMeaning",
+        "state"
+      ]
+    },
+    {
+      "name": "coupler configuration window",
+      "method": "GET",
+      "path": "/portal/admin/integration-center",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "categories",
+        "encryptionReady",
+        "runtime"
+      ]
+    },
+    {
+      "name": "professional payment settings",
+      "method": "GET",
+      "path": "/portal/admin/payments/settings",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "adapters",
+        "currencies",
+        "fxSources",
+        "merchants",
+        "settlementCurrency"
+      ]
+    },
+    {
+      "name": "insurance settings honestly empty consumers",
+      "method": "GET",
+      "path": "/portal/admin/insurance/settings",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "adapters",
+        "directory",
+        "paymentMode",
+        "products"
+      ]
+    },
+    {
+      "name": "register buyer using synthetic OTP",
+      "method": "POST",
+      "path": "/auth/register",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "expiresIn",
+        "isAdmin",
+        "userId"
+      ]
+    },
+    {
+      "name": "buyer password login",
+      "method": "POST",
+      "path": "/auth/login",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "expiresIn",
+        "isAdmin",
+        "userId"
+      ]
+    },
+    {
+      "name": "register carrier using synthetic OTP",
+      "method": "POST",
+      "path": "/auth/register",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "expiresIn",
+        "isAdmin",
+        "userId"
+      ]
+    },
+    {
+      "name": "carrier password login",
+      "method": "POST",
+      "path": "/auth/login",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "expiresIn",
+        "isAdmin",
+        "userId"
+      ]
+    },
+    {
+      "name": "buyer cannot inspect administrator diagnostics",
+      "method": "GET",
+      "path": "/portal/admin/contact-delivery/health",
+      "expectedStatuses": [
+        403
+      ],
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "buyer cannot list administrator review queue",
+      "method": "GET",
+      "path": "/portal/admin/reviews",
+      "expectedStatuses": [
+        403
+      ],
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "buyer creates first default address through actual HTTP",
+      "method": "POST",
+      "path": "/me/addresses",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id"
+      ]
+    },
+    {
+      "name": "buyer creates second default address and switches default",
+      "method": "POST",
+      "path": "/me/addresses",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id"
+      ]
+    },
+    {
+      "name": "buyer reads exactly two addresses with only second default",
+      "method": "GET",
+      "path": "/me/addresses",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "carrier cannot see buyer addresses",
+      "method": "GET",
+      "path": "/me/addresses",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "actual SQL confirms HTTP address switch preserves one default",
+      "passed": true,
+      "values": {
+        "addressCount": "2",
+        "defaultCount": "1",
+        "defaultAddressId": "bdc8ddfc-ac8a-4114-9616-cbf4a865d38c"
+      }
+    },
+    {
+      "name": "carrier publishes trip awaiting review",
+      "method": "POST",
+      "path": "/portal/trips",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "status"
+      ]
+    },
+    {
+      "name": "administrator approves actual trip",
+      "method": "POST",
+      "path": "/portal/admin/trips/review",
+      "expectedStatuses": [
+        200,
+        204
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "carrier publishes product initially off",
+      "method": "POST",
+      "path": "/me/products",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "status"
+      ]
+    },
+    {
+      "name": "owner lists product",
+      "method": "PUT",
+      "path": "/me/products/7717cfa9-65af-4532-96c0-2a4fbef5fc57/status",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "status"
+      ]
+    },
+    {
+      "name": "public product detail from actual SQL",
+      "method": "GET",
+      "path": "/public/products/7717cfa9-65af-4532-96c0-2a4fbef5fc57",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "image_urls",
+        "name",
+        "price",
+        "region",
+        "spec",
+        "stock"
+      ]
+    },
+    {
+      "name": "product exposes eligible seller trip",
+      "method": "GET",
+      "path": "/public/products/7717cfa9-65af-4532-96c0-2a4fbef5fc57/trips",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "buyer obtains server quote",
+      "method": "POST",
+      "path": "/me/product-orders/quote",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "buyerEscrow",
+        "currency",
+        "goodsAmount",
+        "insurancePremium",
+        "intentHours",
+        "itemName",
+        "itemSpec",
+        "pricingVersion",
+        "productFingerprint",
+        "productId",
+        "quantity",
+        "serviceFee",
+        "storeId",
+        "tripId",
+        "unitPrice",
+        "vendorDeposit"
+      ]
+    },
+    {
+      "name": "confirm order actually reserves funds and stock",
+      "method": "POST",
+      "path": "/me/product-orders",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "status"
+      ]
+    },
+    {
+      "name": "identical retry returns original order",
+      "method": "POST",
+      "path": "/me/product-orders",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "id",
+        "status"
+      ]
+    },
+    {
+      "name": "buyer reads own actual order",
+      "method": "GET",
+      "path": "/me/orders/3ea6605e-9c70-3062-b1a6-02004b65d46d",
+      "expectedStatuses": [
+        200
+      ],
+      "status": 200,
+      "passed": true,
+      "responseFields": [
+        "buyer_deposit",
+        "buyer_deposit_status",
+        "created_at",
+        "goods_amount",
+        "id",
+        "insurance_choice",
+        "insurance_premium",
+        "insurance_quote_id",
+        "insured",
+        "item_name",
+        "item_spec",
+        "my_role",
+        "order_no",
+        "pricing_version",
+        "quantity",
+        "ref_image_urls",
+        "service_fee",
+        "shipping_fee_status",
+        "status",
+        "unit",
+        "updated_at",
+        "vendor_deposit",
+        "vendor_deposit_status"
+      ]
+    },
+    {
+      "name": "unrelated administrator own-order endpoint cannot read buyer order",
+      "method": "GET",
+      "path": "/me/orders/3ea6605e-9c70-3062-b1a6-02004b65d46d",
+      "expectedStatuses": [
+        404
+      ],
+      "status": 404,
+      "passed": true,
+      "responseFields": [
+        "error",
+        "path",
+        "status",
+        "timestamp"
+      ]
+    },
+    {
+      "name": "actual SQL stock/wallet/reservation/escrow invariants after duplicate confirm",
+      "passed": true,
+      "values": {
+        "stock": "2",
+        "buyerBalance": "895.00",
+        "reservations": "1",
+        "buyerEscrow": "105.00"
+      }
+    }
+  ],
+  "fixtures": [
+    "Synthetic isolated admin profile inserted because a previous local audit admin already existed; password/JWT still issued by actual login HTTP endpoint.",
+    "Synthetic signup OTP inserted directly for buyer; does not test SMS/email delivery.",
+    "Synthetic signup OTP inserted directly for carrier; does not test SMS/email delivery.",
+    "Two synthetic buyer addresses created and read through actual authenticated HTTP; carrier listing was empty. Rows retained only in disposable database.",
+    "Buyer/carrier verification and 1000.00 CNY opening balance are explicit SQL fixtures, not KYC or payment-provider receipts."
+  ],
+  "mysqlVersion": "8.4.13",
+  "workingTreeSourceSha256": "afdfcda5bc4527b0a0e2ff0ba9a8991e7f3cc18ace7fc03de9a9367738a571ea",
+  "workingTreeHasChanges": true,
+  "startupReady": true,
+  "flowIds": {
+    "product": "7717cfa9-65af-4532-96c0-2a4fbef5fc57",
+    "trip": "58673d0b-41c8-4138-be13-95487d3b23c7",
+    "order": "3ea6605e-9c70-3062-b1a6-02004b65d46d",
+    "addresses": [
+      "f435c3a8-345e-4118-b790-008a72d16b88",
+      "bdc8ddfc-ac8a-4114-9616-cbf4a865d38c"
+    ]
+  },
+  "processStoppedAfterChecks": true,
+  "expectedShutdownSignal": "SIGTERM after completed checks (no Maven run-plugin failure)",
+  "completedAt": "2026-11-01T15:38:43.474413+00:00",
+  "success": true,
+  "passed": 33,
+  "failed": 0,
+  "applicationStartupSeconds": 7.198
+}

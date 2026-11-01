@@ -7,7 +7,7 @@ PC 和运营后台的视觉基准为本次用户提供的 `client.zip`：采用�
 
 视觉约束（移动端）：页面底 `#f8fafc`，强调色 `#0ea5e9`，tab 五栏「广场 / 社区 / 发布 / 消息 / 我的」。PC/后台采用新版桌面设计，主题样式保持端内作用域，不覆盖移动端。
 
-在 `client/` 执行（只需这一层 `pnpm install`）。
+在 `client/` 使用 Node >=22.12.0、pnpm 10.34.9 执行 `pnpm install --frozen-lockfile --prod=false`，依赖只安装在这一工作区。HBuilderX 报缺编译器时先按 [编译环境诊断](apps/mobile/HBUILDERX_SETUP.md) 配置其 Node 路径并运行 `pnpm doctor:mobile`。
 
 ## 端与命令
 

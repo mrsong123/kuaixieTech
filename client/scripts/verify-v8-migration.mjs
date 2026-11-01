@@ -27,7 +27,10 @@ assert.ok(settings.includes('settingsGroups')&&settings.includes('openSettings')
 const me=read('apps/mobile/src/pages/me/index.vue');
 assert.ok(me.includes('mine-quick')&&me.includes('mine.groupTrade')&&me.includes('mine.settingsRow'),'original mine groups missing');
 const p=read('apps/mobile/src/pages/index/index.vue');
-assert.ok(p.includes("navigate('publish-hub')")&&p.includes("navigate('demand-pool')")&&p.includes('v-model="search"')&&p.includes('country-picker'), 'plaza original search and navigation altered');
+assert.ok(p.includes('v-model="search"')&&p.includes('countryChoices')&&p.includes('@change="countryChanged"')&&p.includes('nav-search-dropdown-card'),'plaza must retain real country selection and bound search');
+for(const tab of ['pages/publish-hub/index','pages/demand-pool/index'])assert.ok(pages.tabBar.list.some(item=>item.pagePath===tab),'global original tab navigation missing: '+tab);
+const plazaStore=read('apps/mobile/src/stores/useIndexPage.ts');
+for(const hook of ['countryChanged','search','productCountryMatches','squareTripMatches','squareDemandMatches'])assert.ok(plazaStore.includes(hook),'real plaza search/filter behavior missing: '+hook);
 const packageFile=JSON.parse(read('package.json'));
 assert.ok(packageFile.scripts['dev:mobile']?.includes('pnpm --filter'), 'must use one pnpm workspace');
 const sdk=read('packages/sdk/src/client.ts');assert.ok(sdk.includes('normalizePublicPath')&&sdk.includes('Accept-Language'),'API/locale protocol regression');

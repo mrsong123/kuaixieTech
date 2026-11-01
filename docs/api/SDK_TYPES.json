@@ -1,0 +1,1001 @@
+[
+  {
+    "name": "Amount",
+    "kind": "type",
+    "declaration": "export type Amount = number | string;",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 2
+    }
+  },
+  {
+    "name": "ServiceMode",
+    "kind": "type",
+    "declaration": "export type ServiceMode = 'FREE' | 'ALONG_ROUTE';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 3
+    }
+  },
+  {
+    "name": "BookingStatus",
+    "kind": "type",
+    "declaration": "export type BookingStatus = 'AWAITING_ORDER' | 'CANCELLED' | 'EXPIRED' | 'ORDER_LINKED';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 4
+    }
+  },
+  {
+    "name": "HttpMethod",
+    "kind": "type",
+    "declaration": "export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 5
+    }
+  },
+  {
+    "name": "Access",
+    "kind": "type",
+    "declaration": "export type Access = 'public' | 'protected';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 6
+    }
+  },
+  {
+    "name": "ApiFieldType",
+    "kind": "type",
+    "declaration": "export type ApiFieldType = 'text' | 'number' | 'boolean' | 'array' | 'datetime';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 7
+    }
+  },
+  {
+    "name": "ApiField",
+    "kind": "interface",
+    "declaration": "export interface ApiField { name: string; type: ApiFieldType; javaType: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 8
+    }
+  },
+  {
+    "name": "ApiOperation",
+    "kind": "interface",
+    "declaration": "export interface ApiOperation {\n  id: string; group: string; name: string; method: HttpMethod; path: string;\n  controller: string; handler: string; pathParams: string[]; queryParams: string[];\n  bodyFields: ApiField[]; rawBody: boolean; access: Access; role: 'admin' | 'user'; dangerous: boolean; returns: string;\n}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 9
+    }
+  },
+  {
+    "name": "BackendRecord",
+    "kind": "type",
+    "declaration": "export type BackendRecord = Record<string, unknown>;",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 14
+    }
+  },
+  {
+    "name": "PublicCategory",
+    "kind": "interface",
+    "declaration": "export interface PublicCategory { id: number | string; parent_id?: number | string | null; name: string; translations?: Record<string,Record<string,string>>; country_code?: string | null; country_codes?: string[] | string | null; icon?: string; region?: string; ref_price_min?: Amount; ref_price_max?: Amount; level?: number; sort_order?: number }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 15
+    }
+  },
+  {
+    "name": "PublicProduct",
+    "kind": "interface",
+    "declaration": "export interface PublicProduct { id: string; store_id?:string|null; category_id?: string; name: string; translations?: Record<string,Record<string,string>>; spec?: string; region?: string; price?: Amount; currency?: string; stock?: number; image_urls?: string | string[] }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 16
+    }
+  },
+  {
+    "name": "PublicTrip",
+    "kind": "interface",
+    "declaration": "export interface PublicTrip { id: string; owner_id?: string; destination?: string; destination_flag?: string; entry_port?: string; transport_mode?: string; depart_date?: string; arrive_date?: string; return_date?: string; capacity_qty?: number; remaining_slots?: number; fee_mode?: string; rank_score?: number; fee_value?: Amount; trip_type?: string; direction?: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 17
+    }
+  },
+  {
+    "name": "PricePreviewInput",
+    "kind": "interface",
+    "declaration": "export interface PricePreviewInput { serviceMode: ServiceMode; extraKm: Amount; extraMinutes: number; weightKg: Amount }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 18
+    }
+  },
+  {
+    "name": "PricePreview",
+    "kind": "interface",
+    "declaration": "export interface PricePreview { policyVersion: number; currency: string; serviceMode: ServiceMode; baseFee: Amount; detourFee: Amount; waitingFee: Amount; weightFee: Amount; carrierAmount: Amount; platformFee: Amount; totalFee: Amount; distanceSource: string; requiresBuyerConfirmation: boolean; caution: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 19
+    }
+  },
+  {
+    "name": "PublishRouteRequest",
+    "kind": "interface",
+    "declaration": "export interface PublishRouteRequest { title: string; description: string; goodsReferencePrice: Amount; pickupRegion: string; dropoffRegion: string; weightKg: Amount; quantity: number; serviceMode: ServiceMode; maxServiceFee: Amount; latestAt: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 20
+    }
+  },
+  {
+    "name": "CreateRouteRequest",
+    "kind": "interface",
+    "declaration": "export interface CreateRouteRequest { demandId: string; pickupRegion: string; dropoffRegion: string; weightKg: Amount; quantity: number; serviceMode: ServiceMode; maxServiceFee: Amount; latestAt: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 21
+    }
+  },
+  {
+    "name": "RouteStop",
+    "kind": "interface",
+    "declaration": "export interface RouteStop { sequence: number; regionCode: string; placeLabel: string; eta: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 22
+    }
+  },
+  {
+    "name": "RouteMatch",
+    "kind": "interface",
+    "declaration": "export interface RouteMatch { tripId: string; origin: string; destination: string; departDate: string; availableSlots: number; routingEvidence: string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 23
+    }
+  },
+  {
+    "name": "RouteOffer",
+    "kind": "interface",
+    "declaration": "export interface RouteOffer { id?: string; demandId?: string; tripId?: string; carrierAmount?: Amount; platformFee?: Amount; totalFee?: Amount; status?: string; [key:string]: unknown }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 24
+    }
+  },
+  {
+    "name": "RouteRequest",
+    "kind": "interface",
+    "declaration": "export interface RouteRequest { demandId?: string; status?: string; pickupRegion?: string; dropoffRegion?: string; [key:string]: unknown }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 25
+    }
+  },
+  {
+    "name": "RouteBooking",
+    "kind": "interface",
+    "declaration": "export interface RouteBooking { id?: string; bookingId?: string; status?: BookingStatus | string; expiresAt?: string; [key:string]: unknown }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 26
+    }
+  },
+  {
+    "name": "TransportRequest",
+    "kind": "interface",
+    "declaration": "export interface TransportRequest { method: HttpMethod; url: string; headers: Record<string,string>; data?: unknown; timeoutMs?: number; responseType?:'arraybuffer' }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 27
+    }
+  },
+  {
+    "name": "Transport",
+    "kind": "type",
+    "declaration": "export type Transport = <T = unknown>(request: TransportRequest) => Promise<T>;",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 28
+    }
+  },
+  {
+    "name": "PublicDemand",
+    "kind": "interface",
+    "declaration": "export interface PublicDemand { id:string; title:string; description?:string; city?:string; trip_type?:string; expect_price?:Amount; deadline?:string; created_at?:string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 34
+    }
+  },
+  {
+    "name": "PublicCommunityPost",
+    "kind": "interface",
+    "declaration": "export interface PublicCommunityPost { id:string; caption:string; media_kind:'text'|'image'|'video';media_url?:string;poster_url?:string;author_name?:string;author_avatar?:string;created_at?:string }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 35
+    }
+  },
+  {
+    "name": "VerifiedPortalRole",
+    "kind": "interface",
+    "declaration": "export interface VerifiedPortalRole {user_role?:'buyer'|'carrier'|'enterprise'|string;carrier_verify_status?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 36
+    }
+  },
+  {
+    "name": "SupportConversation",
+    "kind": "interface",
+    "declaration": "export interface SupportConversation {id:string;status:'ai'|'waiting'|'human'|'closed';assigned_agent_id?:string|null;created_at?:string;updated_at?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 37
+    }
+  },
+  {
+    "name": "SupportMessage",
+    "kind": "interface",
+    "declaration": "export interface SupportMessage {id:number;sender_type:'user'|'ai'|'agent';content:string;created_at:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 38
+    }
+  },
+  {
+    "name": "SupportSendResult",
+    "kind": "interface",
+    "declaration": "export interface SupportSendResult {status:string;aiStatus?:'responded'|'unavailable'|'not_requested'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 39
+    }
+  },
+  {
+    "name": "PortalDemandInput",
+    "kind": "interface",
+    "declaration": "export interface PortalDemandInput {title:string;description?:string;city?:string;expectPrice?:Amount|null;tripType:'any'|'domestic'|'international'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 40
+    }
+  },
+  {
+    "name": "PortalTripInput",
+    "kind": "interface",
+    "declaration": "export interface PortalTripInput {destination:string;originCity:string;departDate:string;returnDate:string;tripType:'domestic'|'international';transportMode:'road'|'rail'|'air'|'other';capacityQty:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 41
+    }
+  },
+  {
+    "name": "SupportQueueItem",
+    "kind": "interface",
+    "declaration": "export interface SupportQueueItem {id:string;user_id:string;status:string;created_at:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 43
+    }
+  },
+  {
+    "name": "MyProfile",
+    "kind": "interface",
+    "declaration": "export interface MyProfile {id:string; nickname?:string|null; avatar_url?:string|null;city?:string|null;user_role?:string;buyer_verify_status?:string;carrier_verify_status?:string;enterprise_verify_status?:string;performance_score?:number;star_avg?:number|string;deal_count?:number;created_at?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 46
+    }
+  },
+  {
+    "name": "MyOrder",
+    "kind": "interface",
+    "declaration": "export interface MyOrder {id:string;order_no:string;item_name:string;item_spec?:string;quantity:number;unit?:string;goods_amount:number|string;service_fee:number|string;shipping_fee?:number|string|null;status:string;shipping_fee_status?:string;tracking_no?:string;my_role:'buyer'|'carrier';created_at?:string;updated_at?:string;[key:string]:unknown}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 47
+    }
+  },
+  {
+    "name": "MyDemand",
+    "kind": "interface",
+    "declaration": "export interface MyDemand {id:string;title:string;item_desc?:string;expect_price?:number|string;status:string;city?:string;visibility?:string;created_at?:string;[key:string]:unknown}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 48
+    }
+  },
+  {
+    "name": "MyTrip",
+    "kind": "interface",
+    "declaration": "export interface MyTrip {id:string;destination:string;destination_flag?:string;status?:string;verify_status?:string;depart_date?:string;return_date?:string;trip_type?:string;created_at?:string;[key:string]:unknown}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 49
+    }
+  },
+  {
+    "name": "MyWallet",
+    "kind": "interface",
+    "declaration": "export interface MyWallet {balance_amount:number|string;currency:'CNY';points?:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 50
+    }
+  },
+  {
+    "name": "MyLedger",
+    "kind": "interface",
+    "declaration": "export interface MyLedger {id:string;kind:string;amount:number|string;balance_after?:number|string;order_id?:string;note?:string;created_at?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 51
+    }
+  },
+  {
+    "name": "MyNotification",
+    "kind": "interface",
+    "declaration": "export interface MyNotification {id:string;kind:string;title:string;body?:string;order_id?:string;read_flag:number|boolean;created_at?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 52
+    }
+  },
+  {
+    "name": "PublicAnnouncement",
+    "kind": "interface",
+    "declaration": "export interface PublicAnnouncement {id:string;title:string;body:string;kind:'notice'|'activity'|'rule'|string;pinned:boolean;active?:boolean;created_at:string;title_i18n?:Record<string,string>;body_i18n?:Record<string,string>}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 55
+    }
+  },
+  {
+    "name": "PublicLegalDocument",
+    "kind": "interface",
+    "declaration": "export interface PublicLegalDocument {id?:string;doc_key:string;title:string;body_md:string;version:string|number;updated_at?:string;title_i18n?:Record<string,string>;body_md_i18n?:Record<string,string>}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 56
+    }
+  },
+  {
+    "name": "PublicReview",
+    "kind": "interface",
+    "declaration": "export interface PublicReview {id:string;target_id:string;reviewer_id?:string;reviewer_name?:string;stars:number;content?:string;created_at?:string;hidden?:boolean;reply?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 57
+    }
+  },
+  {
+    "name": "AuthTokenResult",
+    "kind": "interface",
+    "declaration": "export interface AuthTokenResult { accessToken?:string; access_token?:string; token?:string; userId?:string; expiresIn?:number; isAdmin?:boolean; phoneCountryCode?:string; locale?:'zh-CN'|'en-US' }",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 60
+    }
+  },
+  {
+    "name": "OriginalIntentInput",
+    "kind": "interface",
+    "declaration": "export interface OriginalIntentInput {tripId:string;itemName:string;itemSpec?:string;quantity:number;unit:string;categoryId?:string;expectUnitPrice:number;note?:string;contactName:string;contactPhone:string;address:string;expectDate?:string;insuranceChoice:'yes'|'waived';insuranceQuoteId?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 61
+    }
+  },
+  {
+    "name": "IntentQuote",
+    "kind": "interface",
+    "declaration": "export interface IntentQuote {goodsAmount:Amount;serviceFee:Amount;insurancePremium:Amount;buyerEscrow:Amount;vendorDeposit:Amount;currency:'CNY';pricingVersion:'escrow_v1'|'escrow_v2_external_insurance'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 62
+    }
+  },
+  {
+    "name": "ConfirmedIntentInput",
+    "kind": "interface",
+    "declaration": "export interface ConfirmedIntentInput extends OriginalIntentInput {requestId:string;expectedBuyerEscrow:Amount}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 63
+    }
+  },
+  {
+    "name": "OriginalDisputeInput",
+    "kind": "interface",
+    "declaration": "export interface OriginalDisputeInput {orderId:string;type:'quality'|'wrong_item'|'missing'|'damaged';description:string;expectResolution:'refund_part'|'refund_full'|'resend'|'compensate';refundAmount?:Amount; evidenceUrls:string[];requestId:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 64
+    }
+  },
+  {
+    "name": "OriginalDispute",
+    "kind": "interface",
+    "declaration": "export interface OriginalDispute {id:string;order_id:string;stage:string;type?:string;description?:string;initiator_id?:string;respondent_id?:string;refund_amount?:number|string;verdict?:string;created_at?:string;[key:string]:unknown}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 65
+    }
+  },
+  {
+    "name": "OriginalInviteTier",
+    "kind": "interface",
+    "declaration": "export interface OriginalInviteTier {tier?:string;direct_count?:number;valid_count?:number;commission_mtd?:Amount;next_tier?:string;points?:number;rules?:Array<{tier:string;minCount:number;directRate?:number;indirectRate?:number}>}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 66
+    }
+  },
+  {
+    "name": "PaymentPlatform",
+    "kind": "type",
+    "declaration": "export type PaymentPlatform='web'|'h5'|'mp_weixin'|'app';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 69
+    }
+  },
+  {
+    "name": "CurrencyInfo",
+    "kind": "interface",
+    "declaration": "export interface CurrencyInfo {code:string;minorDigits:number;name:string;nameEn:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 70
+    }
+  },
+  {
+    "name": "PaymentMethod",
+    "kind": "interface",
+    "declaration": "export interface PaymentMethod {id:string;name:string;method:string;platform:PaymentPlatform;currencies:string[];status:string;settlementCurrency:'CNY';spreadBps:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 71
+    }
+  },
+  {
+    "name": "ExchangeRate",
+    "kind": "interface",
+    "declaration": "export interface ExchangeRate {base:string;currency:string;rate:string;source:string;asOf:string;validUntil:string;referenceOnly:true}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 72
+    }
+  },
+  {
+    "name": "FundingQuote",
+    "kind": "interface",
+    "declaration": "export interface FundingQuote {id:string;merchantId:string;merchantName:string;method:string;platform:PaymentPlatform;baseCurrency:'CNY';baseAmount:string;paymentCurrency:string;paymentAmount:string;rate:string;spreadBps:number;rateSource:string;rateAsOf:string;expiresAt:string;settlementCurrency:'CNY'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 73
+    }
+  },
+  {
+    "name": "FundingPayment",
+    "kind": "interface",
+    "declaration": "export interface FundingPayment {id:string;status:'creating'|'pending'|'paid';baseCurrency:'CNY';baseAmount:string;paymentCurrency:string;paymentAmount:string;merchantName:string;checkout:{kind:'redirect'|'qr_text'|'wechat_jsapi'|'wechat_app'|'alipay_app';value:string}|null}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 74
+    }
+  },
+  {
+    "name": "MerchantConfig",
+    "kind": "interface",
+    "declaration": "export interface MerchantConfig {id?:string;name:string;adapter:string;method:string;platform:PaymentPlatform;currencies:string[];credentialPrefix:string|null;spreadBps:number;quoteTtlSeconds:number;enabled:boolean;revision?:number;settings:Record<string,string>}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 75
+    }
+  },
+  {
+    "name": "FxConfig",
+    "kind": "interface",
+    "declaration": "export interface FxConfig {id?:string;name:string;kind:'open_er_api'|'rates_json_v1';endpoint:string|null;credentialPrefix:string|null;maxAgeSeconds:number;enabled:boolean;transactionEnabled:boolean}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 76
+    }
+  },
+  {
+    "name": "PaymentSettings",
+    "kind": "interface",
+    "declaration": "export interface PaymentSettings {settlementCurrency:'CNY';merchants:MerchantConfig[];fxSources:FxConfig[];currencies:CurrencyInfo[];adapters:{id:string;methods:string[];platforms:PaymentPlatform[];currencies:string[]}[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 77
+    }
+  },
+  {
+    "name": "ProductPublishInput",
+    "kind": "interface",
+    "declaration": "export interface ProductPublishInput {name:string;spec?:string;region:string;price:string;stock:number;expectedStock?:number;categoryId?:string|number;imageUrls:string[];note?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 80
+    }
+  },
+  {
+    "name": "OwnedProduct",
+    "kind": "interface",
+    "declaration": "export interface OwnedProduct {id:string;name:string;spec?:string;region:string;price:string|number;stock:number;category_id?:string|number;image_urls:string|string[];note?:string;status:'on'|'off'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 81
+    }
+  },
+  {
+    "name": "AddressInput",
+    "kind": "interface",
+    "declaration": "export interface AddressInput {contactName:string;contactPhone:string;province?:string;city?:string;district?:string;detail:string;isDefault:boolean}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 83
+    }
+  },
+  {
+    "name": "SavedAddress",
+    "kind": "interface",
+    "declaration": "export interface SavedAddress {id:string;contact_name:string;contact_phone:string;province?:string;city?:string;district?:string;detail:string;is_default:boolean|number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 84
+    }
+  },
+  {
+    "name": "SavedCartItem",
+    "kind": "interface",
+    "declaration": "export interface SavedCartItem {id:string;product_id:string;qty:number;name:string|null;price:Amount|null;stock:number|null;available:boolean|number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 85
+    }
+  },
+  {
+    "name": "SavedFavorite",
+    "kind": "interface",
+    "declaration": "export interface SavedFavorite {id:string;target_type:'product'|'demand';target_id:string;title:string|null}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 86
+    }
+  },
+  {
+    "name": "InsuranceCompany",
+    "kind": "interface",
+    "declaration": "export interface InsuranceCompany {code:string;name:string;status:'reference_only'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 88
+    }
+  },
+  {
+    "name": "InsuranceProduct",
+    "kind": "interface",
+    "declaration": "export interface InsuranceProduct {id:string;insurerCode:string;insurerName:string;name:string;kind:string;termsUrl:string;exclusionsUrl:string;claimsUrl:string;status:string;paymentMode:'insurer_direct'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 89
+    }
+  },
+  {
+    "name": "InsuranceQuoteInput",
+    "kind": "interface",
+    "declaration": "export interface InsuranceQuoteInput {productId:string;subjectType:'trip'|'pk_quote'|'order';subjectId:string;itemName:string;declaredValue:string;platform?:PaymentPlatform}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 90
+    }
+  },
+  {
+    "name": "InsuranceQuote",
+    "kind": "interface",
+    "declaration": "export interface InsuranceQuote {id:string;productId:string;insurerName:string;productName:string;kind:string;declaredValue:string;premium:string;currency:string;termsUrl:string;exclusionsUrl:string;claimsUrl:string;termsVersion:string;expiresAt:string;paymentMode:'insurer_direct';protectionStatus:'not_issued'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 91
+    }
+  },
+  {
+    "name": "InsuranceApplication",
+    "kind": "interface",
+    "declaration": "export interface InsuranceApplication {id:string;orderId:string;status:string;insurerName:string;productName:string;premium:string;currency:string;checkoutUrl:string|null;policyNumber:string|null;certificateUrl:string|null;claimsUrl:string;coverageRef:string|null;termsVersion:string;startsAt:string|null;endsAt:string|null;platform:PaymentPlatform;paymentMode:'insurer_direct';protectionStatus:'provider_confirmed'|'not_confirmed'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 92
+    }
+  },
+  {
+    "name": "InsuranceProductConfig",
+    "kind": "interface",
+    "declaration": "export interface InsuranceProductConfig extends Omit<InsuranceProduct,'status'|'paymentMode'> {adapter:string;providerProductCode:string;credentialPrefix:string;serviceHosts:string[];checkoutHosts:string[];enabled:boolean;revision?:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 93
+    }
+  },
+  {
+    "name": "InsuranceSettings",
+    "kind": "interface",
+    "declaration": "export interface InsuranceSettings {directory:InsuranceCompany[];products:InsuranceProductConfig[];adapters:{id:string;insurerCode:string}[];paymentMode:'insurer_direct'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 94
+    }
+  },
+  {
+    "name": "TradeCaseEvent",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseEvent {id:string;actor_role:string;action:string;before_stage:string|null;after_stage:string;created_at:string;payload:{input:{note?:string;reason?:string;description?:string;outcome?:string;evidenceUrls?:string[];refundAmount?:Amount}}}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 96
+    }
+  },
+  {
+    "name": "TradeCaseSummary",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseSummary extends OriginalDispute {round:number;expect_resolution:string;item_name:string;order_no:string;refund_status?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 97
+    }
+  },
+  {
+    "name": "TradeCaseDetail",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseDetail extends TradeCaseSummary {refund_method?:'escrow_wallet';escrowRefund?:EscrowWalletRefund;round:number;expect_resolution:string;respondent_id?:string;respondent_note?:string;evidence_urls:string[];respondent_evidence_urls:string[];deposit_owner?:string;verdict_reason?:string;review_appeal?:string;review_result?:string;negotiation_deadline?:string;resolved_at?:string;reopened_used:boolean|number;goods_amount:Amount;item_name:string;order_no:string;myRole:'buyer'|'merchant'|'operator';events:TradeCaseEvent[];refund_status?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 98
+    }
+  },
+  {
+    "name": "TradeCaseAction",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseAction {expectedRound:number;requestId:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 99
+    }
+  },
+  {
+    "name": "TradeCaseResponse",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseResponse extends TradeCaseAction {note:string;evidenceUrls:string[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 100
+    }
+  },
+  {
+    "name": "TradeCaseReason",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseReason extends TradeCaseAction {reason:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 101
+    }
+  },
+  {
+    "name": "TradeCaseDecision",
+    "kind": "interface",
+    "declaration": "export interface TradeCaseDecision extends TradeCaseReason {outcome:'reject'|'refund_part'|'refund_full'|'resend'|'compensate';refundAmount?:Amount;depositOwner:'return_original'|'buyer'|'vendor'|'none'}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 102
+    }
+  },
+  {
+    "name": "IntegrationField",
+    "kind": "interface",
+    "declaration": "export interface IntegrationField {key:string;secret:boolean;required:boolean;configured:boolean;status:'missing'|'stored'|'unreadable';value?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 104
+    }
+  },
+  {
+    "name": "IntegrationProduct",
+    "kind": "interface",
+    "declaration": "export interface IntegrationProduct {vendor:string;code:string;category:string;mode:'implemented'|'bridge'|'reference_only';docs:string;enabled:boolean;remark:string;updatedAt:string;fields:IntegrationField[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 105
+    }
+  },
+  {
+    "name": "IntegrationSettings",
+    "kind": "interface",
+    "declaration": "export interface IntegrationSettings {encryptionReady:boolean;nativeDeliveryManaged?:boolean;products:IntegrationProduct[];specialized:string[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 106
+    }
+  },
+  {
+    "name": "IntegrationInput",
+    "kind": "interface",
+    "declaration": "export interface IntegrationInput {enabled:boolean;remark:string;values:Record<string,string>;clearFields:string[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 107
+    }
+  },
+  {
+    "name": "UploadedDocument",
+    "kind": "interface",
+    "declaration": "export interface UploadedDocument {publicPath?:string;id:string;purpose:string;contentType:string;byteSize:number;sha256:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 109
+    }
+  },
+  {
+    "name": "ShopApplicationInput",
+    "kind": "interface",
+    "declaration": "export interface ShopApplicationInput {businessName:string;creditCode:string;representative:string;licenseUploadId:string;invitationCode?:string;channel:PaymentPlatform;requestId:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 110
+    }
+  },
+  {
+    "name": "ShopApplication",
+    "kind": "interface",
+    "declaration": "export interface ShopApplication {id:string;business_name:string;unified_social_credit_code:string;legal_representative:string;license_upload_id:string;invitation_code?:string;application_channel:string;status:string;review_note?:string;reviewed_at?:string;created_at:string;store_id?:string;store_status?:string;license_content_type?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 111
+    }
+  },
+  {
+    "name": "Shop",
+    "kind": "interface",
+    "declaration": "export interface Shop {id:string;name:string;description:string;status:string;matching_fee_rate:Amount;application_id:string;created_at:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 112
+    }
+  },
+  {
+    "name": "ShopState",
+    "kind": "interface",
+    "declaration": "export interface ShopState {store:Shop|null;applications:ShopApplication[];products:{id:string;name:string;price:Amount;stock:number;status:string}[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 113
+    }
+  },
+  {
+    "name": "ShopStatusInput",
+    "kind": "interface",
+    "declaration": "export interface ShopStatusInput {status:'active'|'paused'|'suspended';expectedStatus:string;reason:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 114
+    }
+  },
+  {
+    "name": "PublicShop",
+    "kind": "interface",
+    "declaration": "export interface PublicShop {id:string;name:string;description:string;created_at:string;products:PublicProduct[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 115
+    }
+  },
+  {
+    "name": "ProductCheckoutTrip",
+    "kind": "interface",
+    "declaration": "export interface ProductCheckoutTrip {id:string;destination:string;depart_date:string;return_date?:string;remaining_slots:number;capacity_qty:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 117
+    }
+  },
+  {
+    "name": "ProductCheckoutInput",
+    "kind": "interface",
+    "declaration": "export interface ProductCheckoutInput {productId:string;tripId:string;quantity:number;contactName:string;contactPhone:string;address:string;expectDate?:string;note?:string;insuranceChoice:'yes'|'waived';insuranceQuoteId?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 118
+    }
+  },
+  {
+    "name": "ProductCheckoutQuote",
+    "kind": "interface",
+    "declaration": "export interface ProductCheckoutQuote {productFingerprint:string;productId:string;tripId:string;storeId:string|null;itemName:string;itemSpec:string|null;unitPrice:string;quantity:number;goodsAmount:string;serviceFee:string;insurancePremium:string;buyerEscrow:string;vendorDeposit:string;currency:'CNY';pricingVersion:'escrow_v2_external_insurance';intentHours:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 119
+    }
+  },
+  {
+    "name": "ProductCheckoutConfirm",
+    "kind": "interface",
+    "declaration": "export interface ProductCheckoutConfirm extends ProductCheckoutInput {expectedProductFingerprint:string;requestId:string;expectedUnitPrice:string;expectedBuyerEscrow:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 120
+    }
+  },
+  {
+    "name": "PaymentRefund",
+    "kind": "interface",
+    "declaration": "export interface PaymentRefund {id:string;paymentId:string;status:string;baseCurrency:string;baseAmount:string;paymentCurrency:string;paymentAmount:string;reason:string;reviewNote?:string|null;providerRefundId?:string|null;lastError?:string|null;createdAt:string;updatedAt:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 121
+    }
+  },
+  {
+    "name": "PaymentRefundInput",
+    "kind": "interface",
+    "declaration": "export interface PaymentRefundInput {paymentId:string;requestId:string;reason:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 122
+    }
+  },
+  {
+    "name": "EligiblePaymentRefund",
+    "kind": "interface",
+    "declaration": "export interface EligiblePaymentRefund {id:string;baseAmount:string;paymentAmount:string;paymentCurrency:'CNY';merchantName:string;paidAt:string|null}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 124
+    }
+  },
+  {
+    "name": "PaymentRefundEvent",
+    "kind": "interface",
+    "declaration": "export interface PaymentRefundEvent {id:string;action:string;detail:string;createdAt:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 126
+    }
+  },
+  {
+    "name": "ShopAttributedOrder",
+    "kind": "interface",
+    "declaration": "export interface ShopAttributedOrder {id:string;order_no:string;item_name:string;status:string;product_id:string;quantity:number;goods_amount:Amount;service_fee:Amount;currency:'CNY';stock_state:'held'|'consumed'|'released';created_at:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 127
+    }
+  },
+  {
+    "name": "CouplerMode",
+    "kind": "type",
+    "declaration": "export type CouplerMode='SANDBOX'|'LIVE';",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 129
+    }
+  },
+  {
+    "name": "CouplerField",
+    "kind": "interface",
+    "declaration": "export interface CouplerField {key:string;label:string;secret:boolean;required:boolean;placeholder?:string;inputType?:'text'|'textarea'|'boolean';options?:{value:string;label:string}[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 130
+    }
+  },
+  {
+    "name": "CouplerModeConfiguration",
+    "kind": "interface",
+    "declaration": "export interface CouplerModeConfiguration {revision:number;configRevision?:number;enabled:boolean;selected:boolean;values:Record<string,string>;configuredFields:string[];unreadableFields:string[];updatedAt?:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 131
+    }
+  },
+  {
+    "name": "CouplerProvider",
+    "kind": "interface",
+    "declaration": "export interface CouplerProvider {vendor:string;product:string;code:string;name:string;capability:string;docs:string;sdkAvailable:boolean;businessVerified:boolean;consumerWired?:boolean;supportedModes:CouplerMode[];implementedOperations:string[];fields:CouplerField[];configurationByMode:Partial<Record<CouplerMode,CouplerModeConfiguration>>}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 132
+    }
+  },
+  {
+    "name": "CouplerCategory",
+    "kind": "interface",
+    "declaration": "export interface CouplerCategory {code:string;name:string;description:string;providers:CouplerProvider[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 133
+    }
+  },
+  {
+    "name": "CouplerRuntime",
+    "kind": "interface",
+    "declaration": "export interface CouplerRuntime {mode:CouplerMode;revision:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 134
+    }
+  },
+  {
+    "name": "CouplerSettings",
+    "kind": "interface",
+    "declaration": "export interface CouplerSettings {runtime:CouplerRuntime;categories:CouplerCategory[];encryptionReady?:boolean}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 135
+    }
+  },
+  {
+    "name": "CouplerValidation",
+    "kind": "interface",
+    "declaration": "export interface CouplerValidation {mode:CouplerMode;revision:number;ready:boolean;missingFields:string[];invalidFields:string[];unreadableFields:string[];sdkAvailable:boolean;businessVerified:boolean;checks?:{code:string;status:string;message:string}[]}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 136
+    }
+  },
+  {
+    "name": "CouplerSaveInput",
+    "kind": "interface",
+    "declaration": "export interface CouplerSaveInput {values:Record<string,string>;clearFields:string[];enabled:boolean;selected:boolean;expectedRevision:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 137
+    }
+  },
+  {
+    "name": "CouplerRuntimeInput",
+    "kind": "interface",
+    "declaration": "export interface CouplerRuntimeInput {mode:CouplerMode;expectedRevision:number}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 138
+    }
+  },
+  {
+    "name": "EscrowWalletRefund",
+    "kind": "interface",
+    "declaration": "export interface EscrowWalletRefund {id:string;caseId:string;orderId:string;requestId:string;sourceRound:number;amount:string;currency:'CNY';status:'succeeded';refundMethod:'escrow_wallet';destination:'platform_wallet';requiresAccounting:boolean;rewardReviewRequired:true;createdAt:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 140
+    }
+  },
+  {
+    "name": "EscrowRefundBudget",
+    "kind": "type",
+    "declaration": "export type EscrowRefundBudget = EscrowWalletRefund | {caseId:string;orderId:string;currency:'CNY';refundMethod:'escrow_wallet';destination:'platform_wallet';status:'blocked';reasonCode:string} | {caseId:string;orderId:string;currency:'CNY';refundMethod:'escrow_wallet';destination:'platform_wallet';status:'eligible';goodsAmount:string;alreadyRefunded:string;refundableGoods:string;requestedAmount:string;buyerEscrowHeld:string;serviceFeeHeld:string;shippingHeld:string;sourceRound:number;requiresAccounting:boolean;rewardReviewRequired:true};",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 141
+    }
+  },
+  {
+    "name": "EscrowRefundEvent",
+    "kind": "interface",
+    "declaration": "export interface EscrowRefundEvent {id:string;action:string;detail:string;createdAt:string}",
+    "source": {
+      "file": "client/packages/sdk/src/types.ts",
+      "line": 142
+    }
+  }
+]
