@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface TradeRpcMapper {
+  int isVerifiedBuyer(@Param("uid") String uid);
+  String awardedOrder(@Param("demandId") String demandId);
   Map<String,Object> lockOrder(@Param("id")String id);
   Map<String,Object> lockDemand(@Param("id")String id);
   Map<String,Object> lockProduct(@Param("id")String id);
@@ -36,6 +38,7 @@ public interface TradeRpcMapper {
      @Param("vendorDeposit")BigDecimal vendorDeposit,@Param("insured")String insured,
      @Param("premium")BigDecimal premium,@Param("declared")BigDecimal declared,
      @Param("shipFee")BigDecimal shipFee,@Param("shipStatus")String shipStatus);
+  int setInsuranceSelection(@Param("id") String id,@Param("choice") String choice,@Param("quote") String quote);
   int quoteWon(@Param("id")String id);
   int remainingQuotesLost(@Param("demandId")String demandId,@Param("quoteId")String quoteId);
   int awardDemand(@Param("demandId")String demandId,@Param("quoteId")String quoteId);

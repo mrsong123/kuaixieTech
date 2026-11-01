@@ -1,0 +1,30 @@
+package com.kuaixietech.shops;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import com.kuaixietech.security.DomainAccessGuard;
+import java.util.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.server.ResponseStatusException;
+class ShopSafetyTest {
+ final JdbcTemplate db=mock(JdbcTemplate.class);final DomainAccessGuard guard=mock(DomainAccessGuard.class);final List<String> writes=new ArrayList<>();
+ Map<String,Object> shop=new HashMap<>(Map.of("id","store","status","active")),application=new HashMap<>(Map.of("id","application","status","pending","business_name","Example"));Map<String,Object> upload=new HashMap<>(Map.of("id","upload","kind","document","sha256","a".repeat(64),"byte_size",20));
+ boolean foreignProduct=false;ShopService service(){when(guard.requireActiveProfile()).thenReturn("owner");when(guard.requireVerifiedCarrier()).thenReturn("owner");when(guard.requireAdmin()).thenReturn("admin");when(db.queryForList(anyString(),any(Object[].class))).thenAnswer(c->{String sql=c.getArgument(0);if(sql.startsWith("SELECT id FROM t_profiles"))return List.of(Map.of("id","owner"));if(sql.startsWith("SELECT user_id FROM t_store_applications"))return List.of(Map.of("user_id","owner"));if(sql.startsWith("SELECT id,status,business_name"))return List.of(application);if(sql.startsWith("SELECT id,status FROM t_stores"))return List.of(shop);if(sql.startsWith("SELECT owner_id FROM t_stores"))return List.of(Map.of("owner_id","owner"));if(sql.startsWith("SELECT id FROM t_products"))return foreignProduct?List.of():List.of(Map.of("id","product"));if(sql.startsWith("SELECT store_id FROM t_store_products"))return List.of(Map.of("store_id","store"));if(sql.startsWith("SELECT id,kind,sha256"))return upload==null?List.of():List.of(upload);return List.of();});when(db.update(anyString(),any(Object[].class))).thenAnswer(c->{writes.add(c.getArgument(0));return 1;});return new ShopService(db,guard);}
+ ShopService.Application input(){return new ShopService.Application("Example","91350211M000100Y46","Representative","upload",null,"web","123e4567-e89b-42d3-a456-426614174000");}
+ void code(String expected,Runnable work){var e=assertThrows(ResponseStatusException.class,work::run);assertEquals(expected,e.getReason());}
+ @Test void creditCodeChecksumIsRequired(){assertTrue(ShopService.validCreditCode("91350211M000100Y46"));assertFalse(ShopService.validCreditCode("91350211M000100Y45"));assertFalse(ShopService.validCreditCode("abcdefghijklmnopqr"));}
+ @Test void ownerCannotApplyWithAnArbitraryOrForeignUpload(){var s=service();upload=null;code("SHOP_LICENSE_UPLOAD_REQUIRED",()->s.apply(input()));assertTrue(writes.isEmpty());}
+ @Test void consumedLicenseCannotBeReusedForAnotherApplication(){var s=service();upload.put("consumed_at","used");code("SHOP_LICENSE_UPLOAD_REQUIRED",()->s.apply(input()));assertTrue(writes.isEmpty());}
+ @Test void successfulApplicationConsumesOwnedLicenseAtomically(){var s=service();assertEquals("pending",s.apply(input()).get("status"));assertEquals(2,writes.size());assertTrue(writes.get(1).contains("consumed_at IS NULL"));}
+ @Test void foreignProductCannotBeLinked(){var s=service();foreignProduct=true;code("SHOP_PRODUCT_UNAVAILABLE",()->s.link("product",false));assertTrue(writes.isEmpty());}
+ @Test void revokedCarrierCanStillRemoveOwnAssociation(){var s=service();s.link("product",true);verify(guard).requireActiveProfile();verify(guard,never()).requireVerifiedCarrier();assertTrue(writes.getFirst().startsWith("DELETE FROM t_store_products"));}
+ @Test void suspendedOwnerCannotSelfReactivate(){var s=service();shop.put("status","suspended");code("SHOP_ADMIN_REQUIRED",()->s.state("store",new ShopService.State("active","suspended","open"),false));assertTrue(writes.isEmpty());}
+ @Test void suspendedStoreCannotEscapeVisibilityRulesByUnlinking(){var s=service();shop.put("status","suspended");code("SHOP_SUSPENDED",()->s.link("product",true));assertTrue(writes.isEmpty());}
+ @Test void staleStateDoesNotOverwriteOperatorDecision(){var s=service();shop.put("status","suspended");code("SHOP_STATE_CHANGED",()->s.state("store",new ShopService.State("paused","active","pause"),false));assertTrue(writes.isEmpty());}
+ @Test void unauthorizedReviewStopsBeforeReadingBusinessDocuments(){var s=service();when(guard.requireAdmin()).thenThrow(new SecurityException());assertThrows(SecurityException.class,()->s.review("application",new ShopService.Review(true,"checked")));verifyNoInteractions(db);}
+ @Test void approvalCreatesStoreAndRecordsReviewWithoutInsuranceOrMoneyWrites(){var s=service();assertEquals("approved",s.review("application",new ShopService.Review(true,"license checked")).get("status"));assertTrue(writes.stream().anyMatch(q->q.startsWith("INSERT INTO t_stores")));assertTrue(writes.stream().anyMatch(q->q.startsWith("INSERT INTO t_admin_logs")));assertTrue(writes.stream().noneMatch(q->q.contains("balance")||q.contains("insurance")||q.contains("enterprise_verify")));}
+ @Test void sameReviewCanReplayWithoutDuplicatingStore(){var s=service();application.put("status","approved");application.put("reviewed_by","admin");application.put("review_note","checked");assertEquals("approved",s.review("application",new ShopService.Review(true,"checked")).get("status"));assertTrue(writes.isEmpty());}
+ @Test void rejectionNeverCreatesStore(){var s=service();s.review("application",new ShopService.Review(false,"unclear license"));assertTrue(writes.stream().noneMatch(q->q.startsWith("INSERT INTO t_stores")));}
+ @Test void publicProjectionExcludesPrivateBusinessAndOwnerIdentifiers(){var s=service();when(db.queryForList(startsWith("SELECT s.id,s.name"),any(Object[].class))).thenReturn(List.of(Map.of("id","store","name","Example","description","About")));var result=s.publicShop("store",100,0);assertFalse(result.containsKey("owner_id"));verify(db).queryForList(argThat(q->q.contains("s.status='active'")&&q.contains("u.carrier_verify_status='approved'")&&q.contains("p.owner_id=s.owner_id")),eq("store"),eq(100),eq(0));}
+}

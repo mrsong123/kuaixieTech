@@ -14,12 +14,13 @@ public class AtomicMoneyService {
   @Transactional
   public BigDecimal addBalance(String uid,BigDecimal delta,String kind,String orderId,String note) {
     if(uid==null)return null;
+    String category=kind==null||kind.isEmpty()?"adjust":kind;
+    if(category.codePointCount(0,category.length())>16)throw new IllegalArgumentException("LEDGER_KIND_TOO_LONG");
     BigDecimal balance=mapper.lockBalance(uid);
     if(balance==null)return null;
     BigDecimal amount=delta==null?BigDecimal.ZERO:delta;
     BigDecimal after=balance.add(amount).setScale(2,RoundingMode.HALF_UP);
     if(mapper.setBalance(uid,after)!=1)throw new IllegalStateException("Balance update was not unique");
-    String category=kind==null||kind.isEmpty()?"adjust":kind;
     if(mapper.addLedger(UUID.randomUUID().toString(),uid,category,amount,after,orderId,note)!=1)
       throw new IllegalStateException("Ledger insert failed");
     return after;

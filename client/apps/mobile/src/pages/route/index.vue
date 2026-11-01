@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useRoutePage} from '../../stores/useRoutePage';
+import {uniEventValue} from '../../utils/uniEvent';
 const {prefs,trips,error,loading,reload,draft,confirmed,listening,voiceError,recognizer,supported,startVoice,stopVoice,mobilePreferenceStyle} = useRoutePage();
+function confirmVoice(event:unknown){confirmed.value=uniEventValue(event)===true}
 </script>
 <template>
  <view class="route-content" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark','kx-system':prefs.theme==='system','kx-reduce-motion':prefs.reduceMotion}" :style="mobilePreferenceStyle(prefs)">
@@ -11,7 +13,7 @@ const {prefs,trips,error,loading,reload,draft,confirmed,listening,voiceError,rec
     <view class="button-row"><button class="secondary-btn" :disabled="!supported||listening" @click="startVoice">{{ $t('voice.start') }}</button><button class="secondary-btn" :disabled="!listening" @click="stopVoice">{{ $t('voice.stop') }}</button></view>
     <view class="form-label">{{ $t('voice.draft') }}</view><textarea class="form-input form-textarea" v-model="draft" :placeholder="$t('voice.placeholder')" @input="confirmed=false"/>
     <view class="subline" v-if="listening">{{ $t('voice.listening') }}</view><view class="subline" v-if="voiceError">{{ $t(voiceError) }}</view>
-    <view class="care-row"><text>{{ $t('voice.confirm') }}</text><switch :checked="confirmed" :disabled="!draft.trim()" @change="confirmed=!!$event.detail.value"/></view>
+    <view class="care-row"><text>{{ $t('voice.confirm') }}</text><switch :checked="confirmed" :disabled="!draft.trim()" @change="confirmVoice"/></view>
     <view class="subline">{{ $t(confirmed?'voice.ready':'voice.noSubmit') }}</view>
   </view>
   <view class="list-head"><text>{{ $t('text.74169c440420') }}</text><button size="mini" :disabled="loading" @click="reload">{{ $t('text.38108eaa1d32') }}</button></view>

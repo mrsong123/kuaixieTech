@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kuaixietech.mapper.order_fulfillment.OrderProofMigrationMapper">
-<select id="lockOrder" resultType="map">SELECT id,order_no,buyer_id,vendor_id,trip_id,status,buyer_deposit,vendor_deposit,buyer_deposit_status,vendor_deposit_status,goods_amount,address,purchase_receipt_urls,procurement_city,tax_refund_plan,tax_refund_amount,tax_rate FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="lockOrder" resultType="map">SELECT agreed_json,id,order_no,buyer_id,vendor_id,trip_id,status,buyer_deposit,vendor_deposit,buyer_deposit_status,vendor_deposit_status,goods_amount,address,purchase_receipt_urls,procurement_city,tax_refund_plan,tax_refund_amount,tax_rate FROM t_orders WHERE id=#{id} FOR UPDATE</select>
 <select id="trip" resultType="map">SELECT id,owner_id,destination,origin_city,trip_type,return_date,boarding_at,depart_datetime,verify_status FROM t_trips WHERE id=#{id}</select>
 <select id="lockTrip" resultType="map">SELECT id,owner_id,destination,origin_city,trip_type,return_date,boarding_at,depart_datetime,verify_status FROM t_trips WHERE id=#{id} FOR UPDATE</select>
 <select id="latestFace" resultType="map">SELECT id,created_at FROM t_face_verifications WHERE user_id=#{actor} AND order_id=#{orderId} AND scene=#{scene} ORDER BY created_at DESC LIMIT 1</select>
@@ -14,4 +14,7 @@
 <update id="refundDepositRows">UPDATE t_deposits SET status='refunded',reason='no_boarding_proof',updated_at=CURRENT_TIMESTAMP(3) WHERE order_id=#{id} AND status='frozen'</update>
 <insert id="addNotice">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES(#{id},#{uid},#{kind},#{title},#{body},#{orderId})</insert>
 <insert id="addMessage">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag) VALUES(#{id},#{orderId},#{actor},#{content},JSON_ARRAY(),1)</insert>
+<select id="activeGoodsInsurance" resultType="int">SELECT COUNT(*) FROM t_goods_insurance_applications WHERE order_id=#{id} AND status='active' AND coverage_starts_at&lt;=CURRENT_TIMESTAMP(3) AND coverage_ends_at&gt;CURRENT_TIMESTAMP(3) AND last_error_code IS NULL AND last_checked_at&gt;TIMESTAMPADD(MINUTE,-5,CURRENT_TIMESTAMP(3))</select>
+<select id="activeCases" resultType="string">SELECT id FROM t_disputes WHERE order_id=#{id} AND stage NOT IN('resolved','closed') FOR UPDATE</select>
+<select id="activeAfterSales" resultType="string">SELECT id FROM t_after_sales_cases WHERE order_id=#{id} AND status NOT IN('resolved','closed','rejected','cancelled') FOR UPDATE</select>
 </mapper>

@@ -27,7 +27,7 @@ export function formatAmount(value:number|string|null|undefined,currency?:string
   const amount=Number(value);
   if(!Number.isFinite(amount))return t('common.notAvailable');
   const opts: Intl.NumberFormatOptions = currency
-    ? {style:'currency',currency:currency.toUpperCase(),maximumFractionDigits:2}
+    ? {style:'currency',currency:currency.toUpperCase()}
     : {minimumFractionDigits:2,maximumFractionDigits:2};
   try {const formatted=new Intl.NumberFormat(locale,opts).format(amount);
     return currency?formatted:formatted+' ('+t('common.currencyUnknown')+')';
@@ -65,9 +65,32 @@ function hashString(name:string):string { return groups[name] ?? 'missing'; }
 
 export function uiErrorMessage(error:unknown): string {
   const detail=error instanceof Error ? error.message : String(error);
+  const response=error&&typeof error==='object'?(error as {detail?:unknown}).detail:undefined;
+  const code=typeof response==='string'?response:response&&typeof response==='object'?String((response as {detail?:unknown}).detail??''):'';
+  const orderErrors:Record<string,string>={
+    PAYMENT_INPUT_REJECTED:'pay.inputRejected',PAYMENT_OR_FX_UNAVAILABLE:'pay.unavailable',PAYMENT_STORAGE_UNAVAILABLE:'pay.storageUnavailable',
+    INSUFFICIENT_BALANCE:'order.insufficientBalance',TRIP_CAPACITY_UNAVAILABLE:'order.capacityUnavailable',
+    PRICE_CHANGED_RECONFIRM_QUOTE:'order.priceChanged','ERR:INSURANCE_LOCKED_AFTER_CONFIRMATION':'order.insuranceLocked',
+    'ERR:INSUFFICIENT_BALANCE':'order.insufficientBalance','ERR:SHIPPING_FEE_CHANGED_RECONFIRM':'order.priceChanged'
+  };
+  const commerceErrors:Record<string,string>={PRODUCT_STOCK_UNAVAILABLE:'checkout.stockUnavailable',PRODUCT_STORE_UNAVAILABLE:'checkout.storeUnavailable',PRODUCT_TRIP_UNAVAILABLE:'checkout.tripUnavailable',CATEGORY_NOT_ALLOWED_FOR_TRIP:'checkout.tripUnavailable',PRODUCT_CHANGED_REQUOTE:'checkout.changed',PRODUCT_ORDER_REQUEST_REUSED:'checkout.requestReused',PRODUCT_IDENTITY_HELD:'product.stockChanged',PRODUCT_STOCK_CHANGED_REFRESH:'product.stockChanged',REFUND_INSUFFICIENT_AVAILABLE_BALANCE:'refund.insufficientBalance',REFUND_CHANNEL_NOT_CONFIGURED:'refund.channelMissing',REFUND_ALREADY_REQUESTED:'refund.sourcePending'};
+  if(commerceErrors[code])return t(commerceErrors[code]);
+  if(code.startsWith('REFUND_'))return t('refund.requestRejected');
+  if(code.startsWith('PRODUCT_ORDER_')||code==='PRODUCT_UNAVAILABLE')return t('checkout.serviceUnavailable');
+  if(code.startsWith('SHOP_'))return t('shop.error');
+  if(code.startsWith('UPLOAD_'))return t('upload.error');
+  if(code.startsWith('INTEGRATION_'))return t('integration.error');
+  if(code==='DISPUTE_OPEN'||code==='ERR:DISPUTE_OPEN')return t('case.openBlocksSettlement');
+  if(code==='DISPUTE_CHANGED_REFRESH')return t('case.changedRefresh');
+  if(code.startsWith('DISPUTE_'))return t(code==='DISPUTE_STORAGE_UNAVAILABLE'?'case.storageUnavailable':'case.rejected');
+  if(code==='INSURANCE_PREMIUM_RECONCILIATION_REQUIRED')return t('insurance.reconciliationRequired');
+  if(code==='ERR:INSURANCE_NOT_EFFECTIVE')return t('insurance.notIssued');
+  if(code.startsWith('INSURANCE_')||code.startsWith('ERR:INSURANCE_'))return t(code.includes('SELECTION_REQUIRED')?'insurance.selectionRequired':'insurance.unavailable');
+  if(orderErrors[code])return t(orderErrors[code]);
   const map:Record<string,string>={
     API_TOKEN_REJECTED:'common.apiTokenRejected', API_PERMISSION_DENIED:'common.apiPermissionDenied',
-    API_TIMEOUT:'common.apiRequestTimeout', API_NETWORK_ERROR:'common.apiNetworkError'
+    API_TIMEOUT:'common.apiRequestTimeout', API_NETWORK_ERROR:'common.apiNetworkError',
+    API_BUSINESS_REJECTED:'order.requestRejected'
   };
   const key=map[detail];return key?t(key):detail;
 }

@@ -6,10 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AuthLoginMapper {
-  void ensureCredentialTable();
-  void ensureCountryColumn();
   Map<String,Object> findProfile(@Param("channel") String channel,@Param("contact") String contact,@Param("country") String country);
-  int rememberCountry(@Param("userId") String userId,@Param("country") String country);
   Map<String,Object> findByOpenid(@Param("openid") String openid);
   int insertWechat(@Param("id") String id,@Param("username") String username,@Param("nickname") String nickname,@Param("openid") String openid,@Param("unionid") String unionid);
   String passwordHash(@Param("userId") String userId);

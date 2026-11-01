@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed,ref,reactive,watch} from 'vue';
-import {t,operationLabel,groupLabel,uiErrorMessage} from '@kuaixie/i18n';
-import { operations, getBearer, setBearer, ApiError, type ApiOperation, type ApiClient } from '@kuaixie/sdk';
+import {t,operationLabel,groupLabel,uiErrorMessage,formatAmount} from '@kuaixie/i18n';
+import { operations, getBearer, setBearer, ApiError, type ApiOperation, type ApiClient, type IntentQuote } from '@kuaixie/sdk';
 const props=defineProps<{client:ApiClient; mode?:'all'|'admin'|'user'; title?:string; groups?: string[]}>();
 const filter=ref(''); const selectedGroup=ref('__all__'); const selectedId=ref('');
 const token=ref(getBearer());const showToken=ref(false);const busy=ref(false);
@@ -17,6 +17,18 @@ function params(fields:string[]){return Object.fromEntries(fields.filter(k=>Stri
 function typed(v:string|boolean,type:string){if(type==='boolean')return v===true||v==='true';if(type==='number')return v===''?null:Number(v);if(type==='array')return String(v).trim()?JSON.parse(String(v)):[];return v}
 async function execute(){if(!selected.value||busy.value)return;if(selected.value.dangerous&&!confirmFlag.value){error.value=t('workbench.dangerConfirmation');return}error.value='';answer.value='';busy.value=true;try{
  const op=selected.value;const body=op.rawBody?JSON.parse(raw.value):Object.fromEntries(op.bodyFields.map(f=>[f.name,typed(form[f.name]??'',f.type)]));
+ if(op.path==='/rpc/award_pk'){
+  const quote=await props.client.rpc('quote_pk_award',body) as IntentQuote;
+  if(quote.pricingVersion!=='escrow_v1'||quote.currency!=='CNY')throw new Error(t('order.pricingUnavailable'));
+  if(!window.confirm(t('order.confirmEscrow',{goods:formatAmount(quote.goodsAmount,quote.currency),fee:formatAmount(quote.serviceFee,quote.currency),insurance:formatAmount(quote.insurancePremium,quote.currency),total:formatAmount(quote.buyerEscrow,quote.currency)})))return;
+  body.expectedBuyerEscrow=quote.buyerEscrow;
+ }
+ if(op.path==='/rpc/respond_shipping_fee'&&body.accept===true){
+  const order=await props.client.account.order(String(body.orderId));
+  if(order.shipping_fee==null||!Number.isFinite(Number(order.shipping_fee)))throw new Error(t('order.pricingUnavailable'));
+  if(!window.confirm(t('order.confirmShipping',{fee:formatAmount(order.shipping_fee,'CNY')})))return;
+  body.expectedFee=order.shipping_fee;
+ }
  const result=await props.client.invoke(op,{pathParams:params(op.pathParams),query:params(op.queryParams),body:op.method==='GET'?undefined:body});answer.value=typeof result==='string'?result:JSON.stringify(result,null,2);
 }catch(e){error.value=e instanceof ApiError?`${e.message}\n${typeof e.detail==='string'?e.detail:JSON.stringify(e.detail??{},null,2)}`:uiErrorMessage(e)}finally{busy.value=false}}
 </script>
@@ -30,7 +42,7 @@ async function execute(){if(!selected.value||busy.value)return;if(selected.value
     <form @submit.prevent="execute" class="api-form"><template v-for="p in selected.pathParams" :key="'p'+p"><label>{{ $t('text.5b09cb405bb4') }} {{p}} <input :value="form[p]" @input="form[p]=($event.target as HTMLInputElement).value" :placeholder="p" required/></label></template>
     <template v-for="p in selected.queryParams" :key="'q'+p"><label>{{ $t('text.bebe4456f730') }} {{p}} <input :value="form[p]" @input="form[p]=($event.target as HTMLInputElement).value" :placeholder="p"/></label></template>
     <template v-if="selected.rawBody"><label class="field-full">{{ $t('text.453974b8398d') }}<textarea v-model="raw" rows="7" spellcheck="false"/></label></template>
-    <template v-else><template v-for="f in selected.bodyFields" :key="f.name"><label :class="{'field-full':f.type==='array'}">{{f.name}} <span class="field-type">{{f.javaType}}</span><select v-if="f.type==='boolean'" :value="String(form[f.name])" @change="form[f.name]=($event.target as HTMLSelectElement).value==='true'"><option value="false">false</option><option value="true">true</option></select><textarea v-else-if="f.type==='array'" rows="3" :value="form[f.name]" @input="form[f.name]=($event.target as HTMLTextAreaElement).value" placeholder='["..."]'></textarea><input v-else :type="/password|secret|code/i.test(f.name)?'password':f.type==='number'?'number':f.type==='datetime'?'datetime-local':'text'" :step="f.type==='number'?'any':undefined" :value="form[f.name]" @input="form[f.name]=($event.target as HTMLInputElement).value" :placeholder="f.name"/></label></template></template>
+    <template v-else><template v-for="f in selected.bodyFields.filter(f=>!['expectedBuyerEscrow','expectedFee'].includes(f.name))" :key="f.name"><label :class="{'field-full':f.type==='array'}">{{f.name}} <span class="field-type">{{f.javaType}}</span><select v-if="f.name==='insuranceChoice'" v-model="form[f.name]"><option disabled value="">{{$t('v15.insurance')}}</option><option value="yes">{{$t('v15.insure')}}</option><option value="waived">{{$t('v15.waive')}}</option></select><select v-else-if="f.type==='boolean'" :value="String(form[f.name])" @change="form[f.name]=($event.target as HTMLSelectElement).value==='true'"><option value="false">false</option><option value="true">true</option></select><textarea v-else-if="f.type==='array'" rows="3" :value="String(form[f.name]??'')" @input="form[f.name]=($event.target as HTMLTextAreaElement).value" placeholder='["..."]'></textarea><input v-else :type="/password|secret|code/i.test(f.name)?'password':f.type==='number'?'number':f.type==='datetime'?'datetime-local':'text'" :step="f.type==='number'?'any':undefined" :value="String(form[f.name]??'')" @input="form[f.name]=($event.target as HTMLInputElement).value" :placeholder="f.name"/></label></template></template>
     <label v-if="selected.dangerous" class="danger-confirm field-full"><input type="checkbox" v-model="confirmFlag"/>{{ $t('text.2a487b89de54') }}</label><div class="field-full footer-actions"><button type="submit" class="submit-action" :disabled="busy">{{busy?'请求中…':'执行真实接口'}}</button><span class="hint">{{ $t('text.0fd611446f4b') }}</span></div></form>
     <div v-if="error" class="response error"><strong>{{ $t('text.85db504730e8') }}</strong><pre>{{error}}</pre></div><div v-if="answer" class="response"><strong>{{ $t('text.d7ec470aa608') }}</strong><pre>{{answer}}</pre></div><div v-if="!error&&!answer" class="response idle"><strong>{{ $t('text.d001c271dc28') }}</strong><p>{{ $t('text.f3e4b63780fb') }}</p></div></div>
   </div>

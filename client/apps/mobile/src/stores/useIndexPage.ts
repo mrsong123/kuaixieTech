@@ -10,7 +10,7 @@ import {localeRef} from '@kuaixie/i18n/vue';
 
 import type {PublicDemand,PublicTrip,VerifiedPortalRole,PublicCategory,PublicProduct} from '@kuaixie/sdk';
 
-import {getBearer,productImage,catalogMatch} from '@kuaixie/sdk';
+import {getBearer,productImage,catalogMatch,categoryCountryCodes,tripRegion,squareTripMatches,squareDemandMatches,productCountryMatches} from '@kuaixie/sdk';
 
 import {api,navigate} from '../api/client';
 
@@ -27,7 +27,7 @@ const active=ref<'trips'|'demands'>('trips');
 const region=ref<'all'|'domestic'|'international'>('all');
 const direction=ref<'all'|'outbound'|'inbound'>('all');
 const country=ref('');
-const countryChoices=computed(()=>{const codes=[...new Set(categories.value.map(x=>String(x.country_code||'').toUpperCase()).filter(x=>/^[A-Z]{2}$/.test(x)))].sort();const language=localeRef.value;let names:Intl.DisplayNames|undefined;try{names=new Intl.DisplayNames([language],{type:'region'})}catch{};return [{code:'',name:t('prototype.plaza.countryAll')},...codes.map(code=>({code,name:names?.of(code)||code}))]});
+const countryChoices=computed(()=>{const codes=[...new Set(categories.value.flatMap(categoryCountryCodes))].sort();const language=localeRef.value;let names:Intl.DisplayNames|undefined;try{names=new Intl.DisplayNames([language],{type:'region'})}catch{};return [{code:'',name:t('prototype.plaza.countryAll')},...codes.map(code=>({code,name:names?.of(code)||code}))]});
 const countryIndex=computed(()=>Math.max(0,countryChoices.value.findIndex(item=>item.code===country.value)));
 function countryChanged(e:{detail:{value:string|number}}){const index=Number(e.detail.value);country.value=countryChoices.value[index]?.code||''}
 function nearbyHint(){uni.showToast({title:t('prototype.plaza.nearUnavailable'),icon:'none',duration:2500})}
@@ -37,13 +37,7 @@ const rootStyle=computed(()=>{
  const override=prefs.value.accent&&accent.value!=='#0ea5e9'?`--brand-gradient:linear-gradient(135deg,${accent.value},${accent.value});`:'';
  return mobilePreferenceStyle(prefs.value)+`--prototype-accent:${accent.value};--prototype-accent-text:${prototypeContrast(prefs.value.accent)};`+override;
 });
-function typeOf(value?:string|null):'domestic'|'international'|'unknown'{
- if(!value)return 'unknown';
- const key=value.toLowerCase();
- if(['domestic','local','intercity','inland','within_country'].includes(key))return 'domestic';
- if(['international','cross_border','overseas','crossborder'].includes(key))return 'international';
- return 'unknown';
-}
+const typeOf=tripRegion;
 async function reload(){
  loading.value=true;tripError.value=false;demandError.value=false;productError.value=false;
  const [tripResult,demandResult,categoryResult,productResult]=await Promise.allSettled([api.catalog.trips(100),api.portal.demands(100),api.catalog.categories(100),api.catalog.products(100)]);
@@ -65,35 +59,10 @@ const roleMessageKey=computed(()=>{
  if(role.value?.user_role==='buyer')return 'portal.square.roleBuyer';
  return role.value?'portal.square.roleOther':'portal.square.rolesUnavailable';
 });
-const visibleTrips=computed(()=>trips.value.filter(x=>{
- const text=search.value.trim().toLocaleLowerCase();
- if(region.value!=='all'&&typeOf(x.trip_type)!==region.value)return false;
- if(direction.value!=='all'&&String(x.direction||'').toLowerCase()!==direction.value)return false;
- return !text||[x.destination,x.entry_port,x.transport_mode,x.trip_type].some(v=>String(v??'').toLocaleLowerCase().includes(text));
-}));
-const visibleDemands=computed(()=>demands.value.filter(x=>{
- const text=search.value.trim().toLocaleLowerCase();
- if(region.value!=='all'&&typeOf(x.trip_type)!==region.value&&typeOf(x.trip_type)!=='unknown')return false;
- return !text||[x.title,x.city,x.description].some(v=>String(v??'').toLocaleLowerCase().includes(text));
-}));
-// Country scope must be derived from real category country codes; never guess from a product name.
-const matchingProducts=computed(()=>{
- const index=new Map(categories.value.map(c=>[String(c.id),c]));
- function matchesCountry(p:PublicProduct){
-  if(!country.value)return true;
-  let key=String(p.category_id??'');
-  const visited=new Set<string>();
-  while(key&&!visited.has(key)){
-   visited.add(key);
-   const cat=index.get(key);
-   if(!cat)return false;
-   if(cat.country_code)return cat.country_code.toUpperCase()===country.value;
-   key=cat.parent_id==null?'':String(cat.parent_id);
-  }
-  return false;
- }
- return products.value.filter(x=>catalogMatch(x,search.value.trim(),null)&&matchesCountry(x)).slice(0,10);
-});
+const visibleTrips=computed(()=>trips.value.filter(x=>squareTripMatches(x,search.value,region.value,direction.value)));
+const visibleDemands=computed(()=>demands.value.filter(x=>squareDemandMatches(x,search.value,region.value)));
+// Country associations come from categoryCountryCodes, including ancestor categories.
+const matchingProducts=computed(()=>products.value.filter(x=>catalogMatch(x,search.value.trim(),null)&&productCountryMatches(x,categories.value,country.value)).slice(0,10));
 const matchingTrips=computed(()=>trips.value.filter(x=>[x.destination,x.entry_port,x.transport_mode,x.trip_type].some(v=>String(v??'').toLocaleLowerCase().includes(search.value.trim().toLocaleLowerCase()))).slice(0,10));
 const matchingDemands=computed(()=>demands.value.filter(x=>[x.title,x.city,x.description].some(v=>String(v??'').toLocaleLowerCase().includes(search.value.trim().toLocaleLowerCase()))).slice(0,10));
 const searchTotal=computed(()=>matchingProducts.value.length+matchingTrips.value.length+matchingDemands.value.length);

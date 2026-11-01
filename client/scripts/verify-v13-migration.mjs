@@ -18,7 +18,7 @@ const store=read('apps/mobile/src/stores/useIndexPage.ts');
 const iconComponent=read('apps/mobile/src/components/OriginalMdiIcon.vue');
 assert(icons.includes('OriginalMdiIcon'), 'original Mine icon assets not rendered');
 assert(home.includes('matchingProducts')&&home.includes('matchingDemands')&&home.includes('matchingTrips'),'original search result groups absent');
-assert(store.includes('catalogMatch')&&store.includes('matchesCountry')&&store.includes('cat.country_code'),'real catalog or real country constraint absent');
+assert(store.includes('catalogMatch')&&store.includes('productCountryMatches')&&store.includes('categoryCountryCodes'),'real catalog or real country constraint absent');
 assert(store.includes('api.catalog.products(100)'),'real public catalog API not requested');
 assert(!store.includes('mockProducts')&&!store.includes('fakeData'),'fake product data');
 assert(iconComponent.includes('/static/mdi/'),'mini-program safe icon image missing');

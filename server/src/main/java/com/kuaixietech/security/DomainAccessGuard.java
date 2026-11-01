@@ -24,6 +24,11 @@ public class DomainAccessGuard {
     if (!mapper.isVerifiedCarrier(uid)) throw new AccessDeniedException("Verified carrier required");
     return uid;
   }
+  public String requireVerifiedBuyer() {
+    String uid=requireActiveProfile();
+    if(!mapper.isVerifiedBuyer(uid))throw new AccessDeniedException("Verified buyer required");
+    return uid;
+  }
   public String requireOrderParticipant(String orderId) {
     String uid=requireActiveProfile();
     if (!mapper.isAdmin(uid) && !mapper.canReadOrder(orderId,uid))

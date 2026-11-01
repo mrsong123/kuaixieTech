@@ -1,0 +1,219 @@
+[
+  {
+    "id": "identity",
+    "title": "账号与身份",
+    "frontend": "登录、我的、认证、账号安全",
+    "admin": "用户管理与认证审核",
+    "tables": [
+      "t_profiles",
+      "t_verification_codes",
+      "t_kyc_documents",
+      "t_face_verifications",
+      "t_auth_credentials",
+      "t_login_codes",
+      "t_auth_rate_limits",
+      "t_sms_send_events",
+      "t_sms_daily_budget",
+      "t_vc_delivery_outbox",
+      "t_revoked_tokens",
+      "t_consent_records",
+      "t_user_preferences",
+      "t_account_deletion_requests"
+    ]
+  },
+  {
+    "id": "catalog",
+    "title": "商品与分类",
+    "frontend": "商品目录、商品管理、收藏、购物车、地址簿",
+    "admin": "商品、分类与地区管理",
+    "tables": [
+      "t_categories",
+      "t_category_countries",
+      "t_products",
+      "t_favorites",
+      "t_cart_items",
+      "t_addresses",
+      "t_cbec_product_reviews"
+    ]
+  },
+  {
+    "id": "trade",
+    "title": "行程、求购与订单",
+    "frontend": "广场、发布、报价、订单详情与履约",
+    "admin": "行程核验、订单与求购管理",
+    "tables": [
+      "t_trips",
+      "t_trip_categories",
+      "t_demands",
+      "t_quotes",
+      "t_publish_deposits",
+      "t_orders",
+      "t_deposits",
+      "t_order_logistics",
+      "t_piggyback_requests",
+      "t_assist_requests",
+      "t_proof_recipes",
+      "t_logistics_tracking",
+      "t_product_order_reservations"
+    ]
+  },
+  {
+    "id": "aftersales",
+    "title": "售后与纠纷",
+    "frontend": "取消、纠纷、退货、售后与评价",
+    "admin": "取消审核、纠纷裁决与售后处理",
+    "tables": [
+      "t_cancel_requests",
+      "t_disputes",
+      "t_reviews",
+      "t_return_cases",
+      "t_after_sales_cases",
+      "t_dispute_events"
+    ]
+  },
+  {
+    "id": "finance",
+    "title": "支付、资金与税票",
+    "frontend": "钱包、支付、资金流水、提现与发票",
+    "admin": "支付配置、财务审核、退款与对账",
+    "tables": [
+      "t_pay_orders",
+      "t_balance_ledger",
+      "t_invoices",
+      "t_coupons",
+      "t_withdrawals",
+      "t_payment_merchants",
+      "t_fx_sources",
+      "t_payment_quotes",
+      "t_currency_payments",
+      "t_currency_payment_receipts",
+      "t_payment_refunds",
+      "t_payment_refund_events"
+    ]
+  },
+  {
+    "id": "growth",
+    "title": "邀请、积分与团队",
+    "frontend": "邀请、等级、团队与奖励明细",
+    "admin": "邀请码、分销、积分与加入审批",
+    "tables": [
+      "t_invite_codes",
+      "t_reward_ledger",
+      "t_score_logs",
+      "t_join_applications"
+    ]
+  },
+  {
+    "id": "notification",
+    "title": "通知与消息",
+    "frontend": "消息、通知、交易会话",
+    "admin": "通知发送与投递异常处理",
+    "tables": [
+      "t_notifications",
+      "t_notify_outbox",
+      "t_messages",
+      "t_direct_threads",
+      "t_direct_messages"
+    ]
+  },
+  {
+    "id": "support",
+    "title": "客服与工单",
+    "frontend": "客服会话、人工转接与工单进度",
+    "admin": "人工队列、客服接待与工单处理",
+    "tables": [
+      "t_support_threads",
+      "t_support_tickets",
+      "t_support_messages",
+      "t_support_conversations",
+      "t_support_conversation_messages"
+    ]
+  },
+  {
+    "id": "communications",
+    "title": "隐私通信与风控",
+    "frontend": "隐私通话、订单通话与违规提示",
+    "admin": "隐私号码池、绑定、呼叫记录与违规审核",
+    "tables": [
+      "t_chat_violations",
+      "t_call_records",
+      "t_privacy_numbers",
+      "t_privacy_bindings",
+      "t_call_logs"
+    ]
+  },
+  {
+    "id": "community",
+    "title": "社区与媒体",
+    "frontend": "社区动态、评论、点赞、收藏、分享与媒体上传",
+    "admin": "社区审核、下架、媒体与锚点管理",
+    "tables": [
+      "t_posts",
+      "t_social_posts",
+      "t_post_likes",
+      "t_post_comments",
+      "t_community_uploads",
+      "t_post_media",
+      "t_post_anchors",
+      "t_post_favorites",
+      "t_post_shares",
+      "t_portal_demand_reviews"
+    ]
+  },
+  {
+    "id": "location",
+    "title": "地点与采购场所",
+    "frontend": "地点选择、采购地点与行程推荐",
+    "admin": "地点、采购场所维护",
+    "tables": [
+      "t_geo_points",
+      "t_procurement_venues"
+    ]
+  },
+  {
+    "id": "store",
+    "title": "店铺与保险",
+    "frontend": "店铺申请、店铺信息、保障与保单进度",
+    "admin": "开店审核、店铺运营、保险与风险池",
+    "tables": [
+      "t_store_applications",
+      "t_stores",
+      "t_store_insurance_policies",
+      "t_insurance_coverages",
+      "t_risk_pool",
+      "t_enterprise_license_files",
+      "t_goods_insurance_products",
+      "t_goods_insurance_quotes",
+      "t_goods_insurance_applications",
+      "t_store_products"
+    ]
+  },
+  {
+    "id": "integration",
+    "title": "服务商集成",
+    "frontend": "业务中的服务可用状态与执行结果",
+    "admin": "厂商、产品、字段、渠道、密钥引用与探测",
+    "tables": [
+      "t_integration_vendors",
+      "t_integration_products",
+      "t_integration_product_fields",
+      "t_integration_settings",
+      "t_integration_secrets",
+      "t_channel_configs",
+      "t_channel_secrets_probe"
+    ]
+  },
+  {
+    "id": "operations",
+    "title": "平台运营与审计",
+    "frontend": "公告、协议、语言与系统状态",
+    "admin": "公告、协议、语言、错误处理与只读审计",
+    "tables": [
+      "t_admin_logs",
+      "t_legal_docs",
+      "t_announcements",
+      "t_locales",
+      "t_error_logs"
+    ]
+  }
+]

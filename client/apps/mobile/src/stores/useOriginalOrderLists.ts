@@ -1,4 +1,4 @@
-import {computed,ref} from 'vue';
+import {computed,ref,proxyRefs} from 'vue';
 import {onShow} from '@dcloudio/uni-app';
 import {getBearer,type MyOrder} from '@kuaixie/sdk';
 import {t,formatAmount,formatDate,formatBusinessStatus} from '@kuaixie/i18n';
@@ -46,5 +46,5 @@ export function useOriginalOrderList(kind:'shipment'|'open'){
  }
  function detail(o:MyOrder){uni.navigateTo({url:'/pages/order-detail/index?id='+encodeURIComponent(String(o.id))})}
  onShow(()=>{rawOffset.value=0;void load(true);void loadVerification()});
- return {prefs,role,rows,busy,error,hasMore,loaded,canRead,verified,verificationError,load,switchRole,detail,mobilePreferenceStyle,formatAmount,formatDate,formatBusinessStatus};
+ return proxyRefs({prefs,role,rows,busy,error,hasMore,loaded,canRead,verified,verificationError,load,switchRole,detail,mobilePreferenceStyle,formatAmount,formatDate,formatBusinessStatus});
 }

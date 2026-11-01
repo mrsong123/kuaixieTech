@@ -45,12 +45,17 @@
     "test:original-assets": "node scripts/verify-original-tabbar-v12.mjs",
     "test:v13": "node scripts/verify-v13-migration.mjs",
     "test:v14": "node scripts/verify-v14-migration.mjs",
-    "test:v15": "node scripts/verify-v15-migration.mjs"
+    "test:v15": "node scripts/verify-v15-migration.mjs",
+    "test:business-models": "node scripts/verify-business-models.mjs",
+    "test:delivery-complete": "python3 ../server/tools/audit_business_coverage.py --require-complete",
+    "test:product-checkout": "node scripts/verify-product-checkout.mjs",
+    "test:payment-refunds": "node scripts/verify-payment-refunds.mjs",
+    "test:shop-orders": "node scripts/verify-shop-orders.mjs"
   },
   "devDependencies": {
     "typescript": "~5.9.3"
   },
-  "description": "快协随行购多端 pnpm 工作区（PC / 运营后台 / UniApp H5 / 微信小程序 / App 基座 / 共享 SDK）",
+  "description": "\u5feb\u534f\u968f\u884c\u8d2d\u591a\u7aef pnpm \u5de5\u4f5c\u533a\uff08PC / \u8fd0\u8425\u540e\u53f0 / UniApp H5 / \u5fae\u4fe1\u5c0f\u7a0b\u5e8f / App \u57fa\u5ea7 / \u5171\u4eab SDK\uff09",
   "engines": {
     "node": ">=20.19.0",
     "pnpm": ">=10.26.0 <11"

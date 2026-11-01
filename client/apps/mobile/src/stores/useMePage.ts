@@ -1,4 +1,5 @@
 
+import {primaryNavigation} from '@kuaixie/sdk';
 import {preferenceRef} from '@kuaixie/preferences/vue';
 
 import {mobilePreferenceStyle} from '../utils/prototype';
@@ -27,7 +28,7 @@ function applyAccent(){if(validHex(accentDraft.value))setPreferences({accent:acc
 function resetDisplay(){resetPreferences();accentDraft.value=prefs.value.accent}
 const localeChoices=['zh-CN','en-US'];
 function changeLanguage(e:{detail:{value:number}}){const l=localeChoices[Number(e.detail.value)];if(!l)return;setLocale(l);uni.setStorageSync('kx.locale',l);syncTabLabels()}
-function syncTabLabels(){(['prototype.nav.square','portal.tabs.community','prototype.nav.publish','prototype.nav.messages','mobile.tab.me'] as const).forEach((key,index)=>{uni.setTabBarItem({index,text:t(key)})})}
+function syncTabLabels(){primaryNavigation.map(item=>item.titleKey).forEach((key,index)=>{uni.setTabBarItem({index,text:t(key)})})}
 const token=ref(getBearer());const visible=ref(false);
 function save(){setBearer(token.value);uni.showToast({title:t('common.tokenSet'),icon:'none'})}
 function clear(){clearBearer();token.value='';uni.showToast({title:t('common.tokenClear'),icon:'none'})}

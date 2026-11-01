@@ -1,0 +1,3 @@
+
+# Generated CSV reports use the standard CRLF record terminator.
+*.csv whitespace=cr-at-eol

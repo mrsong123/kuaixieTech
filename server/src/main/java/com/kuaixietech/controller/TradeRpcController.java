@@ -15,7 +15,8 @@ public class TradeRpcController {
   public TradeRpcController(TradeRpcMigrationService svc){this.svc=svc;}
   public record AcceptOrderBody(String orderId,BigDecimal deposit) { }
   public record QuoteBody(String demandId,BigDecimal price,Integer promiseDays,String purchasePlace,String note) { }
-  public record AwardBody(String demandId,String quoteId) { }
+  public record AwardBody(String demandId,String quoteId,String insuranceChoice,BigDecimal expectedBuyerEscrow,String insuranceQuoteId) { }
+  public record AwardQuoteBody(String demandId,String quoteId,String insuranceChoice,String insuranceQuoteId) { }
   public record PublishBody(BigDecimal amount,String source,String orderId) { }
   public record DemandBody(String demandId) { }
   @PostMapping("/accept_order_atomic") public String acceptOrder(@RequestBody AcceptOrderBody r) {
@@ -28,8 +29,9 @@ public class TradeRpcController {
     return svc.closePk(r.demandId());
   }
   @PostMapping("/award_pk") public String awardPk(@RequestBody AwardBody r) {
-    return svc.awardPk(r.demandId(),r.quoteId());
+    return svc.awardPk(r.demandId(),r.quoteId(),r.insuranceChoice(),r.expectedBuyerEscrow(),r.insuranceQuoteId());
   }
+  @PostMapping("/quote_pk_award") public Object quoteAward(@RequestBody AwardQuoteBody r){return svc.quotePkAward(r.demandId(),r.quoteId(),r.insuranceChoice(),r.insuranceQuoteId());}
   @PostMapping("/create_publish_deposit") public String createPublish(@RequestBody PublishBody r) {
     return svc.createPublishDeposit(r.amount(),r.source(),r.orderId());
   }

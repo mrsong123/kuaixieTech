@@ -15,6 +15,6 @@ public final class TrustedActor {
     String id = auth.getName();
     if (id == null || !id.matches("(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"))
       throw new AccessDeniedException("Invalid authenticated subject");
-    return id;
+    return java.util.UUID.fromString(id).toString();
   }
 }

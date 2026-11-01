@@ -45,7 +45,9 @@ function visit(folder,app){
 }
 for (const app of ['pc','admin','mobile']) {
   const cfg=fs.readFileSync(path.join(root,'apps',app,'vite.config.ts'),'utf8');
-  assert.match(cfg,/alias:\s*\{\s*'@':\s*fileURLToPath/,`${app}: Vite alias @ missing`);
+  const objectAlias=/alias:\s*\{\s*'@':\s*fileURLToPath\(new URL\('\.\/src',\s*import\.meta\.url\)\)/;
+  const arrayAlias=/find:\s*'@',\s*replacement:\s*fileURLToPath\(new URL\('\.\/src',\s*import\.meta\.url\)\)/;
+  assert.ok(objectAlias.test(cfg)||arrayAlias.test(cfg),`${app}: Vite alias @ must resolve to ./src`);
   const ts=getJSON(`apps/${app}/tsconfig.json`);
   assert.deepEqual(ts.compilerOptions.paths['@/*'],['src/*'],`${app}: TS alias @/* missing`);
   visit(path.join(root,'apps',app,'src'),app);

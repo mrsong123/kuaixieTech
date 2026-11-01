@@ -464,6 +464,48 @@
         "navigationBarTitleText": "运营台",
         "navigationStyle": "default"
       }
+    },
+    {
+      "path": "pages/payment-checkout/index",
+      "style": {
+        "navigationBarTitleText": "支付 / Payment"
+      }
+    },
+    {
+      "path": "pages/insurance-document/index",
+      "style": {
+        "navigationBarTitleText": "保险机构服务"
+      }
+    },
+    {
+      "path": "pages/my-insurance/index",
+      "style": {
+        "navigationBarTitleText": "投保与保单"
+      }
+    },
+    {
+      "path": "pages/my-disputes/index",
+      "style": {
+        "navigationBarTitleText": "交易纠纷与售后"
+      }
+    },
+    {
+      "path": "pages/my-shop/index",
+      "style": {
+        "navigationBarTitleText": "我的店铺"
+      }
+    },
+    {
+      "path": "pages/shop-detail/index",
+      "style": {
+        "navigationBarTitleText": "店铺"
+      }
+    },
+    {
+      "path": "pages/my-refunds/index",
+      "style": {
+        "navigationBarTitleText": "充值退款"
+      }
     }
   ],
   "globalStyle": {

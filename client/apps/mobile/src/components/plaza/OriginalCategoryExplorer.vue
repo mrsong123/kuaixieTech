@@ -3,7 +3,7 @@ import OriginalMdiIcon from '../OriginalMdiIcon.vue';
 import {computed,onMounted,ref} from 'vue';
 import {api} from '../../api/client';
 import {getLocale,localizedField,t} from '@kuaixie/i18n';
-import type {PublicCategory} from '@kuaixie/sdk';
+import {categoryCountryCodes,type PublicCategory} from '@kuaixie/sdk';
 import {localeRef} from '@kuaixie/i18n/vue';
 const props=defineProps<{country:string;query?:string;compact?:boolean;focus?:string[]}>();
 const all=ref<PublicCategory[]>([]);
@@ -15,7 +15,7 @@ const label=(item:PublicCategory)=>{void language.value;return localizedField(it
 const visible=computed(()=>{
  const byId=new Map(all.value.map(x=>[String(x.id),x]));
  const chain=(row:PublicCategory)=>{const nodes=[row];let parent=row.parent_id;while(parent!=null&&byId.has(String(parent))){const next=byId.get(String(parent));if(!next)break;nodes.push(next);parent=next.parent_id}return nodes};
- let rows=all.value.filter(row=>!props.country||chain(row).some(node=>String(node.country_code||'').toUpperCase()===props.country.toUpperCase()));
+ let rows=all.value.filter(row=>!props.country||chain(row).some(node=>categoryCountryCodes(node).includes(props.country.toUpperCase())));
  const q=(props.query||'').trim().toLocaleLowerCase();
  const focus=new Set((props.focus||[]).filter(Boolean));
  if(!q&&!focus.size)return rows;

@@ -31,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
    String type=b.tripType()==null?"any":b.tripType();
    jdbc.update("INSERT INTO t_demands(id,title,item_desc,image_urls,publisher_id,status,visibility,trip_type,city,expect_price,pk_mode) VALUES (?,?,?,JSON_ARRAY(),?,'open','hidden',?,?,?,1)",
       id,b.title().trim(),b.description(),user,type,b.city(),b.expectPrice());
-   jdbc.update("INSERT INTO kx_portal_demand_reviews(demand_id,author_id,status) VALUES(?,?,'pending_review')",id,user);
+   jdbc.update("INSERT INTO t_portal_demand_reviews(demand_id,author_id,status) VALUES(?,?,'pending_review')",id,user);
    return Map.of("id",id,"status","pending_review");
  }
  @Transactional public Map<String,String> createTrip(PortalDtos.TripCreate b){
@@ -56,7 +56,7 @@ import org.springframework.web.server.ResponseStatusException;
   String url=allowedHttps(b.mediaUrl());String poster=allowedHttps(b.posterUrl());
   if(!kind.equals("text")&&url==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"media URL required");
   if(kind.equals("text")&&url!=null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"text posts cannot contain media URL");
-  String id=UUID.randomUUID().toString();jdbc.update("INSERT INTO kx_social_posts(id,author_id,caption,media_kind,media_url,poster_url,status) VALUES(?,?,?,?,?,?,'pending_review')",id,user,b.caption().trim(),kind,url,poster);
+  String id=UUID.randomUUID().toString();jdbc.update("INSERT INTO t_social_posts(id,author_id,caption,media_kind,media_url,poster_url,status) VALUES(?,?,?,?,?,?,'pending_review')",id,user,b.caption().trim(),kind,url,poster);
   return Map.of("id",id,"status","pending_review");
  }
  public Map<String,List<Map<String,Object>>> pendingReviews(){guard.requireAdmin();return Map.of("demands",mapper.pendingDemands(),"trips",mapper.pendingTrips(),"posts",mapper.pendingPosts());}
@@ -67,12 +67,12 @@ import org.springframework.web.server.ResponseStatusException;
  }
  @Transactional public void reviewDemand(PortalDtos.ReviewDemand b){
   String admin=guard.requireAdmin();
-  int n=jdbc.update("UPDATE kx_portal_demand_reviews SET status=?,reviewer_id=?,reviewed_at=NOW() WHERE demand_id=? AND status='pending_review'",b.approved()?"approved":"rejected",admin,b.demandId());
+  int n=jdbc.update("UPDATE t_portal_demand_reviews SET status=?,reviewer_id=?,reviewed_at=NOW() WHERE demand_id=? AND status='pending_review'",b.approved()?"approved":"rejected",admin,b.demandId());
   if(n!=1)throw new ResponseStatusException(HttpStatus.CONFLICT,"request not awaiting review");
   if(b.approved())jdbc.update("UPDATE t_demands SET visibility='public' WHERE id=? AND status='open'",b.demandId());
  }
  @Transactional public void reviewSocialPost(PortalDtos.ReviewPost b){
-  String user=guard.requireAdmin();int n=jdbc.update("UPDATE kx_social_posts SET status=?,reviewer_id=?,reviewed_at=NOW() WHERE id=? AND status='pending_review'",b.approved()?"approved":"rejected",user,b.postId());
+  String user=guard.requireAdmin();int n=jdbc.update("UPDATE t_social_posts SET status=?,reviewer_id=?,reviewed_at=NOW() WHERE id=? AND status='pending_review'",b.approved()?"approved":"rejected",user,b.postId());
   if(n!=1)throw new ResponseStatusException(HttpStatus.CONFLICT,"post not awaiting review");
  }
 }

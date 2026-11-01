@@ -14,7 +14,7 @@
 <select id="lockCommissionRewards" resultType="map">SELECT id,inviter_id,currency,amount,settled_to_balance FROM t_reward_ledger WHERE order_id=#{orderId} AND event_type='team_commission' AND status!='revoked' AND revoked_at IS NULL ORDER BY id FOR UPDATE</select>
 <update id="revokeReward">UPDATE t_reward_ledger SET status='revoked',revoked_at=CURRENT_TIMESTAMP(3),revoked_reason=#{reason} WHERE id=#{id} AND revoked_at IS NULL</update>
 <update id="reduceCommission">UPDATE t_profiles SET commission_mtd=GREATEST(commission_mtd-#{amount},0) WHERE id=#{uid}</update>
-<select id="lockOrder" resultType="map">SELECT id,status,buyer_id,vendor_id,goods_amount,service_fee,shipped_at,promised_arrive_date,shipping_fee_status,freight_label_urls,shipping_fee,insured,insurance_premium,tax_refund_plan,tax_refund_amount,purchase_evidence,delivery_at FROM t_orders WHERE id=#{id} FOR UPDATE</select>
+<select id="lockOrder" resultType="map">SELECT id,status,buyer_id,vendor_id,goods_amount,service_fee,shipped_at,promised_arrive_date,shipping_fee_status,freight_label_urls,shipping_fee,insured,insurance_premium,tax_refund_plan,tax_refund_amount,purchase_evidence,delivery_at,agreed_json,vendor_deposit,vendor_deposit_status FROM t_orders WHERE id=#{id} FOR UPDATE</select>
 <update id="markOrderSettled">UPDATE t_orders SET status='completed',settled_at=CURRENT_TIMESTAMP(3),updated_at=CURRENT_TIMESTAMP(3),buyer_deposit_status='released_to_goods',vendor_deposit_status='released' WHERE id=#{id} AND status IN ('shipped','purchased')</update>
 <update id="releaseDeposits">UPDATE t_deposits SET status=CASE WHEN party_role='buyer' THEN 'released_to_goods' ELSE 'released' END,updated_at=CURRENT_TIMESTAMP(3) WHERE order_id=#{id} AND status='frozen'</update>
 <update id="markNoProof">UPDATE t_orders SET purchase_risk_flags=JSON_ARRAY_APPEND(COALESCE(purchase_risk_flags,JSON_ARRAY()),'$', 'auto_settled_no_proof') WHERE id=#{id} AND JSON_CONTAINS(COALESCE(purchase_risk_flags,JSON_ARRAY()),JSON_QUOTE('auto_settled_no_proof'))=0</update>
@@ -22,4 +22,6 @@
 <update id="setTaxRefundAmount">UPDATE t_orders SET tax_refund_amount=#{tax} WHERE id=#{id}</update>
 <update id="updateVendorStats">UPDATE t_profiles SET deal_count=deal_count+1,ontime_count=ontime_count+CASE WHEN #{onTime} THEN 1 ELSE 0 END,clean_streak=CASE WHEN #{onTime} THEN clean_streak+1 ELSE 0 END WHERE id=#{id}</update>
 <insert id="message">INSERT INTO t_messages(id,order_id,sender_id,content,image_urls,system_flag) VALUES(#{id},#{orderId},#{sender},#{content},JSON_ARRAY(),1)</insert>
+<select id="activeCases" resultType="string">SELECT id FROM t_disputes WHERE order_id=#{id} AND stage NOT IN('resolved','closed') FOR UPDATE</select>
+<select id="activeAfterSales" resultType="string">SELECT id FROM t_after_sales_cases WHERE order_id=#{id} AND status NOT IN('resolved','closed','rejected','cancelled') FOR UPDATE</select>
 </mapper>

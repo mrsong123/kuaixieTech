@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Source's force majeure direct closure is retained, NOT represented as an administrator-approved review.
  */
 @Service public class CancellationRpcService {
+ private com.kuaixietech.commerce.ProductInventory inventory;
+ @org.springframework.beans.factory.annotation.Autowired public void productInventory(com.kuaixietech.commerce.ProductInventory inventory){this.inventory=inventory;}
  private final CancellationRpcMapper m;private final AtomicMoneyService money;private final CancellationTierMigrationService tiers;
  private final RewardSettlementService rewards;private final LegacyAdminRpcService admin;private final ObjectMapper json;
  public CancellationRpcService(CancellationRpcMapper m,AtomicMoneyService money,CancellationTierMigrationService tiers,RewardSettlementService rewards,LegacyAdminRpcService admin,ObjectMapper json){this.m=m;this.money=money;this.tiers=tiers;this.rewards=rewards;this.admin=admin;this.json=json;}
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
   String actor=TrustedActor.currentUserId();Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
   String buyer=str(o.get("buyer_id")),vendor=str(o.get("vendor_id"));boolean isBuyer=actor.equals(buyer);
   if(!isBuyer&&!actor.equals(vendor))return "ERR:NOT_PARTY";
+  if(!m.activeCases(orderId).isEmpty()||!m.activeAfterSales(orderId).isEmpty())return "ERR:DISPUTE_OPEN";
   if(!Set.of("requesting","negotiating","vendor_deposit_pending","locked","purchased").contains(status(o,"status")))return "ERR:BAD_STATUS";
   String tier=force?"free":tiers.compute(orderId,isBuyer);
   if(tier.startsWith("ERR:"))return tier;
@@ -64,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
    }
   }
   changed(m.markCancelled(orderId,finalStatus,tier,reason==null?"other":reason,force,proof,buyerStatus,vendorStatus,penalty,null));
+  if(inventory!=null)inventory.transition(orderId,"released");
   // Source has a terminal reward recall hook; preserve it within the same transaction.
   rewards.revokeOrderRewards(orderId,"订单取消/违约结案，提成已按规则追回");
   notice(buyer,"order","订单取消处理完成","订单 "+o.get("order_no")+" 已按「"+tier+"」规则处理"+(note==null||note.isBlank()?"":"；说明："+note),orderId);
@@ -72,8 +76,9 @@ import org.springframework.transaction.annotation.Transactional;
  }
  @Transactional public String adminResolveCancel(String orderId,boolean approve,String reason){
   String why=reason==null?"":reason.trim();if(why.isEmpty())return "ERR:NO_NOTE";
-  Map<String,Object> cr=m.latestPending(orderId);if(cr==null)return "ERR:NO_PENDING";
   Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
+  if(!m.activeCases(orderId).isEmpty()||!m.activeAfterSales(orderId).isEmpty())return "ERR:DISPUTE_OPEN";
+  Map<String,Object> cr=m.latestPending(orderId);if(cr==null)return "ERR:NO_PENDING";
   String operator=admin.adminGuard(approve?"cancel_approved":"cancel_rejected","order",orderId,why);
   String tier="-";
   if(approve){
@@ -81,6 +86,7 @@ import org.springframework.transaction.annotation.Transactional;
    if("frozen".equals(status(o,"buyer_deposit_status")))refund(buyer,amount(o.get("buyer_deposit")),orderId,"取消核准：保证金退回");
    if("frozen".equals(status(o,"vendor_deposit_status")))refund(vendor,amount(o.get("vendor_deposit")),orderId,"取消核准：保证金退回");
    changed(m.markCancelled(orderId,"cancelled_no_fault",null,str(cr.get("reason_type")),false,"[]","refunded","refunded",BigDecimal.ZERO,"运营核准取消："+why));
+   if(inventory!=null)inventory.transition(orderId,"released");
    m.markDepositRows(orderId,"运营核准取消");rewards.revokeOrderRewards(orderId,"取消申请获运营核准，订单无责结束");
   }else{
    tier=tiers.compute(orderId,"buyer".equals(str(cr.get("applicant_role"))));m.restoreLocked(orderId);

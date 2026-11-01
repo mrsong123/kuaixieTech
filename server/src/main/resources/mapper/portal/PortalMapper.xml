@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.portal.PortalMapper">
+  <select id="publicDemands" resultType="map">
+    SELECT d.id,d.title,d.item_desc AS description,d.city,d.trip_type,d.expect_price,d.deadline,d.created_at
+    FROM t_demands d JOIN t_profiles p ON p.id=d.publisher_id
+    WHERE d.status='open' AND d.visibility='public' AND p.deleted_at IS NULL
+      AND (p.banned_until IS NULL OR p.banned_until &lt;= CURRENT_TIMESTAMP(3))
+      AND (d.deadline IS NULL OR d.deadline &gt; CURRENT_TIMESTAMP(3))
+    ORDER BY d.created_at DESC,d.id DESC LIMIT #{limit}
+  </select>
+  <select id="communityFeed" resultType="map">
+    SELECT s.id,s.caption,s.media_kind,s.media_url,s.poster_url,s.created_at,
+           p.nickname AS author_name,p.avatar_url AS author_avatar
+    FROM t_social_posts s JOIN t_profiles p ON p.id=s.author_id
+    WHERE s.status='approved' AND p.deleted_at IS NULL
+      AND (p.banned_until IS NULL OR p.banned_until &lt;= CURRENT_TIMESTAMP(3))
+    ORDER BY s.created_at DESC,s.id DESC LIMIT #{limit}
+  </select>
+  <select id="profileRole" resultType="map">
+    SELECT user_role,carrier_verify_status,buyer_verify_status,enterprise_verify_status
+    FROM t_profiles WHERE id=#{userId} AND deleted_at IS NULL
+  </select>
+  <select id="pendingDemands" resultType="map">
+    SELECT d.id,d.title,d.item_desc AS description,d.city,d.trip_type,d.expect_price,d.created_at,r.status
+    FROM t_portal_demand_reviews r JOIN t_demands d ON d.id=r.demand_id
+    WHERE r.status='pending_review' ORDER BY r.created_at,d.id LIMIT 100
+  </select>
+  <select id="pendingTrips" resultType="map">
+    SELECT id,owner_id,destination,origin_city,depart_date,return_date,transport_mode,trip_type,
+           capacity_qty,verify_status,proof_urls,visa_proof_urls,ticket_proof_urls,created_at
+    FROM t_trips WHERE verify_status='pending' ORDER BY created_at,id LIMIT 100
+  </select>
+  <select id="pendingPosts" resultType="map">
+    SELECT id,author_id,caption,media_kind,media_url,poster_url,status,created_at
+    FROM t_social_posts WHERE status='pending_review' ORDER BY created_at,id LIMIT 100
+  </select>
+</mapper>

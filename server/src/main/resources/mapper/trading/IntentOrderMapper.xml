@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.trading.IntentOrderMapper">
+  <sql id="eligibleTrip">
+    SELECT t.id,t.owner_id,t.capacity_qty,t.remaining_slots,t.return_date
+    FROM t_trips t JOIN t_profiles p ON p.id=t.owner_id
+    WHERE t.id=#{id} AND t.status='active' AND t.visibility='public' AND t.verify_status='approved'
+      AND t.return_date &gt;= CURRENT_DATE() AND p.deleted_at IS NULL
+      AND p.carrier_verify_status='approved'
+      AND (p.banned_until IS NULL OR p.banned_until &lt;= CURRENT_TIMESTAMP(3))
+  </sql>
+  <select id="trip" resultType="map"><include refid="eligibleTrip"/></select>
+  <select id="lockTrip" resultType="map"><include refid="eligibleTrip"/> FOR UPDATE</select>
+  <!-- Under READ COMMITTED the locked trip serializes creation; current SUM avoids locking unrelated orders. -->
+  <select id="reservedQuantityTotal" resultType="int">
+    SELECT COALESCE(SUM(quantity),0) FROM t_orders WHERE trip_id=#{trip}
+      AND status NOT IN ('cancelled_no_fault','cancelled_breach','refunded','closed')
+  </select>
+  <select id="lockExisting" resultType="map">
+    SELECT id,buyer_id,status,agreed_json FROM t_orders WHERE id=#{id}
+  </select>
+  <select id="categoryAllowed" resultType="int">
+    SELECT COUNT(*) FROM t_categories c WHERE c.id=#{category} AND c.active=1
+      AND (NOT EXISTS(SELECT 1 FROM t_trip_categories tc WHERE tc.trip_id=#{trip})
+        OR EXISTS(SELECT 1 FROM t_trip_categories tc WHERE tc.trip_id=#{trip} AND tc.category_id=c.id))
+  </select>
+  <insert id="insertOrder">
+    INSERT INTO t_orders(id,order_no,trip_id,buyer_id,vendor_id,source,item_name,item_spec,quantity,unit,
+      expect_unit_price,goods_amount,service_fee,buyer_deposit,vendor_deposit,status,buyer_deposit_status,vendor_deposit_status,
+      insured,insurance_premium,declared_value,contact_name,contact_phone,address,note,expect_arrive_date,intent_deadline,agreed_json,
+      ref_image_urls,purchase_receipt_urls,cancel_proof_urls,purchase_evidence,freight_label_urls,ship_risk_flags,purchase_meta,purchase_risk_flags)
+    VALUES(#{id},#{orderNo},#{input.tripId},#{buyer},#{vendor},'trip_intent',TRIM(#{input.itemName}),#{input.itemSpec},#{input.quantity},#{input.unit},
+      #{input.expectUnitPrice},#{price.goodsAmount},#{price.serviceFee},#{price.buyerEscrow},#{price.vendorDeposit},'requesting','frozen','unpaid',
+      CASE WHEN #{input.insuranceChoice}='yes' THEN 'unselected' ELSE 'waived' END,#{price.insurancePremium},#{price.goodsAmount},#{input.contactName},#{input.contactPhone},#{input.address},#{input.note},#{input.expectDate},
+      TIMESTAMPADD(HOUR,#{intentHours},CURRENT_TIMESTAMP(3)),CAST(#{snapshot} AS JSON),
+      JSON_ARRAY(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY())
+  </insert>
+  <insert id="insertDeposit">
+    INSERT INTO t_deposits(id,order_id,payer_id,party_role,kind,amount,status)
+    VALUES(#{id},#{order},#{buyer},'buyer','buyer_escrow',#{amount},'frozen')
+  </insert>
+</mapper>

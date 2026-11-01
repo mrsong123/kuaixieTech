@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuaixietech.identity.ContactAndPasswordRules;
 import com.kuaixietech.mapper.account.AuthLoginMapper;
 import com.kuaixietech.security.LocalHmacJwtService;
-import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -17,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +24,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthLoginService {
+ private com.kuaixietech.coupler.CouplerModeGate couplerMode;
+ @org.springframework.beans.factory.annotation.Autowired public void couplerMode(com.kuaixietech.coupler.CouplerModeGate gate){this.couplerMode=gate;}
+
   private final AuthLoginMapper mapper;
   private final LocalHmacJwtService jwt;
   private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
   private final String bootstrapPassword;
   private final boolean allowBootstrap;
+  private com.kuaixietech.integration.IntegrationConfiguration configuration;private com.kuaixietech.integration.IntegrationHttp transport;
+  @org.springframework.beans.factory.annotation.Autowired public void integrationConfiguration(com.kuaixietech.integration.IntegrationConfiguration configuration,com.kuaixietech.integration.IntegrationHttp transport){this.configuration=configuration;this.transport=transport;}
   private final String wechatAppId;
   private final String wechatSecret;
   private final ObjectMapper json=new ObjectMapper();
@@ -45,14 +48,6 @@ public class AuthLoginService {
     this.allowBootstrap=!this.bootstrapPassword.isEmpty() && ("dev".equalsIgnoreCase(environment)||"local".equalsIgnoreCase(environment));
     this.wechatAppId=wechatAppId==null?"":wechatAppId.trim();
     this.wechatSecret=wechatSecret==null?"":wechatSecret.trim();
-  }
-  @PostConstruct public void ready(){
-    mapper.ensureCredentialTable();
-    try{mapper.ensureCountryColumn();}
-    catch(DataAccessException ex){
-      String message=String.valueOf(ex.getMostSpecificCause().getMessage()).toLowerCase(java.util.Locale.ROOT);
-      if(!message.contains("duplicate column")) throw ex;
-    }
   }
 
   @Transactional
@@ -87,7 +82,6 @@ public class AuthLoginService {
         throw bad("AUTH_FAILED");
       }
     }
-    if("phone".equals(channel)) mapper.rememberCountry(userId,country);
     Map<String,Object> latest=mapper.findProfile(channel,normalized,country);
     boolean admin=isAdmin(latest);
     String token=jwt.issue(userId);
@@ -106,8 +100,9 @@ public class AuthLoginService {
 
   @Transactional
   public Map<String,Object> wechat(String code){
+  if(couplerMode!=null)couplerMode.requireLiveNewCall("wechat_login");
     if(!jwt.available()) throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"LOCAL_JWT_SECRET_MISSING");
-    if(wechatAppId.isEmpty()||wechatSecret.isEmpty()) throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"WX_CONFIG_MISSING");
+
     if(code==null||!code.matches("[A-Za-z0-9_-]{4,128}")) throw bad("WX_LOGIN_FAILED");
     JsonNode session=wechatSession(code);
     String openid=text(session,"openid");
@@ -137,10 +132,14 @@ public class AuthLoginService {
   }
 
   private JsonNode wechatSession(String code){
-    String url="https://api.weixin.qq.com/sns/jscode2session?appid="+encode(wechatAppId)
-        +"&secret="+encode(wechatSecret)+"&js_code="+encode(code)+"&grant_type=authorization_code";
+    String appId=wechatAppId,secret=wechatSecret;
+    if(configuration!=null&&configuration.exists("wechat","miniprogram")){var fields=configuration.runtime("wechat","miniprogram");if(fields==null)throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"WX_CONFIG_MISSING");appId=fields.get("app_id");secret=fields.get("app_secret");}
+    if(appId.isBlank()||secret.isBlank())throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"WX_CONFIG_MISSING");
+    String url="https://api.weixin.qq.com/sns/jscode2session?appid="+encode(appId)
+        +"&secret="+encode(secret)+"&js_code="+encode(code)+"&grant_type=authorization_code";
     try{
       HttpRequest request=HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(8)).GET().build();
+      if(transport!=null)return json.readTree(transport.send(request));
       HttpResponse<String> response=http.send(request,HttpResponse.BodyHandlers.ofString());
       if(response.statusCode()!=200) throw bad("WX_LOGIN_FAILED");
       return json.readTree(response.body());

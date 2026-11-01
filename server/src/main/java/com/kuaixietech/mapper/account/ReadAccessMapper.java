@@ -7,5 +7,6 @@ public interface ReadAccessMapper {
   boolean isActiveProfile(@Param("userId") String userId);
   boolean isAdmin(@Param("userId") String userId);
   boolean isVerifiedCarrier(@Param("userId") String userId);
+  boolean isVerifiedBuyer(@Param("userId") String userId);
   boolean canReadOrder(@Param("orderId") String orderId, @Param("userId") String userId);
 }

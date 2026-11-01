@@ -2,6 +2,7 @@ package com.kuaixietech.service.trading.impl;
 
 
 import com.kuaixietech.service.trading.support.PkScoring;
+import com.kuaixietech.service.trading.support.IntentPricing;
 import com.kuaixietech.service.finance.impl.AtomicMoneyService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,9 +26,9 @@ public class TradeRpcMigrationService {
  private final TradeRpcMapper mapper;
  private final AtomicMoneyService money;
  private final ObjectMapper json;
- private static final BigDecimal HUNDRED=new BigDecimal("0.05");
- public TradeRpcMigrationService(TradeRpcMapper mapper,AtomicMoneyService money,ObjectMapper json){
-    this.mapper=mapper;this.money=money;this.json=json;
+ private final com.kuaixietech.insurance.InsuranceSelections insurance;
+ public TradeRpcMigrationService(TradeRpcMapper mapper,AtomicMoneyService money,ObjectMapper json,com.kuaixietech.insurance.InsuranceSelections insurance){
+    this.mapper=mapper;this.money=money;this.json=json;this.insurance=insurance;
  }
  private static String id(){return UUID.randomUUID().toString();}
  private static String str(Object o){return o==null?null:String.valueOf(o);}
@@ -46,7 +47,7 @@ public class TradeRpcMigrationService {
    if(!"requesting".equals(str(o.get("status"))))return "ERR:BAD_STATUS";
    if(mapper.isCarrier(actor)==0)return "ERR:NOT_CARRIER";
    BigDecimal expected=dec(o.get("vendor_deposit"));
-   if(deposit==null||deposit.signum()<=0||deposit.setScale(2,RoundingMode.HALF_UP)
+   if(deposit==null||deposit.signum()<0||deposit.setScale(2,RoundingMode.HALF_UP)
        .compareTo(expected==null?BigDecimal.ZERO:expected.setScale(2,RoundingMode.HALF_UP))!=0)return "ERR:DEPOSIT_MISMATCH";
    BigDecimal bal=money.lockBalance(actor);
    if(bal==null||bal.compareTo(deposit)<0)return "ERR:INSUFFICIENT_BALANCE";
@@ -64,6 +65,7 @@ public class TradeRpcMigrationService {
    if(mapper.isCarrier(actor)==0)return "ERR:NOT_CARRIER";
    Map<String,Object> d=mapper.lockDemand(demandId);
    if(d==null)return "ERR:NO_DEMAND";
+   if(actor.equals(str(d.get("publisher_id"))))return "ERR:SELF_QUOTE";
    if(!"open".equals(str(d.get("status"))))return "ERR:CLOSED";
    if(mapper.pkWindowExpired(demandId)>0)return "ERR:WINDOW_OVER";
    if(price==null||price.signum()<=0)return "ERR:BAD_PRICE";
@@ -116,11 +118,16 @@ public class TradeRpcMigrationService {
    return "OK:"+all.size();
  }
  @Transactional
- public String awardPk(String demandId,String quoteId){
+ public String awardPk(String demandId,String quoteId,String insuranceChoice,BigDecimal expectedBuyerEscrow,String insuranceQuoteId){
    String actor=TrustedActor.currentUserId();
+   if(mapper.isVerifiedBuyer(actor)==0)return "ERR:BUYER_VERIFICATION_REQUIRED";
    Map<String,Object> d=mapper.lockDemand(demandId);
    if(d==null)return "ERR:NO_DEMAND";
    if(!actor.equals(str(d.get("publisher_id"))))return "ERR:NOT_OWNER";
+   if("awarded".equals(str(d.get("status")))&&quoteId!=null&&quoteId.equals(str(d.get("awarded_quote_id")))){
+     String existing=mapper.awardedOrder(demandId);
+     if(existing!=null)return "OK:"+existing;
+   }
    if(!Set.of("open","awarded_pending").contains(str(d.get("status"))))return "ERR:BAD_STATUS";
    Map<String,Object> q=mapper.quote(quoteId,demandId);
    if(q==null)return "ERR:NO_QUOTE";
@@ -135,9 +142,17 @@ public class TradeRpcMigrationService {
    }
    if(mapper.countOpenOrders(demandId)>0)return "ERR:ORDER_EXISTS";
    BigDecimal goods=PkScoring.money(q.get("price"));
-   BigDecimal fee=goods.multiply(HUNDRED).setScale(2,RoundingMode.HALF_UP);
-   BigDecimal buyerDep=goods.add(fee),vendorDep=goods.multiply(new BigDecimal("0.20")).setScale(2,RoundingMode.HALF_UP);
+   String insurance=insuranceChoice==null?str(d.get("insurance_pref")):insuranceChoice;
+   String insured="yes".equals(insurance)?"yes":"waived".equals(insurance)?"waived":"unselected";
+   if("unselected".equals(insured))return "ERR:INSURANCE_CHOICE_REQUIRED";
+   String insuredItem=com.kuaixietech.insurance.InsuranceService.itemName(d);
+   try{if("yes".equals(insured))this.insurance.validate(actor,insuranceQuoteId,"pk_quote",quoteId,goods,insuredItem);else if(insuranceQuoteId!=null)return "ERR:INSURANCE_SELECTION_CONFLICT";}catch(IllegalArgumentException e){return "ERR:"+e.getMessage();}
+   IntentPricing.Quote pricing=IntentPricing.externalQuote(goods,insured);
+   if(expectedBuyerEscrow==null||pricing.buyerEscrow().compareTo(expectedBuyerEscrow)!=0)return "ERR:QUOTE_CONFIRMATION_REQUIRED";
+   BigDecimal fee=pricing.serviceFee();
+   BigDecimal buyerDep=pricing.buyerEscrow(),vendorDep=pricing.vendorDeposit();
    String buyer=str(d.get("publisher_id")),vendor=str(q.get("vendor_id"));
+   if(buyer.equals(vendor))return "ERR:SELF_TRADE";
    // Lock in stable order to avoid a buyer/vendor reverse-order deadlock across concurrent PK awards.
    for(String uid:new TreeSet<>(Arrays.asList(buyer,vendor))){if(money.lockBalance(uid)==null)return uid.equals(buyer)?"ERR:BUYER_BALANCE":"ERR:CARRIER_BALANCE";}
    BigDecimal buyerBal=money.lockBalance(buyer),vendorBal=money.lockBalance(vendor);
@@ -150,33 +165,41 @@ public class TradeRpcMigrationService {
    String orderId=id();
    String orderNo="DD"+ZonedDateTime.now(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
         +String.format("%04d",java.util.concurrent.ThreadLocalRandom.current().nextInt(10000));
-   String name=trimOrNull(str(d.get("item_desc")));
-   if(name==null)name=str(d.get("title"));
-   if(name!=null&&name.length()>120)name=name.substring(0,120);
-   String insurance=str(d.get("insurance_pref"));
-   String insured="yes".equals(insurance)?"yes":"waived".equals(insurance)?"waived":"unselected";
-   BigDecimal premium="yes".equals(insured)?goods.multiply(new BigDecimal("0.01"))
-       .setScale(2,RoundingMode.HALF_UP).max(new BigDecimal("5.00")):BigDecimal.ZERO;
+   String name=insuredItem;
+   BigDecimal premium=pricing.insurancePremium();
    BigDecimal declared="yes".equals(insured)?goods:null;
    boolean carrierPays="carrier_pays".equals(str(d.get("shipping_bearer")));
    changed(mapper.insertPkOrder(orderId,orderNo,buyer,vendor,demandId,name,goods,fee,buyerDep,vendorDep,
-      insured,premium,declared,carrierPays?BigDecimal.ZERO:null,carrierPays?"agreed":"none"));
-   if(money.addBalance(buyer,buyerDep.negate(),"deposit_freeze",orderId,"中标自动建单·商品款+5%服务费冻结")==null)
+      "yes".equals(insured)?"unselected":"waived",premium,declared,carrierPays?BigDecimal.ZERO:null,carrierPays?"agreed":"none"));
+   changed(mapper.setInsuranceSelection(orderId,insured,insuranceQuoteId));
+   if(money.addBalance(buyer,buyerDep.negate(),"deposit_freeze",orderId,"中标自动建单·货款与5%服务费托管；保险由承保机构另行收款")==null)
      throw new IllegalStateException("Missing buyer account");
    if(money.addBalance(vendor,vendorDep.negate(),"deposit_freeze",orderId,"中标自动建单·带货保证金冻结（货值20%）")==null)
      throw new IllegalStateException("Missing vendor account");
-   changed(mapper.putDeposit(id(),orderId,buyer,"buyer","goods_plus_service",buyerDep));
+   changed(mapper.putDeposit(id(),orderId,buyer,"buyer","buyer_escrow",buyerDep));
    changed(mapper.putDeposit(id(),orderId,vendor,"vendor","carrier_deposit",vendorDep));
    changed(mapper.quoteWon(quoteId));
    mapper.remainingQuotesLost(demandId,quoteId);
    changed(mapper.awardDemand(demandId,quoteId));
    changed(mapper.addMessage(id(),orderId,buyer,"求购单中标自动生成订单：报价 ¥"+goods+"，代购服务费 ¥"+fee+
      "；买家托管 ¥"+buyerDep+"、带单人履约保证金 ¥"+vendorDep+" 均已冻结"+
-     ("yes".equals(insured)?"；按求购单意向预置保价":"")+
+     ("yes".equals(insured)?"；已选择外部保险报价，尚未承保":"")+
      (carrierPays?"；邮费由带单人承担（已议定 ¥0）":"")));
    notice(vendor,"demand","你的报价已中标，订单已自动生成","求购单「"+d.get("title")+"」报价被采纳。带货保证金 ¥"+vendorDep+" 已从余额冻结，请尽快按时采购并在订单中确认。",orderId);
    notice(buyer,"order","中标订单已生成并完成资金冻结","已按报价自动锁定订单 "+orderNo+"，商品款+服务费 ¥"+buyerDep+" 已冻结托管。",orderId);
    return "OK:"+orderId;
+ }
+ @Transactional
+ public Object quotePkAward(String demandId,String quoteId,String insuranceChoice,String insuranceQuoteId){
+   String actor=TrustedActor.currentUserId();
+   if(mapper.isVerifiedBuyer(actor)==0)return Map.of("err","BUYER_VERIFICATION_REQUIRED");
+   Map<String,Object> demand=mapper.lockDemand(demandId);
+   if(demand==null||!actor.equals(str(demand.get("publisher_id"))))return Map.of("err","NOT_OWNER");
+   if(!Set.of("open","awarded_pending").contains(str(demand.get("status"))))return Map.of("err","BAD_STATUS");
+   Map<String,Object> quote=mapper.quote(quoteId,demandId);
+   if(quote==null)return Map.of("err","NO_QUOTE");
+   try{String choice=insuranceChoice==null?str(demand.get("insurance_pref")):insuranceChoice;BigDecimal goods=PkScoring.money(quote.get("price"));if("yes".equals(choice))this.insurance.validate(actor,insuranceQuoteId,"pk_quote",quoteId,goods,com.kuaixietech.insurance.InsuranceService.itemName(demand));else if(insuranceQuoteId!=null)throw new IllegalArgumentException("INSURANCE_SELECTION_CONFLICT");return IntentPricing.externalQuote(goods,choice);}
+   catch(IllegalArgumentException e){return Map.of("err",e.getMessage());}
  }
  @Transactional
  public String createPublishDeposit(BigDecimal amount,String source,String orderId){

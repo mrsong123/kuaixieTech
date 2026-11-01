@@ -45,7 +45,7 @@ public class AuthRecoveryService {
     if(mapper.recentCodeCount(target,contactValue.channel())>0) throw fail(HttpStatus.TOO_MANY_REQUESTS,"CODE_TOO_SOON");
     String code=String.format(Locale.ROOT,"%06d",random.nextInt(1_000_000));
     mapper.insertCode(UUID.randomUUID().toString(),target,contactValue.channel(),code,use);
-    mapper.enqueueCode(contactValue.normalized(),contactValue.channel(),code);
+    mapper.enqueueCode("phone".equals(contactValue.channel())?contactValue.country()+contactValue.normalized():contactValue.normalized(),contactValue.channel(),code);
     return Map.of("status","OK","retryAfter",60);
   }
 
@@ -59,7 +59,6 @@ public class AuthRecoveryService {
     if(profile==null||codeId==null||mapper.consumeCode(codeId)!=1) throw fail(HttpStatus.UNAUTHORIZED,"AUTH_FAILED");
     String userId=String.valueOf(profile.get("id"));
     mapper.savePassword(userId,encoder.encode(newPassword.trim()));
-    if("phone".equals(contactValue.channel())) mapper.rememberCountry(userId,contactValue.country());
     return session(userId,profile,contactValue);
   }
 
@@ -108,11 +107,11 @@ public class AuthRecoveryService {
     if(profile==null) return Map.of("status","OK");
     String userId=String.valueOf(profile.get("id"));
     try{
-      Integer waiting=jdbc.queryForObject("SELECT COUNT(*) FROM kx_support_conversations WHERE user_id=? AND status='waiting'",Integer.class,userId);
+      Integer waiting=jdbc.queryForObject("SELECT COUNT(*) FROM t_support_conversations WHERE user_id=? AND status='waiting'",Integer.class,userId);
       if(waiting!=null&&waiting>0) return Map.of("status","OK");
       String id=UUID.randomUUID().toString();
-      jdbc.update("INSERT INTO kx_support_conversations(id,user_id,status) VALUES(?,?,'waiting')",id,userId);
-      jdbc.update("INSERT INTO kx_support_messages(conversation_id,sender_type,sender_id,content) VALUES(?,'user',?,?)",id,userId,"忘记密码，且收不到验证码，请求人工协助找回。");
+      jdbc.update("INSERT INTO t_support_conversations(id,user_id,status) VALUES(?,?,'waiting')",id,userId);
+      jdbc.update("INSERT INTO t_support_conversation_messages(conversation_id,sender_type,sender_id,content) VALUES(?,'user',?,?)",id,userId,"忘记密码，且收不到验证码，请求人工协助找回。");
     }catch(DataAccessException ex){
       throw fail(HttpStatus.SERVICE_UNAVAILABLE,"SUPPORT_UNAVAILABLE");
     }

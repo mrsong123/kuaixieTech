@@ -9,4 +9,6 @@
 <update id="saveDecision">UPDATE t_cancel_requests SET status=IF(#{approve},'approved','rejected'),verdict=IF(#{approve},'no_fault','continue_fulfill'),verdict_reason=#{reason},reviewed_by=#{op},resolved_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status='pending' AND withdrawn=0</update>
 <update id="restoreLocked">UPDATE t_orders SET status='locked',updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{id} AND status IN ('requesting','disputing')</update>
 <insert id="addNotice">INSERT INTO t_notifications(id,user_id,kind,title,body,order_id) VALUES(#{id},#{uid},#{kind},#{title},#{body},#{orderId})</insert>
+<select id="activeCases" resultType="string">SELECT id FROM t_disputes WHERE order_id=#{id} AND stage NOT IN('resolved','closed') FOR UPDATE</select>
+<select id="activeAfterSales" resultType="string">SELECT id FROM t_after_sales_cases WHERE order_id=#{id} AND status NOT IN('resolved','closed','rejected','cancelled') FOR UPDATE</select>
 </mapper>

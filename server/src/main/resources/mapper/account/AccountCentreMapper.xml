@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuaixietech.mapper.account.AccountCentreMapper">
+  <select id="profile" resultType="map">
+    SELECT id,nickname,avatar_url,city,user_role,buyer_verify_status,carrier_verify_status,
+           enterprise_verify_status,performance_score,star_avg,deal_count,created_at
+    FROM t_profiles WHERE id=#{user} AND deleted_at IS NULL
+  </select>
+  <update id="updateProfile">
+    UPDATE t_profiles SET nickname=COALESCE(#{nickname},nickname),city=COALESCE(#{city},city)
+    WHERE id=#{user} AND deleted_at IS NULL
+  </update>
+  <sql id="orderProjection">
+    id,order_no,item_name,item_spec,quantity,unit,goods_amount,service_fee,shipping_fee,status,
+    JSON_UNQUOTE(JSON_EXTRACT(agreed_json,'$.insurance_quote_id')) AS insurance_quote_id,
+    JSON_UNQUOTE(JSON_EXTRACT(agreed_json,'$.insurance_choice')) AS insurance_choice,
+    JSON_UNQUOTE(JSON_EXTRACT(agreed_json,'$.pricing_version')) AS pricing_version,
+    shipping_fee_status,tracking_no,insured,insurance_premium,buyer_deposit,vendor_deposit,
+    buyer_deposit_status,vendor_deposit_status,expect_arrive_date,promised_arrive_date,
+    created_at,updated_at,CASE WHEN buyer_id=#{user} THEN 'buyer' ELSE 'carrier' END AS my_role
+  </sql>
+  <select id="orders" resultType="map">
+    SELECT <include refid="orderProjection"/> FROM t_orders
+    WHERE <choose>
+      <when test="role == 'buyer'">buyer_id=#{user}</when>
+      <when test="role == 'carrier'">vendor_id=#{user}</when>
+      <otherwise>(buyer_id=#{user} OR vendor_id=#{user})</otherwise>
+    </choose>
+    ORDER BY created_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="order" resultType="map">
+    SELECT <include refid="orderProjection"/> FROM t_orders
+    WHERE id=#{id} AND (buyer_id=#{user} OR vendor_id=#{user})
+  </select>
+  <select id="demands" resultType="map">
+    SELECT id,title,item_desc,expect_price,status,city,visibility,trip_type,created_at
+    FROM t_demands WHERE publisher_id=#{user}
+    ORDER BY created_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="trips" resultType="map">
+    SELECT id,destination,destination_flag,status,verify_status,depart_date,return_date,trip_type,created_at
+    FROM t_trips WHERE owner_id=#{user}
+    ORDER BY created_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="wallet" resultType="map">
+    SELECT balance AS balance_amount,'CNY' AS currency,points FROM t_profiles WHERE id=#{user} AND deleted_at IS NULL
+  </select>
+  <select id="ledger" resultType="map">
+    SELECT id,kind,amount,balance_after,order_id,note,created_at FROM t_balance_ledger WHERE user_id=#{user}
+    ORDER BY created_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="notifications" resultType="map">
+    SELECT id,kind,title,body,order_id,read_flag,created_at FROM t_notifications WHERE user_id=#{user}
+    ORDER BY created_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <update id="readNotification">UPDATE t_notifications SET read_flag=1 WHERE id=#{id} AND user_id=#{user}</update>
+  <select id="ownsNotification" resultType="int">SELECT COUNT(*) FROM t_notifications WHERE id=#{id} AND user_id=#{user}</select>
+</mapper>

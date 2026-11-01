@@ -7,12 +7,14 @@ import OriginalDemandCard from '../../components/plaza/OriginalDemandCard.vue';
 import {computed,onMounted,onUnmounted,ref,watch} from 'vue';
 import {setLocale,t} from '@kuaixie/i18n';
 import {localeRef} from '@kuaixie/i18n/vue';
+import {tripReach,squareReaches} from '@kuaixie/sdk';
+import {uniEventValue} from '../../utils/uniEvent';
 import {prototypeAccent} from '../../utils/prototype';
 const {
  prefs,active,search,loading,tripError,demandError,rootStyle,reload,
- trips,demands,viewTrip,viewDemand,
+ trips,demands,viewTrip,viewDemand,viewProduct,visibleTrips,visibleDemands,direction,
  country,countryChoices,countryIndex,countryChanged,
- matchingProducts,productError
+ matchingProducts,matchingTrips,matchingDemands,productError,formatAmount,formatDate
 } = useIndexPage();
 const languageLabel=computed(()=>{void localeRef.value;return t('prototype.locale.switch')});
 function mixChannel(from:number,to:number,weight:number){return Math.round(from*weight+to*(1-weight))}
@@ -33,20 +35,15 @@ const kickerColor=computed(()=>{
  return '#'+color.map(channel=>channel.toString(16).padStart(2,'0')).join('');
 });
 function toggleLanguage(){const value=localeRef.value==='zh-CN'?'en-US':'zh-CN';setLocale(value);uni.setStorageSync('kx.locale',value)}
-const reaches=['international','domestic','intercity','city','village','neighbor'] as const;
+const reaches=squareReaches;
+const reachLabels={international:'plaza.reach.international',domestic:'plaza.reach.domestic',intercity:'plaza.reach.intercity',city:'plaza.reach.city',village:'plaza.reach.village',neighbor:'plaza.reach.neighbor'} as const;
 type Reach=typeof reaches[number];
 const reach=ref<Reach|''>('');
 function setReach(value:Reach){reach.value=reach.value===value?'':value}
-function reachOf(value?:string|null):Reach|''{
- const key=String(value||'').toLowerCase();
- if(['international','cross_border','overseas','crossborder'].includes(key))return 'international';
- if(key==='intercity')return 'intercity';
- if(['local','same_city','intracity','within_city'].includes(key))return 'city';
- if(['domestic','inland','within_country'].includes(key))return 'domestic';
- return '';
-}
-const shownTrips=computed(()=>trips.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
-const shownDemands=computed(()=>demands.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
+const reachOf=tripReach;
+function pickDirection(event:unknown){direction.value=(['all','outbound','inbound'] as const)[Number(uniEventValue(event))]||'all'}
+const shownTrips=computed(()=>visibleTrips.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
+const shownDemands=computed(()=>visibleDemands.value.filter(item=>!reach.value||reachOf(item.trip_type)===reach.value));
 const discovery=ref(false),discoveryEmpty=ref(false);
 let hideTimer:ReturnType<typeof setTimeout>|undefined;
 const productCategories=computed(()=>matchingProducts.value.map(item=>String(item.category_id||'')).filter(Boolean));
@@ -109,15 +106,21 @@ onUnmounted(()=>{clearTimeout(hideTimer);lockDocumentScroll(false)});
     </view>
    </view>
    <view class="reach-row" :class="{even:localeRef==='zh-CN'}">
-    <text v-for="item in reaches" :key="item" class="reach-word" :class="{chosen:reach===item}" @click="setReach(item)">{{ $t('plaza.reach.'+item) }}</text>
+    <text v-for="item in reaches" :key="item" class="reach-word" :class="{chosen:reach===item}" @click="setReach(item)">{{ $t(reachLabels[item]) }}</text>
    </view>
   </view>
 
-  <scroll-view scroll-y class="py-4" style="height:70vh" :show-scrollbar="false">
+  <scroll-view scroll-y class="py-4" style="flex:1;height:0;min-height:0" :show-scrollbar="false">
    <view class="w-full px-4 pb-4">
     <view v-if="discovery" class="menu-slot">
      <OriginalCategoryExplorer v-if="!discoveryEmpty" :country="country" :query="search.trim()" :focus="productCategories" compact/>
      <text v-else class="menu-empty">{{ $t('migration.searchEmpty') }}</text>
+    </view>
+    <picker :range="[$t('common.all'),$t('square.outbound'),$t('square.inbound')]" :value="['all','outbound','inbound'].indexOf(direction)" @change="pickDirection"><view class="op-row">{{$t('square.direction')}} · {{$t(direction==='outbound'?'square.outbound':direction==='inbound'?'square.inbound':'common.all')}} ⌄</view></picker>
+    <view v-if="search.trim()" class="op-card">
+     <view class="op-title">{{$t('pc.nav.products')}}</view><view v-for="item in matchingProducts" :key="item.id" class="op-row" @click="viewProduct(item)"><text>{{item.name}}</text><text>{{formatAmount(item.price,'CNY')}} ›</text></view>
+     <view class="op-title">{{$t('pc.nav.trips')}}</view><view v-for="item in matchingTrips" :key="item.id" class="op-row" @click="viewTrip(item)"><text>{{item.destination}}</text><text>{{formatDate(item.depart_date)}} ›</text></view>
+     <view class="op-title">{{$t('portal.publish.demand')}}</view><view v-for="item in matchingDemands" :key="item.id" class="op-row" @click="viewDemand(item)"><text>{{item.title}}</text><text>{{formatAmount(item.expect_price,'CNY')}} ›</text></view>
     </view>
     <text class="feed-kicker" :style="{color:kickerColor}">{{ $t(active==='demands'?'plaza.feed.demands':'plaza.feed.trips') }}</text>
     <template v-if="active==='demands'">

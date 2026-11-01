@@ -127,8 +127,6 @@ public class Profiles {
     private String businessLicenseNo;
     @TableField("enterprise_verify_status")
     private String enterpriseVerifyStatus;
-    @TableField("phone_country_code")
-    private String phoneCountryCode;
 
     public String getId() { return id; }
     public void setId(String value) { this.id = value; }
@@ -250,6 +248,4 @@ public class Profiles {
     public void setBusinessLicenseNo(String value) { this.businessLicenseNo = value; }
     public String getEnterpriseVerifyStatus() { return enterpriseVerifyStatus; }
     public void setEnterpriseVerifyStatus(String value) { this.enterpriseVerifyStatus = value; }
-    public String getPhoneCountryCode() { return phoneCountryCode; }
-    public void setPhoneCountryCode(String value) { this.phoneCountryCode = value; }
 }

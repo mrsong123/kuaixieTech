@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,12 @@ public class PublicCatalogController {
   }
   @GetMapping("/products")
   public List<Map<String,Object>> products(@RequestParam(defaultValue="30") int limit) {return mapper.products(bounded(limit));}
+  @GetMapping("/products/{id}")
+  public Map<String,Object> product(@PathVariable String id) {
+    Map<String,Object> product=mapper.product(id);
+    if(product==null)throw new ResponseStatusException(HttpStatus.NOT_FOUND,"product unavailable");
+    return product;
+  }
   @GetMapping("/trips")
   public List<Map<String,Object>> trips(@RequestParam(defaultValue="30") int limit,@RequestParam(defaultValue="rank") String sort) {
     if(!java.util.Set.of("rank","latest","score").contains(sort))throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid sort");

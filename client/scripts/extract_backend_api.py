@@ -4,6 +4,7 @@ Usage: python scripts/extract_backend_api.py /path/to/backend/src/main/java/com/
 """
 import pathlib,re,json,sys,csv
 root=pathlib.Path(sys.argv[1]); target=pathlib.Path(__file__).resolve().parents[1]
+core_only='--core-only' in sys.argv[2:]
 operations=[]
 category_overrides={'PublicCatalogController':'公开目录','RouteShareController':'顺路互助','TradeRpcController':'交易与PK','Batch11RpcController':'订单履约','Batch12RpcController':'协助与互动','Batch10RpcController':'业务运营','AdminFinanceRpcController':'运营财务','KycRpcController':'实名认证','IdentitySettingsController':'账户安全','InviteReadRpcController':'邀请与团队'}
 labels={'categories':'国家分类','products':'商品目录','trips':'公开行程','profiles/masked':'公开脱敏档案','pricing/preview':'顺路参考计价','publish':'发布顺路求购','createRequest':'关联旧求购','replaceStops':'设置行程途经点','matches':'匹配顺路行程','offers':'查看顺路报价','offer':'提交顺路报价','accept':'确认报价/预留','booking':'查看行程预留','cancelBooking':'撤销预留','cancel':'取消需求'}
@@ -89,6 +90,7 @@ endpoint_labels={
  '/api/route-share/trips/{tripId}/stops':'维护行程途经地点'
 }
 for fp in sorted(root.glob('*Controller.java')):
+ if core_only and fp.stem not in category_overrides: continue
  text=fp.read_text(encoding='utf-8'); base_match=re.search(r'@RequestMapping\("([^\"]+)"\)',text)
  if not base_match: continue
  base=base_match.group(1)
@@ -117,9 +119,10 @@ for fp in sorted(root.glob('*Controller.java')):
   name=(('提交顺路报价' if http=='PostMapping' else '查询顺路报价') if full=='/api/route-share/requests/{demandId}/offers' else endpoint_labels.get(full)) or labels.get(path.strip('/')) or labels.get(func) or path.strip('/').replace('_',' ').replace('/',' · ')
   isadmin=('/admin' in full or func in ('issueInvoice','reviewViolation','enterprise','grantPoints','localeUpsert','localeToggle','localeRemove','adjust','dissolve','commissions','resolve','review'))
   risk=('admin_' in full or any(s in full for s in ('accept','award','cancel','refund','change_password','rebind','grant_points','dissolve','adjust_balance','confirm_','finish_assist','issue_meetup','consume_invite')))
-  operations.append(dict(id=slug,group=category_overrides.get(fp.stem,'其他'),name=name,method=http.upper().replace('MAPPING',''),path=full,controller=fp.name,handler=func,pathParams=pathvars,queryParams=query,bodyFields=body,rawBody=raw,access='public' if full.startswith('/api/public') else 'protected',role='admin' if isadmin else 'user',dangerous=risk,returns=ret.strip()))
+  operations.append(dict(id=slug,group=category_overrides.get(fp.stem,'其他'),name=name,method=http.upper().replace('MAPPING',''),path=full.removeprefix('/api'),controller=fp.name,handler=func,pathParams=pathvars,queryParams=query,bodyFields=body,rawBody=raw,access='public' if full.startswith('/api/public') else 'protected',role='admin' if isadmin else 'user',dangerous=risk and 'quote_pk_award' not in full,returns=ret.strip()))
 operations.sort(key=lambda x:(x['group'],x['path']))
 (target/'packages/sdk/src/registry.ts').write_text('// GENERATED FROM JAVA CONTROLLERS. Do not hand edit.\nimport type { ApiOperation } from "./types";\nexport const operations: ApiOperation[] = '+json.dumps(operations,ensure_ascii=False,indent=2)+';\n')
+(target/'docs').mkdir(exist_ok=True)
 with (target/'docs/API_COVERAGE.csv').open('w',encoding='utf-8-sig',newline='') as f:
  w=csv.writer(f);w.writerow(['HTTP','Path','Name','Group','Controller','Handler','Access','Role','Params','Response','Frontend'])
  for o in operations:w.writerow([o['method'],o['path'],o['name'],o['group'],o['controller'],o['handler'],o['access'],o['role'],','.join(x['name'] for x in o['bodyFields']),o['returns'],'PC/API工作台 + 后台/API工作台 + 移动/API工具台'])

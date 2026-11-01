@@ -2,13 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kuaixietech.mapper.account.ReadAccessMapper">
   <select id="isActiveProfile" resultType="boolean">
-    SELECT EXISTS(SELECT 1 FROM t_profiles WHERE id=#{userId} AND deleted_at IS NULL)
+    SELECT EXISTS(SELECT 1 FROM t_profiles WHERE id=#{userId} AND deleted_at IS NULL
+      AND (banned_until IS NULL OR banned_until &lt;= CURRENT_TIMESTAMP(3)))
   </select>
   <select id="isAdmin" resultType="boolean">
     SELECT EXISTS(SELECT 1 FROM t_profiles WHERE id=#{userId} AND is_admin=1 AND deleted_at IS NULL)
   </select>
   <select id="isVerifiedCarrier" resultType="boolean">
     SELECT EXISTS(SELECT 1 FROM t_profiles WHERE id=#{userId} AND carrier_verify_status='approved' AND deleted_at IS NULL)
+  </select>
+  <select id="isVerifiedBuyer" resultType="boolean">
+    SELECT EXISTS(SELECT 1 FROM t_profiles WHERE id=#{userId} AND deleted_at IS NULL
+      AND (buyer_verify_status='approved' OR (user_role='enterprise' AND enterprise_verify_status='approved')))
   </select>
   <select id="canReadOrder" resultType="boolean">
     SELECT EXISTS(SELECT 1 FROM t_orders WHERE id=#{orderId} AND (buyer_id=#{userId} OR vendor_id=#{userId}))

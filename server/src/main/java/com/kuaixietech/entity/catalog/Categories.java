@@ -35,10 +35,6 @@ public class Categories {
     private Integer level;
     @TableField("active")
     private Boolean active;
-    @TableField("country")
-    private String country;
-    @TableField("name_i18n")
-    private String nameI18N;
 
     public Long getId() { return id; }
     public void setId(Long value) { this.id = value; }
@@ -68,8 +64,4 @@ public class Categories {
     public void setLevel(Integer value) { this.level = value; }
     public Boolean getActive() { return active; }
     public void setActive(Boolean value) { this.active = value; }
-    public String getCountry() { return country; }
-    public void setCountry(String value) { this.country = value; }
-    public String getNameI18N() { return nameI18N; }
-    public void setNameI18N(String value) { this.nameI18N = value; }
 }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {useUnavailableOriginalPage} from '../../stores/useUnavailableOriginalPage';
-const {prefs,mobilePreferenceStyle}=useUnavailableOriginalPage();
+import {ref} from 'vue';
+import {onShow} from '@dcloudio/uni-app';
+import {getBearer} from '@kuaixie/sdk';
+import ProductPublishingMobile from '../../components/ProductPublishingMobile.vue';
+const scope=ref(0);let session=getBearer();onShow(()=>{const current=getBearer();if(current!==session){session=current;scope.value++}});
 </script>
-<template><view class="original-subpage" :class="{'kx-dark':prefs.theme==='dark'}" :style="mobilePreferenceStyle(prefs)"><text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text>
-<view class="op-title">{{$t('migration.products')}}</view><view class="op-card"><view class="op-empty">{{$t('migration.noBackend')}}</view></view></view></template>
+<template><view class="original-subpage"><text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><ProductPublishingMobile :key="scope"/></view></template>

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 /** Migrated admin_grant_points, record_arrival_proof, expire_unformed_pools. */
 @Service public class OperationsRpcService {
+ private com.kuaixietech.commerce.ProductInventory inventory;
+ @org.springframework.beans.factory.annotation.Autowired public void productInventory(com.kuaixietech.commerce.ProductInventory inventory){this.inventory=inventory;}
  private final OperationsRpcMapper m;private final LegacyAdminRpcService admin;private final AtomicMoneyService money;
  public OperationsRpcService(OperationsRpcMapper m,LegacyAdminRpcService admin,AtomicMoneyService money){this.m=m;this.admin=admin;this.money=money;}
  @Transactional public String adminGrantPoints(String uid,Integer points,String note){
@@ -41,10 +43,11 @@ import org.springframework.transaction.annotation.Transactional;
     String orderId=String.valueOf(row.get("id")),buyer=String.valueOf(row.get("buyer_id"));
     String vendor=row.get("vendor_id")==null?null:String.valueOf(row.get("vendor_id"));
     if("frozen".equals(row.get("buyer_deposit_status"))&&amount(row.get("buyer_deposit")).signum()>0)
-     money.addBalance(buyer,amount(row.get("buyer_deposit")).add(amount(row.get("service_fee"))),"refund",orderId,"拼单未成团自动退款");
+     money.addBalance(buyer,amount(row.get("buyer_deposit")).add(com.kuaixietech.service.trading.support.IntentPricing.isEscrowVersion(row.get("pricing_version"))?BigDecimal.ZERO:amount(row.get("service_fee"))),"refund",orderId,"拼单未成团自动退款");
     if(vendor!=null&&"frozen".equals(row.get("vendor_deposit_status"))&&amount(row.get("vendor_deposit")).signum()>0)
      money.addBalance(vendor,amount(row.get("vendor_deposit")),"refund",orderId,"拼单未成团保证金退回");
     if(m.cancelExpiredOrder(orderId)!=1)throw new IllegalStateException("Pool order expired concurrently");
+    if(inventory!=null)inventory.transition(orderId,"released");
     m.notice(UUID.randomUUID().toString(),buyer,"order","拼单未成行","你参与的顺带拼单到期未凑满，本单已无责取消，保证金已全额退回余额。",null);
     if(vendor!=null)m.notice(UUID.randomUUID().toString(),vendor,"order","拼单未成行","该趟拼单到期未凑满，关联订单已无责取消，你的保证金已退回。",null);
     orders++;

@@ -15,13 +15,13 @@ public final class ContactAndPasswordRules {
         if("phone".equals(channel))return normalizePhone(normalized,"+86");
         return normalized.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")?normalized:null;
     }
-    /** Dial code stored in t_profiles.phone_country_code. Blank means the mainland default. */
+    /** Request dial code. Blank means the mainland default. */
     public static String normalizeCountry(String country){
         if(country==null||country.isBlank())return "+86";
         String value=country.trim();
         return value.matches("\\+[1-9][0-9]{0,3}")?value:null;
     }
-    /** National number only. The country code is never concatenated into t_profiles.phone. */
+    /** Validate the national number. Persistence prefixes international numbers to avoid country collisions. */
     public static String normalizePhone(String national,String country){
         if(national==null||normalizeCountry(country)==null)return null;
         String digits=national.replaceAll("\\s+","");

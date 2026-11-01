@@ -1,4 +1,4 @@
-import {computed,ref} from 'vue';
+import {computed,ref,proxyRefs} from 'vue';
 import {onLoad,onShow} from '@dcloudio/uni-app';
 import {api} from '../api/client';
 import {getLocale,formatDate,t} from '@kuaixie/i18n';
@@ -17,7 +17,7 @@ export function useAnnouncements(){
  rows.value=result.filter(x=>x&&typeof x.id==='string'&&x.active!==false);
  }catch(e){rows.value=[];error.value=e instanceof Error?e.message:t('common.apiLoadError')}finally{loading.value=false}}
  onShow(()=>{void load()});
- return {prefs,rows,loading,error,expanded,load,localized,formatDate,mobilePreferenceStyle};
+ return proxyRefs({prefs,rows,loading,error,expanded,load,localized,formatDate,mobilePreferenceStyle});
 }
 export type DocumentLine={kind:'h1'|'h2'|'list'|'table'|'paragraph'|'blank';text:string;cells?:string[]};
 export function parseDocument(md:string):DocumentLine[]{
@@ -39,5 +39,5 @@ export function useLegalDocument(){
  doc.value=result;
  }catch(e){doc.value=null;error.value=e instanceof Error?e.message:t('common.apiLoadError')}finally{loading.value=false}}
  onLoad(params=>{type.value=String(params?.type||'agreement');if(!/^(agreement|privacy|collection|cancel_policy)$/.test(type.value))type.value='agreement';void load()});
- return {prefs,doc,loading,error,lines,load,localized,formatDate,mobilePreferenceStyle};
+ return proxyRefs({prefs,doc,loading,error,lines,load,localized,formatDate,mobilePreferenceStyle});
 }

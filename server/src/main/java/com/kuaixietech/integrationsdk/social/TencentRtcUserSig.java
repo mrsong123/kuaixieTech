@@ -1,0 +1,21 @@
+package com.kuaixietech.integrationsdk.social;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.*;
+import java.util.*;
+import java.util.zip.Deflater;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.springframework.stereotype.Component;
+/** Tencent TLS UserSig v2 + PrivateMapKey: server-generated, audio-only, exact string-room scope. */
+@Component
+public class TencentRtcUserSig {
+ private final ObjectMapper json;private final Clock clock;
+ public record Credentials(long sdkAppId,String userId,String roomId,String userSig,String privateMapKey,String expiresAt,int privileges,boolean recordingEnabled){@Override public String toString(){return "RtcCredentials[sdkAppId="+sdkAppId+", room=REDACTED, tokens=REDACTED, expiresAt="+expiresAt+"]";}}
+ @org.springframework.beans.factory.annotation.Autowired public TencentRtcUserSig(ObjectMapper json){this(json,Clock.systemUTC());}
+ public TencentRtcUserSig(ObjectMapper json,Clock clock){this.json=json;this.clock=clock;}
+ public Credentials issue(SocialServiceContext context,String userId,String roomId){context.require("RTC","tencent",false);if(!"true".equals(context.values().get("advanced_permission_control")))throw new IllegalStateException("RTC_ROOM_PERMISSION_CONTROL_REQUIRED");if(userId==null||!userId.matches("[A-Za-z0-9_-]{1,32}")||roomId==null||!roomId.matches("[A-Za-z0-9_-]{1,64}"))throw new IllegalArgumentException("RTC_IDENTITY_OR_ROOM_INVALID");String secret=context.required("secret_key");if(secret.getBytes(StandardCharsets.UTF_8).length<32||secret.length()>256)throw new IllegalArgumentException("RTC_SIGNING_KEY_INVALID");long app,ttl;try{app=Long.parseLong(context.required("sdk_app_id"));ttl=Long.parseLong(context.required("usersig_ttl_seconds"));}catch(Exception e){throw new IllegalArgumentException("RTC_APP_OR_EXPIRY_INVALID");}long now=clock.instant().getEpochSecond();if(app<1||app>0xffffffffL||ttl<60||ttl>900||now<0||now+ttl>0xffffffffL)throw new IllegalArgumentException("RTC_APP_OR_EXPIRY_INVALID");int privileges=15;String userSig=sign(app,userId,secret,now,ttl,null),privateKey=sign(app,userId,secret,now,ttl,userBuffer(app,userId,roomId,now+ttl,privileges));return new Credentials(app,userId,roomId,userSig,privateKey,Instant.ofEpochSecond(now+ttl).toString(),privileges,false);}
+ private byte[] userBuffer(long app,String user,String room,long expiry,int privileges){try{var buffer=new ByteArrayOutputStream();var out=new DataOutputStream(buffer);out.writeByte(1);byte[] account=user.getBytes(StandardCharsets.US_ASCII),roomBytes=room.getBytes(StandardCharsets.US_ASCII);out.writeShort(account.length);out.write(account);out.writeInt((int)app);out.writeInt(0);out.writeInt((int)expiry);out.writeInt(privileges);out.writeInt(0);out.writeShort(roomBytes.length);out.write(roomBytes);return buffer.toByteArray();}catch(IOException e){throw new IllegalStateException("RTC_USER_BUFFER_FAILED");}}
+ private String sign(long app,String user,String secret,long now,long ttl,byte[] userBuffer){try{String data="TLS.identifier:"+user+"\nTLS.sdkappid:"+app+"\nTLS.time:"+now+"\nTLS.expire:"+ttl+"\n";var doc=new LinkedHashMap<String,Object>();doc.put("TLS.ver","2.0");doc.put("TLS.identifier",user);doc.put("TLS.sdkappid",app);doc.put("TLS.expire",ttl);doc.put("TLS.time",now);if(userBuffer!=null){String encoded=Base64.getEncoder().encodeToString(userBuffer);doc.put("TLS.userbuf",encoded);data+="TLS.userbuf:"+encoded+"\n";}var mac=Mac.getInstance("HmacSHA256");mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),"HmacSHA256"));doc.put("TLS.sig",Base64.getEncoder().encodeToString(mac.doFinal(data.getBytes(StandardCharsets.UTF_8))));byte[] raw=json.writeValueAsBytes(doc);var deflater=new Deflater();var result=new ByteArrayOutputStream();try{deflater.setInput(raw);deflater.finish();byte[] chunk=new byte[512];while(!deflater.finished()){int count=deflater.deflate(chunk);if(count==0)throw new IllegalStateException("RTC_COMPRESSION_FAILED");result.write(chunk,0,count);}}finally{deflater.end();}return Base64.getEncoder().encodeToString(result.toByteArray()).replace('+','*').replace('/','-').replace('=','_');}catch(Exception e){throw new IllegalStateException("RTC_SIGNATURE_UNAVAILABLE");}}
+}

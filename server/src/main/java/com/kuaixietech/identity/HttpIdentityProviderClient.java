@@ -23,7 +23,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @EnableConfigurationProperties(IdentityProviderSettings.class)
 public class HttpIdentityProviderClient implements IdentityProviderClient {
+ private com.kuaixietech.coupler.CouplerModeGate couplerMode;
+ @org.springframework.beans.factory.annotation.Autowired public void couplerMode(com.kuaixietech.coupler.CouplerModeGate gate){this.couplerMode=gate;}
+
     private final IdentityProviderSettings settings;
+    private com.kuaixietech.integration.IntegrationConfiguration configuration;private com.kuaixietech.integration.IntegrationHttp transport;
+    @org.springframework.beans.factory.annotation.Autowired public void integrationConfiguration(com.kuaixietech.integration.IntegrationConfiguration configuration,com.kuaixietech.integration.IntegrationHttp transport){this.configuration=configuration;this.transport=transport;}
     private final ObjectMapper mapper;
     private final HttpClient client=HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NEVER).build();
@@ -59,9 +64,12 @@ public class HttpIdentityProviderClient implements IdentityProviderClient {
         catch(IllegalArgumentException e){throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"IDENTITY_PROVIDER_UNKNOWN_RESULT");}
     }
     private JsonNode request(String operation,Map<String,String> args){
-        if(!settings.isEnabled())
+  if(couplerMode!=null)couplerMode.requireLiveNewCall("identity_management");
+        var active=settings;
+        if(configuration!=null&&configuration.exists("http-adapter","identity-provider")){var fields=configuration.runtime("http-adapter","identity-provider");if(fields==null)throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"IDENTITY_PROVIDER_NOT_CONFIGURED");active=new IdentityProviderSettings();active.setEnabled(true);active.setUrl(fields.get("url"));active.setBearerToken(fields.get("bearer_token"));active.setTimeoutSeconds(Integer.parseInt(fields.get("timeout_seconds")));}
+        if(!active.isEnabled())
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"IDENTITY_PROVIDER_NOT_CONFIGURED");
-        String url=settings.getUrl(),secret=settings.getBearerToken();
+        String url=active.getUrl(),secret=active.getBearerToken();
         if(url==null||url.isBlank()||secret==null||secret.isBlank())
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"IDENTITY_PROVIDER_CREDENTIALS_MISSING");
         URI base;
@@ -69,16 +77,17 @@ public class HttpIdentityProviderClient implements IdentityProviderClient {
         if(!"https".equalsIgnoreCase(base.getScheme())||base.getHost()==null||base.getUserInfo()!=null
                 ||base.getFragment()!=null||base.getQuery()!=null||base.getPort()==0)
             throw new IllegalStateException("IdP endpoint must be an HTTPS base URL without credentials/query");
-        if(settings.getTimeoutSeconds()<1||settings.getTimeoutSeconds()>30)
+        if(active.getTimeoutSeconds()<1||active.getTimeoutSeconds()>30)
             throw new IllegalStateException("IdP timeout outside 1..30 s");
         try {
             Map<String,Object> payload=new LinkedHashMap<>();
             payload.put("operation",operation);payload.putAll(args);
             HttpRequest request=HttpRequest.newBuilder(base)
-                .timeout(Duration.ofSeconds(settings.getTimeoutSeconds()))
+                .timeout(Duration.ofSeconds(active.getTimeoutSeconds()))
                 .header("Content-Type","application/json")
                 .header("Authorization","Bearer "+secret)
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload))).build();
+            if(transport!=null){transport.endpoint(base.toString(),false);return mapper.readTree(transport.send(request));}
             HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
             // A 2xx + explicit known result code is required; empty or arbitrary responses are NOT success.
             if(response.statusCode()<200||response.statusCode()>=300)

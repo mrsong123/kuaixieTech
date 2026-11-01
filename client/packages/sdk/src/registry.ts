@@ -565,6 +565,11 @@ export const operations: ApiOperation[] = [
         "name": "counter",
         "type": "number",
         "javaType": "BigDecimal"
+      },
+      {
+        "name": "expectedFee",
+        "type": "number",
+        "javaType": "BigDecimal"
       }
     ],
     "rawBody": false,
@@ -619,6 +624,21 @@ export const operations: ApiOperation[] = [
       },
       {
         "name": "quoteId",
+        "type": "text",
+        "javaType": "String"
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "text",
+        "javaType": "String"
+      },
+      {
+        "name": "expectedBuyerEscrow",
+        "type": "number",
+        "javaType": "BigDecimal"
+      },
+      {
+        "name": "insuranceQuoteId",
         "type": "text",
         "javaType": "String"
       }
@@ -684,6 +704,44 @@ export const operations: ApiOperation[] = [
     "role": "user",
     "dangerous": false,
     "returns": "String"
+  },
+  {
+    "id": "api_rpc_quote_pk_award",
+    "group": "交易与PK",
+    "name": "quote pk award",
+    "method": "POST",
+    "path": "/rpc/quote_pk_award",
+    "controller": "TradeRpcController.java",
+    "handler": "quoteAward",
+    "pathParams": [],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "name": "demandId",
+        "type": "text",
+        "javaType": "String"
+      },
+      {
+        "name": "quoteId",
+        "type": "text",
+        "javaType": "String"
+      },
+      {
+        "name": "insuranceChoice",
+        "type": "text",
+        "javaType": "String"
+      },
+      {
+        "name": "insuranceQuoteId",
+        "type": "text",
+        "javaType": "String"
+      }
+    ],
+    "rawBody": false,
+    "access": "protected",
+    "role": "user",
+    "dangerous": false,
+    "returns": "Object"
   },
   {
     "id": "api_rpc_refund_publish_deposit",
@@ -783,6 +841,25 @@ export const operations: ApiOperation[] = [
     "role": "user",
     "dangerous": false,
     "returns": "List<Map<String,Object>>"
+  },
+  {
+    "id": "api_public_products_id",
+    "group": "公开目录",
+    "name": "products · {id}",
+    "method": "GET",
+    "path": "/public/products/{id}",
+    "controller": "PublicCatalogController.java",
+    "handler": "product",
+    "pathParams": [
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "rawBody": false,
+    "access": "public",
+    "role": "user",
+    "dangerous": false,
+    "returns": "Map<String,Object>"
   },
   {
     "id": "api_public_profiles_masked",

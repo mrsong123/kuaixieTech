@@ -1,4 +1,5 @@
 <script lang="ts">
+import {primaryNavigation} from '@kuaixie/sdk';
 import {getLocale,setLocale,t,subscribeLocale} from '@kuaixie/i18n';
 const pageTitleKeys:Record<string,string>={
   'pages/index/index':'prototype.nav.square',
@@ -30,9 +31,11 @@ const pageTitleKeys:Record<string,string>={
   'pages/dispute-detail/index':'v15.disputeDetail',
   'pages/invite-share/index':'v15.inviteShare',
   'pages/invite-tier/index':'v15.inviteTier',
-  'pages/admin/index':'v15.mobileAdmin'
+  'pages/admin/index':'v15.mobileAdmin',
+  'pages/payment-checkout/index':'pay.title'
 };
-export default {onLaunch(){const previous=uni.getStorageSync('kx.locale');if(previous)setLocale(String(previous));subscribeLocale(()=>this.updateTabs());this.updateTabs()},onShow(){this.updateTabs()},onHide(){},updateTabs(){const pages=getCurrentPages();const current=pages[pages.length-1];const key=pageTitleKeys[current?.route??''];if(key)try{uni.setNavigationBarTitle({title:t(key)})}catch{};['prototype.nav.square','portal.tabs.community','prototype.nav.publish','prototype.nav.messages','mobile.tab.me'].forEach((key,index)=>{try{uni.setTabBarItem({index,text:t(key)})}catch{}})}};
+function updateTabs(){const pages=getCurrentPages();const current=pages[pages.length-1];const key=pageTitleKeys[current?.route??''];if(key)try{uni.setNavigationBarTitle({title:t(key)})}catch{};primaryNavigation.map(item=>item.titleKey).forEach((key,index)=>{try{uni.setTabBarItem({index,text:t(key)})}catch{}})}
+export default {onLaunch(){const previous=uni.getStorageSync('kx.locale');if(previous)setLocale(String(previous));subscribeLocale(updateTabs);updateTabs()},onShow(){updateTabs()},onHide(){}};
 </script>
 
 

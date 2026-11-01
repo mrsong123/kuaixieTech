@@ -1,14 +1,18 @@
 <script setup lang="ts">
+import InsuranceSelectionMobile from './InsuranceSelectionMobile.vue';
 import {preferenceRef} from '@kuaixie/preferences/vue';
 import {mobilePreferenceStyle} from '../utils/prototype';
 import type {useWorkflowPage} from '../stores/useWorkflowPage';
 import {t} from '@kuaixie/i18n';
 import {localeRef} from '@kuaixie/i18n/vue';
 import {watch} from 'vue';
+import {uniEventValue} from '../utils/uniEvent';
 const props=defineProps<{page:ReturnType<typeof useWorkflowPage>}>();
 const prefs=preferenceRef;
 function showTitle(){try{uni.setNavigationBarTitle({title:t(props.page.flow.titleKey)})}catch{}}
 showTitle();watch(localeRef,showTitle);
+function changeField(name:string,event:unknown){props.page.update(name,uniEventValue(event))}
+function changeInsurance(event:unknown){const value=Number(uniEventValue(event));if(value===0||value===1)props.page.update('insuranceChoice',value===0?'yes':'waived')}
 </script>
 <template>
  <view class="app-page flow-page" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark','kx-reduce-motion':prefs.reduceMotion}" :style="mobilePreferenceStyle(prefs)">
@@ -20,10 +24,12 @@ showTitle();watch(localeRef,showTitle);
    <view v-if="!page.fields.length" class="flow-note">{{ $t('fast.noFields') }}</view>
    <view v-for="field in page.fields" :key="field.name" class="flow-field">
     <view class="flow-label"><text>{{ page.fieldLabel(field.name) }}</text><text v-if="page.required(field.name)" class="flow-required">*</text></view>
-    <switch v-if="field.type==='boolean'" :checked="page.form[field.name]===true" color="#0ea5e9" @change="page.update(field.name, $event.detail.value)" />
-    <textarea v-else-if="page.isLong(field.name)" class="flow-input flow-area" :value="String(page.form[field.name]??'')" :maxlength="3000" :placeholder="page.fieldLabel(field.name)" @input="page.update(field.name,$event.detail.value)" />
-    <input v-else class="flow-input" :value="String(page.form[field.name]??'')" :type="field.type==='number'?'digit':'text'" :password="page.isSecret(field.name)" :maxlength="300" :placeholder="page.fieldLabel(field.name)" @input="page.update(field.name,$event.detail.value)" />
+    <picker v-if="field.name==='insuranceChoice'" :range="[$t('v15.insure'),$t('v15.waive')]" @change="changeInsurance"><view class="flow-input">{{page.form[field.name]==='yes'?$t('v15.insure'):page.form[field.name]==='waived'?$t('v15.waive'):$t('v15.insurance')}}</view></picker>
+    <switch v-else-if="field.type==='boolean'" :checked="page.form[field.name]===true" color="#0ea5e9" @change="changeField(field.name,$event)" />
+    <textarea v-else-if="page.isLong(field.name)" class="flow-input flow-area" :value="String(page.form[field.name]??'')" :maxlength="3000" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
+    <input v-else class="flow-input" :value="String(page.form[field.name]??'')" :type="field.type==='number'?'digit':'text'" :password="page.isSecret(field.name)" :maxlength="300" :placeholder="page.fieldLabel(field.name)" @input="changeField(field.name,$event)" />
    </view>
+   <template v-if="page.current.path==='/rpc/award_pk'&&page.form.insuranceChoice==='yes'"><button :disabled="page.busy" @click="page.loadInsuranceSubject">{{$t('insurance.loadSubject')}}</button><InsuranceSelectionMobile v-if="page.insuranceSubject" subject-type="pk_quote" :subject-id="page.insuranceSubject.subjectId" :item-name="page.insuranceSubject.itemName" :declared-value="page.insuranceSubject.declaredValue" @selected="page.update('insuranceQuoteId',$event?.id)"/></template>
    <view class="flow-note">{{ $t('fast.serverOnly') }}</view>
    <button class="flow-submit" :disabled="page.busy" @click="page.submit">{{page.busy?$t('fast.submitting'):$t('fast.submit')}}</button>
    <view v-if="page.error" class="flow-error" role="alert">{{page.error}}</view>

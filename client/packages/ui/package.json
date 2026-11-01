@@ -9,14 +9,46 @@
     "./PreferencesPanel.vue": "./src/PreferencesPanel.vue",
     "./VoiceDraft.vue": "./src/VoiceDraft.vue",
     "./ComparisonPanel.vue": "./src/ComparisonPanel.vue",
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./usePaymentWallet": "./src/usePaymentWallet.ts",
+    "./WalletFunding.vue": "./src/WalletFunding.vue",
+    "./useProductPublishing": "./src/useProductPublishing.ts",
+    "./ProductPublishing.vue": "./src/ProductPublishing.vue",
+    "./useBusinessWorkflow": "./src/useBusinessWorkflow.ts",
+    "./PublishComposer.vue": "./src/PublishComposer.vue",
+    "./BusinessWorkflow.vue": "./src/BusinessWorkflow.vue",
+    "./usePublishComposer": "./src/usePublishComposer.ts",
+    "./BusinessAuth.vue": "./src/BusinessAuth.vue",
+    "./useBusinessAuth": "./src/useBusinessAuth.ts",
+    "./SavedCommerce.vue": "./src/SavedCommerce.vue",
+    "./useSavedCommerce": "./src/useSavedCommerce.ts",
+    "./ProductActions.vue": "./src/ProductActions.vue",
+    "./AddressSelection.vue": "./src/AddressSelection.vue",
+    "./useInsurance": "./src/useInsurance.ts",
+    "./InsuranceSelection.vue": "./src/InsuranceSelection.vue",
+    "./InsuranceApplication.vue": "./src/InsuranceApplication.vue",
+    "./InsuranceCentre.vue": "./src/InsuranceCentre.vue",
+    "./useTradeCases": "./src/useTradeCases.ts",
+    "./TradeCases.vue": "./src/TradeCases.vue",
+    "./InviteSummary.vue": "./src/InviteSummary.vue",
+    "./useShop": "./src/useShop.ts",
+    "./ShopCentre.vue": "./src/ShopCentre.vue",
+    "./ShopPublic.vue": "./src/ShopPublic.vue",
+    "./useProductCheckout": "./src/useProductCheckout.ts",
+    "./ProductCheckout.vue": "./src/ProductCheckout.vue",
+    "./usePaymentRefunds": "./src/usePaymentRefunds.ts",
+    "./PaymentRefunds.vue": "./src/PaymentRefunds.vue",
+    "./useShopOrders": "./src/useShopOrders.ts",
+    "./ShopOrders.vue": "./src/ShopOrders.vue",
+    "./useCouplerSettings": "./src/useCouplerSettings.ts"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
   },
   "dependencies": {
-    "@kuaixie/sdk": "workspace:*",
     "@kuaixie/i18n": "workspace:*",
-    "@kuaixie/preferences": "workspace:*"
+    "@kuaixie/preferences": "workspace:*",
+    "@kuaixie/sdk": "workspace:*",
+    "qrcode-generator": "1.4.4"
   }
 }

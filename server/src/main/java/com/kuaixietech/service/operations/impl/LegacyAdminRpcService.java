@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 /** Batch migration of admin RPCs. Authorized exclusively by trusted Spring Security actor context. */
 @Service
 public class LegacyAdminRpcService {
+ private com.kuaixietech.commerce.ProductInventory inventory;
+ @org.springframework.beans.factory.annotation.Autowired public void productInventory(com.kuaixietech.commerce.ProductInventory inventory){this.inventory=inventory;}
   private final LegacyAdminRpcMapper mapper;
   private final DomainAccessGuard guard;
   private final LegacyScoreRpcService scores;
@@ -66,7 +68,7 @@ public class LegacyAdminRpcService {
         money.addBalance(buyer,(goods==null? BigDecimal.ZERO:goods).add(fee==null? BigDecimal.ZERO:fee),
           "refund",id,"拼单解散退款："+r);
       }
-      mapper.cancelPoolOrder(id,r);
+      mapper.cancelPoolOrder(id,r);if(inventory!=null)inventory.transition(id,"released");
       mapper.notifyUser(UUID.randomUUID().toString(),buyer,"pool_dissolved","拼单已解散，款项已退回",
         "原因："+r+"。冻结款项已原路退回你的余额。",id);
       n++;

@@ -21,10 +21,6 @@ public class LegalDocs {
     private LocalDateTime updatedAt;
     @TableField("created_at")
     private LocalDateTime createdAt;
-    @TableField("title_i18n")
-    private String titleI18N;
-    @TableField("body_md_i18n")
-    private String bodyMdI18N;
 
     public String getId() { return id; }
     public void setId(String value) { this.id = value; }
@@ -40,8 +36,4 @@ public class LegalDocs {
     public void setUpdatedAt(LocalDateTime value) { this.updatedAt = value; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime value) { this.createdAt = value; }
-    public String getTitleI18N() { return titleI18N; }
-    public void setTitleI18N(String value) { this.titleI18N = value; }
-    public String getBodyMdI18N() { return bodyMdI18N; }
-    public void setBodyMdI18N(String value) { this.bodyMdI18N = value; }
 }

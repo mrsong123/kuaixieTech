@@ -33,10 +33,6 @@ public class Products {
     private LocalDateTime createdAt;
     @TableField("updated_at")
     private LocalDateTime updatedAt;
-    @TableField("name_i18n")
-    private String nameI18N;
-    @TableField("spec_i18n")
-    private String specI18N;
 
     public String getId() { return id; }
     public void setId(String value) { this.id = value; }
@@ -64,8 +60,4 @@ public class Products {
     public void setCreatedAt(LocalDateTime value) { this.createdAt = value; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime value) { this.updatedAt = value; }
-    public String getNameI18N() { return nameI18N; }
-    public void setNameI18N(String value) { this.nameI18N = value; }
-    public String getSpecI18N() { return specI18N; }
-    public void setSpecI18N(String value) { this.specI18N = value; }
 }

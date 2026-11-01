@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ProductPublishingMobile from '../../components/ProductPublishingMobile.vue';
 import {usePublishHubPage} from '../../stores/usePublishHubPage';
 const {prefs,rootStyle,selected,region,busy,notice,demand,trip,post,transportOptions,transportTitle,changeMode,changeRegion,pickDate,transportChange,submit} = usePublishHubPage();
 </script>
@@ -8,9 +9,11 @@ const {prefs,rootStyle,selected,region,busy,notice,demand,trip,post,transportOpt
  <view class="choice-list">
   <view class="choice" :class="{selected:selected==='demand'}" @click="changeMode('demand')"><view class="choice-icon">⌕</view><view class="choice-copy"><view>{{ $t('portal.publish.demand') }}</view><text>{{ $t('portal.publish.demandDesc') }}</text></view><view class="choice-radio"/></view>
   <view class="choice" :class="{selected:selected==='trip'}" @click="changeMode('trip')"><view class="choice-icon">✈</view><view class="choice-copy"><view>{{ $t('portal.publish.trip') }}</view><text>{{ $t('portal.publish.tripDesc') }}</text></view><view class="choice-radio"/></view>
+  <view class="choice" :class="{selected:selected==='product'}" @click="changeMode('product')"><view class="choice-icon">▣</view><view class="choice-copy"><view>{{ $t('product.title') }}</view><text>{{ $t('product.help') }}</text></view><view class="choice-radio"/></view>
   <view class="choice" :class="{selected:selected==='life'}" @click="changeMode('life')"><view class="choice-icon">♡</view><view class="choice-copy"><view>{{ $t('portal.publish.life') }}</view><text>{{ $t('portal.publish.lifeDesc') }}</text></view><view class="choice-radio"/></view>
  </view>
- <view class="editor-card">
+ <ProductPublishingMobile v-if="selected==='product'"/>
+ <view v-else class="editor-card">
   <template v-if="selected!=='life'"><view class="label">{{ $t('portal.publish.region') }}</view><view class="region-options"><view class="region-option" :class="{active:region==='domestic'}" @click="changeRegion('domestic')">{{ $t('portal.square.domestic') }}</view><view class="region-option" :class="{active:region==='international'}" @click="changeRegion('international')">{{ $t('portal.square.international') }}</view></view></template>
   <template v-if="selected==='demand'">
    <view class="label">{{ $t('portal.publish.demandTitle') }} *</view><input v-model="demand.title" class="field" maxlength="200" :placeholder="$t('portal.publish.demandTitle')"/>

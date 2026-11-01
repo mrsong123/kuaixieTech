@@ -1,0 +1,15 @@
+package com.kuaixietech.coupler;
+import com.fasterxml.jackson.databind.*;
+import com.kuaixietech.integrationsdk.ClientFactories;
+import java.util.*;
+import org.springframework.stereotype.Component;
+import static com.kuaixietech.coupler.CouplerModels.*;
+/** Source reference metadata is static; configuration and secrets are never bootstrapped at startup. */
+@Component
+public class CouplerCatalog {
+ private final List<Category> categories;
+ public CouplerCatalog(ObjectMapper json){try(var stream=CouplerCatalog.class.getResourceAsStream("/coupler-catalog.json")){if(stream==null)throw new IllegalStateException();JsonNode root=json.readTree(stream);var result=new ArrayList<Category>();var factories=new ClientFactories();for(var category:root.path("categories")){String code=category.path("code").asText();var providers=new ArrayList<Provider>();for(var item:category.path("providers")){String name=item.path("code").asText();var fields=new LinkedHashMap<String,Field>();for(var f:item.path("fields"))fields.put(f.path("key").asText(),new Field(f.path("key").asText(),f.path("label").asText(f.path("key").asText()),f.path("secret").asBoolean(),f.path("required").asBoolean(),f.path("placeholder").asText(""),f.path("inputType").asText("text"),List.of()));var modes=new ArrayList<Mode>();for(var m:item.path("supportedModes"))modes.add(Mode.valueOf(m.asText()));boolean sdk=false;String capability=item.path("capability").asText("reference_only");if(factories.supports(code,name)){var d=factories.descriptor(code,name);sdk=true;if(fields.isEmpty())for(String key:d.requiredFields())fields.put(key,new Field(key,key,d.secretFields().contains(key),true,"",key.contains("pem")||key.endsWith("json")?"textarea":"text",List.of()));for(String key:d.secretFields())fields.computeIfPresent(key,(k,f)->new Field(f.key(),f.label(),true,f.required(),f.placeholder(),f.inputType(),f.options()));if(modes.isEmpty())for(var m:d.supportedModes())modes.add(Mode.valueOf(m.toString()));if(capability.equals("reference_only"))capability="sdk_client";}var operations=new ArrayList<String>();for(var o:item.path("implementedOperations"))operations.add(o.asText());providers.add(new Provider(code,name,item.path("name").asText(),item.path("vendor").asText(),item.path("product").asText(),capability,item.path("docs").asText(""),List.copyOf(modes),sdk,item.path("consumerWired").asBoolean(),List.copyOf(operations),List.copyOf(fields.values())));}result.add(new Category(code,category.path("name").asText(),category.path("description").asText(),category.path("sort").asInt(),List.copyOf(providers)));}categories=List.copyOf(result);}catch(Exception e){throw new IllegalStateException("COUPLER_CATALOG_UNAVAILABLE");}}
+ public List<Category> all(){return categories;}
+ public Category category(String code){return categories.stream().filter(c->c.code().equals(code)).findFirst().orElseThrow(()->new IllegalArgumentException("COUPLER_UNKNOWN_CATEGORY"));}
+ public Provider provider(String category,String code){return category(category).providers().stream().filter(p->p.code().equals(code)).findFirst().orElseThrow(()->new IllegalArgumentException("COUPLER_UNKNOWN_PROVIDER"));}
+}

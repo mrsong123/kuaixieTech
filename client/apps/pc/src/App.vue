@@ -8,10 +8,10 @@ import ProductsView from '@/views/ProductsView.vue';
 import TripsView from '@/views/TripsView.vue';
 import RouteView from '@/views/RouteView.vue';
 import CommunityView from '@/views/CommunityView.vue';
-import WorkbenchView from '@/views/WorkbenchView.vue';
+import BusinessCenterView from '@/views/BusinessCenterView.vue';
 const site=useSiteStore();
 provideSiteStore(site);
-const {page}=site;
+const {page,sessionScope}=site;
 </script>
 <template>
   <div class="app-shell">
@@ -21,7 +21,7 @@ const {page}=site;
     <TripsView v-else-if="page==='trips'" />
     <RouteView v-else-if="page==='route'" />
     <CommunityView v-else-if="page==='community'" />
-    <WorkbenchView v-else-if="page==='workspace'" />
+    <BusinessCenterView v-else :key="sessionScope"/>
     <SiteOverlays />
   </div>
 </template>

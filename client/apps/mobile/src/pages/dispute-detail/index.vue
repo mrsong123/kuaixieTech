@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import {useV15DisputeDetailPage} from '../../stores/useV15DisputeDetailPage';
-const {prefs,id,entry,busy,error,load,formatAmount,formatDate,mobilePreferenceStyle} = useV15DisputeDetailPage();
+import {ref} from 'vue';
+import {onLoad} from '@dcloudio/uni-app';
+import TradeCasesMobile from '../../components/TradeCasesMobile.vue';
+import {preferenceRef as prefs} from '@kuaixie/preferences/vue';
+import {mobilePreferenceStyle} from '../../utils/prototype';
+const id=ref('');onLoad(q=>{id.value=String(q?.id||q?.orderId||'')});
 </script>
-<template><scroll-view scroll-y class="original-subpage" :class="{'kx-dark':prefs.theme==='dark','kx-care':prefs.care}" :style="mobilePreferenceStyle(prefs)"><text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><view class="op-title">{{$t('v15.disputeDetail')}}</view><view v-if="busy" class="op-empty">{{$t('account.loading')}}</view><view v-if="error" class="op-error">{{error}}<button class="op-action op-secondary" @click="load">{{$t('v15.retry')}}</button></view><template v-if="entry"><view class="op-card"><view class="v14-between"><text class="op-card-title">{{$t('v15.disputeStage')}}</text><text class="v14-status">{{entry.stage}}</text></view><view class="op-row"><text>{{$t('v15.orderNo')}}</text><text>{{entry.order_id}}</text></view><view v-if="entry.type" class="op-row"><text>{{$t('v15.disputeType')}}</text><text>{{entry.type}}</text></view><view v-if="entry.description" class="v14-body">{{entry.description}}</view><view v-if="entry.refund_amount!=null" class="op-row"><text>{{$t('v15.refundAmount')}}</text><text>{{formatAmount(entry.refund_amount)}}</text></view><view v-if="entry.verdict" class="op-row"><text>{{$t('v15.disputeVerdict')}}</text><text>{{entry.verdict}}</text></view><text v-if="entry.created_at" class="op-muted">{{formatDate(entry.created_at)}}</text></view><view class="v15-danger-note">{{$t('v15.disputeReadonly')}}</view><button class="op-action op-secondary" @click="load">{{$t('v15.refresh')}}</button></template></scroll-view></template>
+<template><scroll-view scroll-y class="original-subpage" :class="{'kx-dark':prefs.theme==='dark','kx-care':prefs.care}" :style="mobilePreferenceStyle(prefs)"><text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><TradeCasesMobile :case-id="id"/></scroll-view></template>

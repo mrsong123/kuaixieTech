@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
  * settleRechargeVerified MUST be called only after external provider callback authenticity verification.
  */
 @Service public class TimeoutAndPaymentService {
+ private com.kuaixietech.commerce.ProductInventory inventory;
+ @org.springframework.beans.factory.annotation.Autowired public void productInventory(com.kuaixietech.commerce.ProductInventory inventory){this.inventory=inventory;}
  private final TimeoutAndPaymentMapper m;private final AtomicMoneyService money;private final TradeRpcMapper trade;
  private final OperationsRpcService operations;private final ObjectMapper json;
  public TimeoutAndPaymentService(TimeoutAndPaymentMapper m,AtomicMoneyService money,TradeRpcMapper trade,OperationsRpcService operations,ObjectMapper json){this.m=m;this.money=money;this.trade=trade;this.operations=operations;this.json=json;}
@@ -28,12 +30,12 @@ import org.springframework.transaction.annotation.Transactional;
   for(Map<String,Object> o:m.expiredIntentOrders(limit)){
    String id=str(o.get("id")),buyer=str(o.get("buyer_id"));
    if("frozen".equals(str(o.get("buyer_deposit_status"))))money.addBalance(buyer,amount(o.get("buyer_deposit")),"refund",id,"意向超时退还冻结保证金");
-   changed(m.closeOrder(id,"requesting","intent_expired"));m.releaseOrderDeposits(id);expiredIntent++;
+   changed(m.closeOrder(id,"requesting","intent_expired"));m.releaseOrderDeposits(id);if(inventory!=null)inventory.transition(id,"released");expiredIntent++;
   }
   for(Map<String,Object> o:m.expiredQuotes(limit)){
    String id=str(o.get("id")),buyer=str(o.get("buyer_id"));
    if("frozen".equals(str(o.get("buyer_deposit_status"))))money.addBalance(buyer,amount(o.get("buyer_deposit")),"refund",id,"议价超时退还冻结保证金");
-   changed(m.closeOrder(id,"negotiating","quote_expired"));m.releaseOrderDeposits(id);expiredQuote++;
+   changed(m.closeOrder(id,"negotiating","quote_expired"));m.releaseOrderDeposits(id);if(inventory!=null)inventory.transition(id,"released");expiredQuote++;
   }
   int fees=m.expireShippingFees();
   // close_pk requires a user principal in the former implementation; run identical scoring

@@ -3,6 +3,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import org.apache.ibatis.annotations.*;
 @Mapper public interface CancellationRpcMapper {
+ java.util.List<String> activeCases(@Param("id") String id);
+ java.util.List<String> activeAfterSales(@Param("id") String id);
  Map<String,Object> lockOrder(@Param("id")String id);
  Map<String,Object> latestPending(@Param("id")String id);
  int markCancelled(@Param("id")String id,@Param("status")String status,@Param("tier")String tier,@Param("reason")String reason,@Param("force")boolean force,@Param("proof")String proof,@Param("buyerStatus")String buyerStatus,@Param("vendorStatus")String vendorStatus,@Param("penalty")BigDecimal penalty,@Param("closedReason")String closedReason);

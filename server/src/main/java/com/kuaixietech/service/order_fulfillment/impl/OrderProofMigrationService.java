@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 /** Source: confirm_purchase(v3), confirm_ship, record_boarding_proof, record_delivery_proof, request_no_boarding_refund. */
 @Service public class OrderProofMigrationService {
+ private com.kuaixietech.commerce.ProductInventory inventory;
+ @org.springframework.beans.factory.annotation.Autowired public void productInventory(com.kuaixietech.commerce.ProductInventory inventory){this.inventory=inventory;}
  private final OrderProofMigrationMapper m;private final AtomicMoneyService money;private final ObjectMapper json;
  public OrderProofMigrationService(OrderProofMigrationMapper m,AtomicMoneyService money,ObjectMapper json){this.m=m;this.money=money;this.json=json;}
  private static String s(Object o){return o==null?null:String.valueOf(o);}
@@ -29,9 +31,14 @@ import org.springframework.transaction.annotation.Transactional;
  private static LocalDate date(Object value){if(value instanceof java.sql.Date d)return d.toLocalDate();return LocalDate.parse(String.valueOf(value).substring(0,10));}
  private static void fresh(Map<String,Object> face){LocalDateTime at=dt(face.get("created_at"));if(at==null||at.isBefore(LocalDateTime.now().minusMinutes(15)))throw new IllegalStateException("FACE_STALE");}
  private void notice(String uid,String kind,String title,String body,String order){if(uid!=null)changed(m.addNotice(id(),uid,kind,title,body,order));}
+ private boolean selectedInsuranceReady(Map<String,Object> order,String id){
+  JsonNode agreed=tree(s(order.get("agreed_json")));
+  return !com.kuaixietech.service.trading.support.IntentPricing.EXTERNAL_VERSION.equals(agreed.path("pricing_version").asText())||!"yes".equals(agreed.path("insurance_choice").asText())||m.activeGoodsInsurance(id)==1;
+ }
  @Transactional public String confirmPurchase(String orderId,String evidence,BigDecimal lat,BigDecimal lng,String city,String address,String metadata){
   String actor=TrustedActor.currentUserId();Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
   if(!actor.equals(s(o.get("vendor_id"))))return "ERR:NOT_VENDOR";
+  if(!selectedInsuranceReady(o,orderId))return "ERR:INSURANCE_NOT_EFFECTIVE";
   if(!"locked".equals(s(o.get("status"))))return "ERR:BAD_STATUS";
   JsonNode e=tree(evidence);if(e==null||!e.isObject())return "ERR:BAD_EVIDENCE";
   for(String k:List.of("receipt","goods","storefront")){
@@ -62,12 +69,15 @@ import org.springframework.transaction.annotation.Transactional;
   // PostgreSQL extracts the first city suffix from a Chinese address.
   String shippingCity=null;String shippingAddress=s(o.get("address"));if(shippingAddress!=null){java.util.regex.Matcher match=java.util.regex.Pattern.compile("^([\\p{IsHan}]{2,8}市)").matcher(shippingAddress);if(match.find())shippingCity=match.group(1);}
   changed(m.savePurchase(orderId,asJson(e),asJson(meta),asJson(images),lat,lng,c,trim(address),s(f.get("id")),asJson(flags),tax,shippingCity!=null&&c!=null&&!shippingCity.equals(c)));
+  if(inventory!=null)inventory.transition(orderId,"consumed");
   changed(m.addMessage(id(),orderId,actor,"带单人提交采购确认：三件套证据（含日期条）、采购定位与口令刷脸已留证，订单进入已采购状态"+("refund_to_buyer".equals(s(o.get("tax_refund_plan")))?"；退税凭证已随单上传":"")));
   notice(s(o.get("buyer_id")),"purchased","带单人已确认采购","小票/商品图/门店照与采购定位已上传，可在订单详情查看溯源信息",orderId);return "OK";
  }
  @Transactional public String confirmShip(String orderId,String carrier,String tracking,String labelUrls,BigDecimal lat,BigDecimal lng,String city,String address){
   String actor=TrustedActor.currentUserId();Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
   if(!actor.equals(s(o.get("vendor_id"))))return "ERR:NOT_VENDOR";
+  if(!m.activeCases(orderId).isEmpty()||!m.activeAfterSales(orderId).isEmpty())return "ERR:DISPUTE_OPEN";
+  if(!selectedInsuranceReady(o,orderId))return "ERR:INSURANCE_NOT_EFFECTIVE";
   if(!"purchased".equals(s(o.get("status"))))return "ERR:BAD_STATUS";
   if(trim(carrier)==null||trim(tracking)==null)return "ERR:NO_TRACKING";
   JsonNode labels=tree(labelUrls);if(labels==null||!labels.isArray()||labels.isEmpty())return "ERR:NO_LABEL";
@@ -102,6 +112,7 @@ import org.springframework.transaction.annotation.Transactional;
  @Transactional public String requestNoBoardingRefund(String orderId){
   String actor=TrustedActor.currentUserId();Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
   if(!actor.equals(s(o.get("buyer_id"))))return "ERR:NOT_BUYER";
+  if(!m.activeCases(orderId).isEmpty()||!m.activeAfterSales(orderId).isEmpty())return "ERR:DISPUTE_OPEN";
   if(!Set.of("requesting","negotiating","vendor_deposit_pending","locked").contains(s(o.get("status"))))return "ERR:BAD_STATUS";
   if(o.get("trip_id")==null)return "ERR:NO_TRIP";
   Map<String,Object> trip=m.trip(s(o.get("trip_id")));if(trip==null)return "ERR:NO_TRIP";
@@ -109,7 +120,7 @@ import org.springframework.transaction.annotation.Transactional;
   LocalDateTime depart=dt(trip.get("depart_datetime"));if(depart==null||LocalDateTime.now().isBefore(depart.plusHours(6)))return "ERR:WINDOW_OPEN";
   if("frozen".equals(s(o.get("buyer_deposit_status"))))money.addBalance(actor,d(o.get("buyer_deposit")),"refund",orderId,"未登机留证无责退款");
   String vendor=s(o.get("vendor_id"));if(vendor!=null&&"frozen".equals(s(o.get("vendor_deposit_status"))))money.addBalance(vendor,d(o.get("vendor_deposit")),"refund",orderId,"未登机留证保证金退回");
-  changed(m.cancelNoBoarding(orderId));m.refundDepositRows(orderId);
+  changed(m.cancelNoBoarding(orderId));if(inventory!=null)inventory.transition(orderId,"released");m.refundDepositRows(orderId);
   notice(actor,"order","订单已无责退回","订单 "+o.get("order_no")+" 因带单人未在航班窗口内完成登机留证，已退回你的冻结资金。",orderId);
   notice(vendor,"order","订单因未登机留证被无责取消","订单 "+o.get("order_no")+" 因未完成登机留证被平台无责关闭；冻结保证金已退回。",orderId);
   return "OK";

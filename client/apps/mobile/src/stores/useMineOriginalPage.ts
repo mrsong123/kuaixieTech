@@ -1,4 +1,5 @@
 import {computed,ref} from 'vue';
+import {primaryNavigation} from '@kuaixie/sdk';
 import {onShow} from '@dcloudio/uni-app';
 import {api} from '../api/client';
 import {getBearer,clearBearer,type MyProfile,type MyWallet,type MyNotification} from '@kuaixie/sdk';
@@ -47,7 +48,7 @@ export function useMineOriginalPage(){
     open(route[0],route[1]);
   }
   function statusLabel(status?:string){return t(status==='approved'?'mine.kycApproved':status==='pending'?'mine.kycReviewing':status==='rejected'?'mine.kycRejected':'mine.kycNone')}
-  function toggleLanguage(){const lang=getLocale()==='zh-CN'?'en-US':'zh-CN';setLocale(lang);uni.setStorageSync('kx.locale',lang);['prototype.nav.square','portal.tabs.community','prototype.nav.publish','prototype.nav.messages','mobile.tab.me'].forEach((key,index)=>{try{uni.setTabBarItem({index,text:t(key)})}catch{}})}
+  function toggleLanguage(){const lang=getLocale()==='zh-CN'?'en-US':'zh-CN';setLocale(lang);uni.setStorageSync('kx.locale',lang);primaryNavigation.map(item=>item.titleKey).forEach((key,index)=>{try{uni.setTabBarItem({index,text:t(key)})}catch{}})}
   function signOut(){clearBearer();profile.value=null;wallet.value=null;unread.value=null;uni.showToast({title:t('mine.loggedOut'),icon:'none'})}
   return {prefs,profile,wallet,unread,loading,error,signedIn,nickname,score,verified,buyerVerified,isEnterprise,isAdmin,reload,select,statusLabel,toggleLanguage,signOut,formatAmount,mobilePreferenceStyle};
 }

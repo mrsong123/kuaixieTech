@@ -1,0 +1,9 @@
+<script setup lang="ts">
+import InsuranceApplicationMobile from '../../components/InsuranceApplicationMobile.vue';
+import {useInsuranceCentre} from '@kuaixie/ui/useInsurance';
+import {uniEventValue} from '../../utils/uniEvent';
+import {api} from '../../api/client';
+const p=useInsuranceCentre(api);
+function choose(event:unknown){p.selected.value=p.orders.value[Number(uniEventValue(event))-1]?.id||''}
+</script>
+<template><scroll-view scroll-y class="original-subpage"><text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><view class="op-title">{{$t('insurance.application')}}</view><view class="op-muted">{{$t('insurance.boundary')}}</view><button :disabled="p.busy.value" @click="p.load(false)">{{$t('common.retry')}}</button><view v-if="p.error.value" class="op-error">{{p.error.value}}</view><picker :range="[$t('insurance.chooseOrder'),...p.orders.value.map(row=>row.item_name+' · '+row.order_no)]" @change="choose"><view class="op-row">{{$t('insurance.chooseOrder')}} ⌄</view></picker><button v-if="p.more.value" :disabled="p.busy.value" @click="p.load(true)">{{$t('account.more')}}</button><view v-for="row in p.applications.value" :key="row.id" class="op-card" @click="p.selected.value=row.orderId"><view>{{row.insurerName}} · {{row.productName}}</view><view>{{$t(row.protectionStatus==='provider_confirmed'?'insurance.effective':'insurance.notIssued')}}</view><text>{{row.policyNumber||''}} ›</text></view><InsuranceApplicationMobile v-if="p.selected.value" :key="p.selected.value" :order-id="p.selected.value"/><view class="op-title">{{$t('insurance.consents')}}</view><view v-for="row in p.consents.value" :key="String(row.id)" class="op-card"><view>{{row.recipient_name}} · {{row.notice_version}}</view><text>{{row.accepted_at}}</text><view>{{row.purpose}}</view><view>{{row.information_types}}</view></view></scroll-view></template>

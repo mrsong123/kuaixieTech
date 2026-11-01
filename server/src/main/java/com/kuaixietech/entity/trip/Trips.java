@@ -95,8 +95,6 @@ public class Trips {
     private LocalDateTime arrivalAt;
     @TableField("visibility")
     private String visibility;
-    @TableField("depart_tz")
-    private String departTz;
 
     public String getId() { return id; }
     public void setId(String value) { this.id = value; }
@@ -186,6 +184,4 @@ public class Trips {
     public void setArrivalAt(LocalDateTime value) { this.arrivalAt = value; }
     public String getVisibility() { return visibility; }
     public void setVisibility(String value) { this.visibility = value; }
-    public String getDepartTz() { return departTz; }
-    public void setDepartTz(String value) { this.departTz = value; }
 }

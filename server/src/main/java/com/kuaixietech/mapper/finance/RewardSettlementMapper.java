@@ -3,6 +3,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import org.apache.ibatis.annotations.*;
 @Mapper public interface RewardSettlementMapper {
+ java.util.List<String> activeCases(@Param("id") String id);
+ java.util.List<String> activeAfterSales(@Param("id") String id);
  Map<String,Object> lockProfile(@Param("uid")String uid);
  String getInviter(@Param("uid")String uid);
  int hasFirstOrder(@Param("uid")String uid);

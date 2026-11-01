@@ -28,7 +28,7 @@ public class Batch10RpcController {
  public record IssueMeetup(String orderId){}
  public record ConfirmMeetup(String orderId,String code,BigDecimal lat,BigDecimal lng,String city){}
  public record ProposeFee(String orderId,BigDecimal fee,String note){}
- public record RespondFee(String orderId,boolean accept,BigDecimal counter){}
+ public record RespondFee(String orderId,boolean accept,BigDecimal counter,BigDecimal expectedFee){}
  public record ArrivalProof(String tripId,String snapshotUrl,BigDecimal lat,BigDecimal lng,String city){}
  @PostMapping("/request_invoice") public String requestInvoice(@RequestBody InvoiceRequest b){return invoice.requestInvoice(b.orderId(),b.titleType(),b.titleName(),b.taxNo(),b.kind(),b.email(),b.remark());}
  @PostMapping("/admin_issue_invoice") public String issueInvoice(@RequestBody InvoiceDecision b){return invoice.adminIssueInvoice(b.invoiceId(),b.approve(),b.invoiceNo(),b.fileUrl(),b.reason());}
@@ -46,6 +46,6 @@ public class Batch10RpcController {
  @PostMapping("/issue_meetup_code") public String issueMeetup(@RequestBody IssueMeetup b){return meetup.issueMeetupCode(b.orderId());}
  @PostMapping("/confirm_meetup") public String confirmMeetup(@RequestBody ConfirmMeetup b){return meetup.confirmMeetup(b.orderId(),b.code(),b.lat(),b.lng(),b.city());}
  @PostMapping("/propose_shipping_fee") public String propose(@RequestBody ProposeFee b){return shipping.proposeShippingFee(b.orderId(),b.fee(),b.note());}
- @PostMapping("/respond_shipping_fee") public String respond(@RequestBody RespondFee b){return shipping.respondShippingFee(b.orderId(),b.accept(),b.counter());}
+ @PostMapping("/respond_shipping_fee") public String respond(@RequestBody RespondFee b){return shipping.respondShippingFee(b.orderId(),b.accept(),b.counter(),b.expectedFee());}
  @PostMapping("/record_arrival_proof") public String arrival(@RequestBody ArrivalProof b){return ops.recordArrivalProof(b.tripId(),b.snapshotUrl(),b.lat(),b.lng(),b.city());}
 }

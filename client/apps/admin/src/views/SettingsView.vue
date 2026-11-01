@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import CouplerSettingsPanel from '../components/CouplerSettingsPanel.vue';
+import IntegrationSettingsPanel from '../components/IntegrationSettingsPanel.vue';
 import PreferencesPanel from '@kuaixie/ui/PreferencesPanel.vue';
+import InsuranceSettingsPanel from '../components/InsuranceSettingsPanel.vue';
+import PaymentSettingsPanel from '../components/PaymentSettingsPanel.vue';
 import {useAdminContext} from '../stores/context';
 const {token,showToken,apiBaseText,applyToken,removeToken}=useAdminContext();
 </script>
 <template>
 <div class="admin-view">
   <PreferencesPanel/>
+  <CouplerSettingsPanel/>
+  <details><summary>{{$t('coupler.legacyTitle')}}</summary><IntegrationSettingsPanel/></details>
+  <div id="payment-settings"><PaymentSettingsPanel/></div>
+  <div id="insurance-settings"><InsuranceSettingsPanel/></div>
   <div class="settings-grid">
     <section class="surface settings-card">
       <span class="sub-kicker">{{ $t('text.85da46fb9d6b') }}</span>

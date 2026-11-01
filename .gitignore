@@ -23,3 +23,7 @@ Thumbs.db
 # local tooling
 *.iml
 .cursor/*.log
+
+# Python audit tool caches
+__pycache__/
+*.py[cod]

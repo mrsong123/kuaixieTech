@@ -3,7 +3,7 @@ import SettingsLayout from '../../../components/SettingsLayout.vue';
 import {ref} from 'vue';
 import {onShow} from '@dcloudio/uni-app';
 import {t} from '@kuaixie/i18n';
-const permissionScopes=[{key:'scope.userLocation',label:'settings2.permission.location'},{key:'scope.camera',label:'settings2.permission.camera'},{key:'scope.record',label:'settings2.permission.microphone'},{key:'scope.writePhotosAlbum',label:'settings2.permission.album'}];
+const permissionScopes=[{key:'scope.userLocation',label:'settings2.permission.location'},{key:'scope.camera',label:'settings2.permission.camera'},{key:'scope.record',label:'settings2.permission.microphone'},{key:'scope.writePhotosAlbum',label:'settings2.permission.album'}] as const;
 const status=ref<Record<string,boolean|undefined>>({});const available=ref(false);
 function reload(){try{uni.getSetting({success(res){available.value=true;const auth=res.authSetting??{};const next:Record<string,boolean|undefined>={};for(const item of permissionScopes)next[item.key]=auth[item.key];status.value=next},fail(){available.value=false}})}catch{available.value=false}}
 function openSystem(){try{uni.openSetting({success:reload,fail(){uni.showToast({title:t('settings2.permissionUnsupported'),icon:'none'})}})}catch{uni.showToast({title:t('settings2.permissionUnsupported'),icon:'none'})}}

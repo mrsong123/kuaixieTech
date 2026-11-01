@@ -30,15 +30,19 @@ public class InsuranceMigrationService {
     Map<String,Object> order=mapper.lockOrder(orderId);
     if(order==null)return "ERR:NO_ORDER";
     if(!actor.equals(String.valueOf(order.get("buyer_id"))))return "ERR:NOT_BUYER";
+    // New orders freeze the explicitly accepted premium at confirmation. Changing that
+    // choice requires cancellation/reordering, rather than silently changing escrow.
+    if(com.kuaixietech.service.trading.support.IntentPricing.isEscrowVersion(order.get("pricing_version")))return "ERR:INSURANCE_LOCKED_AFTER_CONFIRMATION";
     if(!Set.of("requesting","negotiating","vendor_deposit_pending").contains(String.valueOf(order.get("status"))))return "ERR:BAD_STATUS";
+    if("yes".equals(choice))return "ERR:INSURANCE_PROVIDER_QUOTE_REQUIRED";
     final BigDecimal premium;
     try {premium=premium(choice,declaredValue);}
     catch(IllegalArgumentException e){return e.getMessage();}
     int updated=mapper.updateInsurance(orderId,choice,premium,declaredValue);
     if(updated!=1)throw new IllegalStateException("Order changed during insurance update");
     String content=choice.equals("yes")
-      ? "买家已为本单投保：申报货值 ¥"+declaredValue.setScale(2,RoundingMode.HALF_UP)+"，保费 ¥"+premium+"（结算时随服务费扣除）"
-      : "买家确认放弃保价：高价值商品运输风险自担，纠纷理赔时不适用保价优先规则";
+      ? "历史保险选择记录：申报货值 ¥"+declaredValue.setScale(2,RoundingMode.HALF_UP)+"，保费 ¥"+premium+"（结算时随服务费扣除）"
+      : "买家选择本次不购买外部保险；交易各方依法享有的权利义务不因此变更";
     mapper.insertSystemMessage(UUID.randomUUID().toString(),orderId,actor,content);
     return "OK";
   }

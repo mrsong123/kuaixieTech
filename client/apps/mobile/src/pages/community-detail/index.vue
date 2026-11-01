@@ -4,7 +4,7 @@ import type {PublicCommunityPost} from '@kuaixie/sdk';
 import {useOriginalCommunityDetail} from '../../stores/useOriginalCommunityDetail';
 import CommunityCommerceBar from '../../components/CommunityCommerceBar.vue';
 const s=useOriginalCommunityDetail();
-const anchor=computed(()=>{const post=s.post.value as (PublicCommunityPost & {anchor?:Record<string,unknown>})|null;const raw=post?.anchor;return raw&&typeof raw==='object'?raw:null});
+const anchor=computed(()=>{const post=s.post as (PublicCommunityPost & {anchor?:Record<string,unknown>})|null;const raw=post?.anchor;return raw&&typeof raw==='object'?raw:null});
 </script>
 <template><scroll-view scroll-y class="original-subpage" :class="{'kx-dark':s.prefs.theme==='dark','kx-care':s.prefs.care}" :style="s.mobilePreferenceStyle(s.prefs)">
 <text class="op-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><view class="op-title">{{$t('v14.communityDetail')}}</view>

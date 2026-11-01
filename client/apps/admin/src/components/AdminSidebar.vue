@@ -14,6 +14,7 @@ const {section,sidebarOpen,docsCount,go,activeGroup}=useAdminContext();
     <button :class="{active:activeGroup==='growth'}" @click="go('users')"><TrendingUp/><span>{{ $t('admin.group.growth') }}</span><ChevronRight class="side-chevron"/></button>
     <p class="side-caption after">{{ $t('text.29d43743c43b') }}</p>
     <button :class="{active:section==='all'}" @click="go('all')"><Code2/><span>{{ $t('text.0d97a269629a') }}</span><span class="side-count">{{ docsCount }}</span></button>
+    <button :class="{active:section==='businessCoverage'}" @click="go('businessCoverage')"><ClipboardCheck/><span>{{ $t('coverage.title') }}</span></button>
     <button :class="{active:section==='settings'}" @click="go('settings')"><Settings2/><span>{{ $t('text.b935702d5314') }}</span></button>
   </div>
   <div class="sidebar-tip"><div class="tip-icon"><ShieldCheck :size="21"/></div><b>{{ $t('text.d948a44bb8c5') }}</b><p>{{ $t('text.3cafc0afca63') }}</p><span>{{ $t('text.d9dd56ca8ae3') }}</span></div>

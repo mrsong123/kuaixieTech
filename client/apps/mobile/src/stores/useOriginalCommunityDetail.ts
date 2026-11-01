@@ -1,4 +1,4 @@
-import {ref} from 'vue';
+import {ref,proxyRefs} from 'vue';
 import {onLoad} from '@dcloudio/uni-app';
 import {api} from '../api/client';
 import type {PublicCommunityPost} from '@kuaixie/sdk';
@@ -16,5 +16,5 @@ export function useOriginalCommunityDetail(){
  }catch(e){post.value=null;error.value=e instanceof Error?e.message:t('common.apiLoadError')}finally{loading.value=false}}
  function safeUrl(value?:string){return value&&/^https:\/\/[^\s/?#]+(?:[/?#]|$)/i.test(value)?value:''}
  onLoad(params=>{id.value=String(params?.id||'');if(!id.value){error.value=t('v14.badId');return}void load()});
- return {prefs,id,post,loading,error,load,safeUrl,formatDate,mobilePreferenceStyle};
+ return proxyRefs({prefs,id,post,loading,error,load,safeUrl,formatDate,mobilePreferenceStyle});
 }

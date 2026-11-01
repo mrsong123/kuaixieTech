@@ -18,6 +18,8 @@ try{
   assert(intl.t('pc.nav.home')==='Home','en-US UI translation');
   assert(intl.t('pc.nav.home')!==intl.t('pc.nav.products'),'distinct navigation terms');
   assert(intl.formatAmount('12.5','USD').includes('$'),'explicit USD formatter');
+  assert(intl.formatAmount('12.345','BHD').includes('12.345'),'three-decimal insurance currencies are not rounded to two decimals');
+  assert(!intl.formatAmount('1000','JPY').includes('.00'),'zero-decimal currency display preserves its ISO precision');
   assert(!intl.formatAmount('12.5',null).includes('¥'),'price without currency never assumes CNY');
   assert(intl.localizedField({name:'原始名称',translations:{'en-US':{name:'Localized name'}}},'name')==='Localized name','localized API field precedence');
   assert(intl.localizedField({name:'原始名称'},'name')==='原始名称','raw API field preserved without fabricated translation');

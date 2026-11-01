@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kuaixietech.mapper.trading.TradeRpcMapper">
+ <select id="isVerifiedBuyer" resultType="int">SELECT COUNT(*) FROM t_profiles WHERE id=#{uid} AND deleted_at IS NULL AND (buyer_verify_status='approved' OR (user_role='enterprise' AND enterprise_verify_status='approved'))</select>
+ <select id="awardedOrder" resultType="string">SELECT id FROM t_orders WHERE demand_id=#{demandId} ORDER BY created_at DESC LIMIT 1</select>
  <select id="lockOrder" resultType="map">SELECT * FROM t_orders WHERE id=#{id} FOR UPDATE</select>
  <select id="lockDemand" resultType="map">SELECT * FROM t_demands WHERE id=#{id} FOR UPDATE</select>
  <select id="lockProduct" resultType="map">SELECT id,owner_id,name,status,stock FROM t_products WHERE id=#{id} FOR UPDATE</select>
@@ -22,7 +24,7 @@
    AND (#{direction} IS NULL OR #{direction}='any' OR COALESCE(t.direction,'outbound')=#{direction})
  </select>
  <update id="acceptOrder">UPDATE t_orders SET status='locked',vendor_id=#{uid},vendor_deposit=#{deposit},vendor_deposit_status='frozen',
-    agreed_json=JSON_OBJECT('accepted_at',DATE_FORMAT(NOW(3),'%Y-%m-%dT%H:%i:%s.%f')),updated_at=NOW(3)
+    agreed_json=JSON_SET(COALESCE(agreed_json,JSON_OBJECT()),'$.accepted_at',DATE_FORMAT(NOW(3),'%Y-%m-%dT%H:%i:%s.%f')),updated_at=NOW(3)
     WHERE id=#{id} AND status='requesting' AND (vendor_id IS NULL OR vendor_id=#{uid})</update>
  <insert id="putDeposit">INSERT INTO t_deposits(id,order_id,payer_id,party_role,kind,amount,status,created_at,updated_at)
     VALUES(#{id},#{orderId},#{payer},#{role},#{kind},#{amount},'frozen',NOW(3),NOW(3))</insert>
@@ -41,12 +43,14 @@
         goods_amount,service_fee,buyer_deposit,vendor_deposit,status,buyer_deposit_status,vendor_deposit_status,
         delivery_mode,insured,insurance_premium,declared_value,shipping_fee,shipping_fee_status,
         ref_image_urls,purchase_receipt_urls,cancel_proof_urls,purchase_evidence,freight_label_urls,
-        ship_risk_flags,purchase_meta,purchase_risk_flags,created_at,updated_at)
+        ship_risk_flags,purchase_meta,purchase_risk_flags,agreed_json,created_at,updated_at)
     VALUES(#{id},#{orderNo},#{buyer},#{vendor},#{demand},#{itemName},#{goods},1,
         #{goods},#{fee},#{buyerDeposit},#{vendorDeposit},'locked','frozen','frozen',
         'ship',#{insured},#{premium},#{declared},#{shipFee},#{shipStatus},
-        JSON_ARRAY(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),NOW(3),NOW(3))
+        JSON_ARRAY(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),JSON_ARRAY(),JSON_OBJECT(),JSON_ARRAY(),
+        JSON_OBJECT('pricing_version','escrow_v2_external_insurance','insurance_escrow',#{premium},'buyer_escrow',#{buyerDeposit}),NOW(3),NOW(3))
  </insert>
+ <update id="setInsuranceSelection">UPDATE t_orders SET agreed_json=JSON_SET(agreed_json,'$.insurance_choice',#{choice},'$.insurance_quote_id',COALESCE(#{quote},'')) WHERE id=#{id}</update>
  <update id="quoteWon">UPDATE t_quotes SET status='won' WHERE id=#{id} AND status='pending'</update>
  <update id="remainingQuotesLost">UPDATE t_quotes SET status='lost' WHERE demand_id=#{demandId} AND id != #{quoteId} AND status='pending'</update>
  <update id="awardDemand">UPDATE t_demands SET status='awarded',awarded_quote_id=#{quoteId} WHERE id=#{demandId} AND status IN ('awarded_pending','open')</update>

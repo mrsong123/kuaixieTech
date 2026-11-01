@@ -1,0 +1,1447 @@
+{
+  "sourceCategoryCount": 21,
+  "sourceProviderCount": 46,
+  "categories": [
+    {
+      "code": "FEATURES",
+      "name": "功能开通开关",
+      "description": "按当前环境（沙箱/真实）决定是否允许调用对应通道，保存不等于渠道已验收",
+      "sort": 5,
+      "providers": [
+        {
+          "code": "flags",
+          "name": "开通开关",
+          "vendor": "flags",
+          "product": "features",
+          "docs": "",
+          "capability": "local_policy",
+          "supportedModes": [
+            "SANDBOX",
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "feature_policy"
+          ],
+          "fields": [
+            {
+              "key": "ai_enabled",
+              "label": "AI",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "miniapp_enabled",
+              "label": "MINIAPP",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "rtc_enabled",
+              "label": "RTC",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "subscribe_enabled",
+              "label": "SUBSCRIBE",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "face_enabled",
+              "label": "FACE",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "sms_enabled",
+              "label": "SMS",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "privacy_number_enabled",
+              "label": "PRIVACY_NUMBER",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "wxpay_enabled",
+              "label": "WXPAY",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "translate_enabled",
+              "label": "TRANSLATE",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "oss_enabled",
+              "label": "OSS",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "alipay_enabled",
+              "label": "ALIPAY",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "email_enabled",
+              "label": "EMAIL",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "oauth_enabled",
+              "label": "OAUTH",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "kyc_enabled",
+              "label": "KYC",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "map_enabled",
+              "label": "MAP",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "search_enabled",
+              "label": "SEARCH",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "bank_card_enabled",
+              "label": "BANK_CARD",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "logistics_enabled",
+              "label": "LOGISTICS",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "airline_enabled",
+              "label": "AIRLINE",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            },
+            {
+              "key": "rail_enabled",
+              "label": "RAIL",
+              "secret": false,
+              "required": false,
+              "inputType": "boolean"
+            }
+          ],
+          "consumerWired": true
+        }
+      ]
+    },
+    {
+      "code": "AI",
+      "name": "大模型 AI",
+      "description": "DeepSeek / Cursor / ChatGPT，后续可继续加平台",
+      "sort": 10,
+      "providers": [
+        {
+          "code": "deepseek",
+          "name": "DeepSeek",
+          "vendor": "deepseek",
+          "product": "ai",
+          "docs": "https://api-docs.deepseek.com/api/create-chat-completion",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "chat"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "model",
+              "label": "model",
+              "secret": false,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "base_url",
+              "label": "base_url",
+              "secret": false,
+              "required": false,
+              "placeholder": "Optional custom base, requires INTEGRATION_API_ALLOWED_HOSTS; no query/userinfo/redirect"
+            }
+          ]
+        },
+        {
+          "code": "cursor",
+          "name": "Cursor",
+          "vendor": "cursor",
+          "product": "ai",
+          "docs": "https://docs.cursor.com/en/cloud-agent/api/endpoints",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "agent_create",
+            "agent_status",
+            "agent_stop"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "repository",
+              "label": "repository",
+              "secret": false,
+              "required": true,
+              "placeholder": "Only this configured https://github.com/owner/repo can be launched"
+            },
+            {
+              "key": "model",
+              "label": "model",
+              "secret": false,
+              "required": false,
+              "placeholder": ""
+            }
+          ]
+        },
+        {
+          "code": "chatgpt",
+          "name": "ChatGPT",
+          "vendor": "chatgpt",
+          "product": "ai",
+          "docs": "https://platform.openai.com/docs/api-reference/chat/create",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "chat"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "model",
+              "label": "model",
+              "secret": false,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "base_url",
+              "label": "base_url",
+              "secret": false,
+              "required": false,
+              "placeholder": "Optional custom base, requires INTEGRATION_API_ALLOWED_HOSTS; no query/userinfo/redirect"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "MINIAPP",
+      "name": "小程序 AppID",
+      "description": "微信小程序身份",
+      "sort": 20,
+      "providers": [
+        {
+          "code": "weixin",
+          "name": "微信小程序",
+          "vendor": "weixin",
+          "product": "miniapp",
+          "docs": "",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "code2session"
+          ],
+          "fields": [
+            {
+              "key": "app_id",
+              "label": "app_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "app_secret",
+              "label": "app_secret",
+              "secret": true,
+              "required": true
+            }
+          ],
+          "consumerWired": true
+        }
+      ]
+    },
+    {
+      "code": "OAUTH",
+      "name": "OAuth 登录",
+      "description": "企业微信 / 通用授权",
+      "sort": 25,
+      "providers": [
+        {
+          "code": "generic",
+          "name": "通用 OAuth2",
+          "vendor": "generic",
+          "product": "oauth",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "wecom",
+          "name": "企业微信",
+          "vendor": "wecom",
+          "product": "oauth",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "weibo",
+          "name": "微博登录",
+          "vendor": "weibo",
+          "product": "oauth",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "douyin",
+          "name": "抖音登录",
+          "vendor": "douyin",
+          "product": "oauth",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "weixin",
+          "name": "微信开放平台",
+          "vendor": "weixin",
+          "product": "oauth",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "RTC",
+      "name": "音视频通信 RTC",
+      "description": "实时通话云平台",
+      "sort": 30,
+      "providers": [
+        {
+          "code": "tencent",
+          "name": "腾讯云 TRTC",
+          "vendor": "tencent",
+          "product": "rtc",
+          "docs": "",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "tls_usersig_v2",
+            "room_private_map_key",
+            "accepted_order_call_authorization"
+          ],
+          "fields": [
+            {
+              "key": "sdk_app_id",
+              "label": "sdk_app_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "secret_key",
+              "label": "secret_key",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "usersig_ttl_seconds",
+              "label": "usersig_ttl_seconds",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "advanced_permission_control",
+              "label": "advanced_permission_control",
+              "secret": false,
+              "required": true
+            }
+          ]
+        },
+        {
+          "code": "aliyun",
+          "name": "阿里云 RTC",
+          "vendor": "aliyun",
+          "product": "rtc",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "agora",
+          "name": "声网 Agora",
+          "vendor": "agora",
+          "product": "rtc",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "SUBSCRIBE",
+      "name": "微信订阅消息",
+      "description": "一次性订阅消息模板",
+      "sort": 40,
+      "providers": [
+        {
+          "code": "weixin",
+          "name": "微信订阅消息",
+          "vendor": "weixin",
+          "product": "subscribe",
+          "docs": "",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "stable_access_token",
+            "subscribe_message"
+          ],
+          "fields": [
+            {
+              "key": "app_id",
+              "label": "app_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "app_secret",
+              "label": "app_secret",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "template_id",
+              "label": "template_id",
+              "secret": false,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "FACE",
+      "name": "人脸实人认证",
+      "description": "实名核身",
+      "sort": 50,
+      "providers": [
+        {
+          "code": "tencent",
+          "name": "腾讯云人脸核身",
+          "vendor": "tencent",
+          "product": "face",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "aliyun",
+          "name": "阿里云实人认证",
+          "vendor": "aliyun",
+          "product": "face",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "KYC",
+      "name": "企业 KYC",
+      "description": "执照与法人核验通道",
+      "sort": 51,
+      "providers": [
+        {
+          "code": "channel",
+          "name": "KYC 通道",
+          "vendor": "channel",
+          "product": "kyc",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "SMS",
+      "name": "短信 SMS",
+      "description": "验证码与通知",
+      "sort": 60,
+      "providers": [
+        {
+          "code": "aliyun",
+          "name": "阿里云短信",
+          "vendor": "aliyun",
+          "product": "sms",
+          "docs": "",
+          "capability": "business_protocol",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "send_verification_code"
+          ],
+          "fields": [
+            {
+              "key": "access_key_id",
+              "label": "access_key_id",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "access_key_secret",
+              "label": "access_key_secret",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "sign_name",
+              "label": "sign_name",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "template_code",
+              "label": "template_code",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true
+            }
+          ],
+          "consumerWired": true
+        },
+        {
+          "code": "tencent",
+          "name": "腾讯云短信",
+          "vendor": "tencent",
+          "product": "sms",
+          "docs": "",
+          "capability": "business_protocol",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "send_verification_code"
+          ],
+          "fields": [
+            {
+              "key": "secret_id",
+              "label": "secret_id",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "secret_key",
+              "label": "secret_key",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "sdk_app_id",
+              "label": "sdk_app_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "sign_name",
+              "label": "sign_name",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "template_id",
+              "label": "template_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true
+            }
+          ],
+          "consumerWired": true
+        },
+        {
+          "code": "huawei",
+          "name": "华为云短信",
+          "vendor": "huawei",
+          "product": "sms",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "EMAIL",
+      "name": "邮件 SMTP",
+      "description": "验证码与通知邮件",
+      "sort": 62,
+      "providers": [
+        {
+          "code": "smtp",
+          "name": "SMTP",
+          "vendor": "smtp",
+          "product": "email",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "aliyun",
+          "name": "阿里云 DirectMail",
+          "vendor": "aliyun",
+          "product": "directmail",
+          "docs": "https://help.aliyun.com/zh/direct-mail/developer-reference/api-dm-2015-11-23-singlesendmail",
+          "capability": "business_protocol",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "consumerWired": true,
+          "implementedOperations": [
+            "send_verification_code"
+          ],
+          "fields": [
+            {
+              "key": "access_key_id",
+              "label": "access_key_id",
+              "secret": false,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "access_key_secret",
+              "label": "access_key_secret",
+              "secret": true,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "account_name",
+              "label": "account_name",
+              "secret": false,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "from_alias",
+              "label": "from_alias",
+              "secret": false,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "subject",
+              "label": "subject",
+              "secret": false,
+              "required": true,
+              "inputType": "text"
+            },
+            {
+              "key": "text_template",
+              "label": "text_template",
+              "secret": false,
+              "required": true,
+              "inputType": "textarea"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "PRIVACY_NUMBER",
+      "name": "隐私号",
+      "description": "中间号保护真实手机",
+      "sort": 70,
+      "providers": [
+        {
+          "code": "aliyun",
+          "name": "阿里云隐私号",
+          "vendor": "aliyun",
+          "product": "privacy_number",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "tencent",
+          "name": "腾讯云隐私号",
+          "vendor": "tencent",
+          "product": "privacy_number",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "WXPAY",
+      "name": "微信支付",
+      "description": "APIv3",
+      "sort": 80,
+      "providers": [
+        {
+          "code": "weixin",
+          "name": "微信支付",
+          "vendor": "weixin",
+          "product": "wxpay",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "ALIPAY",
+      "name": "支付宝",
+      "description": "沙箱与正式网关分开保存",
+      "sort": 81,
+      "providers": [
+        {
+          "code": "alipay",
+          "name": "支付宝电脑网站支付",
+          "vendor": "alipay",
+          "product": "alipay",
+          "docs": "",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "SANDBOX",
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "trade_query",
+            "refund_query",
+            "strict_gateway_mode",
+            "reject_sandbox_live_accounting"
+          ],
+          "fields": [
+            {
+              "key": "app_id",
+              "label": "app_id",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "private_key_pem",
+              "label": "private_key_pem",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "platform_public_key_pem",
+              "label": "platform_public_key_pem",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "notify_url",
+              "label": "notify_url",
+              "secret": false,
+              "required": false
+            },
+            {
+              "key": "return_url",
+              "label": "return_url",
+              "secret": false,
+              "required": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BANK_CARD",
+      "name": "银行卡 / 对公账户",
+      "description": "银联或企业收款账户，到账需银行回单",
+      "sort": 82,
+      "providers": [
+        {
+          "code": "unionpay",
+          "name": "银联 / 对公账户",
+          "vendor": "unionpay",
+          "product": "bank_card",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "TRANSLATE",
+      "name": "翻译",
+      "description": "多语言引擎",
+      "sort": 90,
+      "providers": [
+        {
+          "code": "tencent",
+          "name": "腾讯云翻译",
+          "vendor": "tencent",
+          "product": "translate",
+          "docs": "https://cloud.tencent.com/document/api/551/15619",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "translate"
+          ],
+          "fields": [
+            {
+              "key": "secret_id",
+              "label": "secret_id",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "secret_key",
+              "label": "secret_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "project_id",
+              "label": "project_id",
+              "secret": false,
+              "required": true,
+              "placeholder": "nonnegative integer; can be 0"
+            }
+          ]
+        },
+        {
+          "code": "aliyun",
+          "name": "阿里云翻译",
+          "vendor": "aliyun",
+          "product": "translate",
+          "docs": "https://help.aliyun.com/zh/machine-translation/developer-reference/api-alimt-2018-10-12-translategeneral",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "translate"
+          ],
+          "fields": [
+            {
+              "key": "access_key_id",
+              "label": "access_key_id",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "access_key_secret",
+              "label": "access_key_secret",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true,
+              "placeholder": ""
+            }
+          ]
+        },
+        {
+          "code": "deepl",
+          "name": "DeepL",
+          "vendor": "deepl",
+          "product": "translate",
+          "docs": "https://developers.deepl.com/api-reference/translate",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "translate"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "plan",
+              "label": "plan",
+              "secret": false,
+              "required": true,
+              "placeholder": ""
+            }
+          ]
+        },
+        {
+          "code": "google",
+          "name": "Google Translate",
+          "vendor": "google",
+          "product": "translate",
+          "docs": "https://cloud.google.com/translate/docs/reference/rest/v2/translate",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "translate"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "OSS",
+      "name": "对象存储 OSS",
+      "description": "切换云平台后只填关键字",
+      "sort": 100,
+      "providers": [
+        {
+          "code": "aliyun",
+          "name": "阿里云 OSS",
+          "vendor": "aliyun",
+          "product": "oss",
+          "docs": "",
+          "capability": "business_protocol",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "private_upload",
+            "private_read"
+          ],
+          "fields": [
+            {
+              "key": "access_key_id",
+              "label": "access_key_id",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "access_key_secret",
+              "label": "access_key_secret",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "bucket",
+              "label": "bucket",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "endpoint",
+              "label": "endpoint",
+              "secret": false,
+              "required": true
+            }
+          ],
+          "consumerWired": true
+        },
+        {
+          "code": "tencent",
+          "name": "腾讯云 COS",
+          "vendor": "tencent",
+          "product": "oss",
+          "docs": "",
+          "capability": "business_protocol",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "private_upload",
+            "private_read"
+          ],
+          "fields": [
+            {
+              "key": "secret_id",
+              "label": "secret_id",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "secret_key",
+              "label": "secret_key",
+              "secret": true,
+              "required": true
+            },
+            {
+              "key": "bucket",
+              "label": "bucket",
+              "secret": false,
+              "required": true
+            },
+            {
+              "key": "region",
+              "label": "region",
+              "secret": false,
+              "required": true
+            }
+          ],
+          "consumerWired": true
+        },
+        {
+          "code": "huawei",
+          "name": "华为云 OBS",
+          "vendor": "huawei",
+          "product": "oss",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "qiniu",
+          "name": "七牛云 Kodo",
+          "vendor": "qiniu",
+          "product": "oss",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "aws",
+          "name": "Amazon S3",
+          "vendor": "aws",
+          "product": "oss",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "MAP",
+      "name": "地图定位",
+      "description": "Web 与服务端 Key",
+      "sort": 110,
+      "providers": [
+        {
+          "code": "amap",
+          "name": "高德地图",
+          "vendor": "amap",
+          "product": "map",
+          "docs": "https://lbs.amap.com/api/webservice/guide/api/georegeo",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "geocode"
+          ],
+          "fields": [
+            {
+              "key": "rest_key",
+              "label": "rest_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "security_key",
+              "label": "security_key",
+              "secret": true,
+              "required": false,
+              "placeholder": "Optional signature key if signing enabled in vendor console"
+            }
+          ]
+        },
+        {
+          "code": "tencent",
+          "name": "腾讯地图",
+          "vendor": "tencent",
+          "product": "map",
+          "docs": "https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder",
+          "capability": "protocol_client",
+          "supportedModes": [
+            "LIVE"
+          ],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [
+            "geocode"
+          ],
+          "fields": [
+            {
+              "key": "api_key",
+              "label": "api_key",
+              "secret": true,
+              "required": true,
+              "placeholder": ""
+            },
+            {
+              "key": "secret_key",
+              "label": "secret_key",
+              "secret": true,
+              "required": false,
+              "placeholder": "Optional SK if signing enabled in vendor console"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SEARCH",
+      "name": "搜索引擎",
+      "description": "商品检索节点",
+      "sort": 120,
+      "providers": [
+        {
+          "code": "elasticsearch",
+          "name": "Elasticsearch",
+          "vendor": "elasticsearch",
+          "product": "search",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "LOGISTICS",
+      "name": "物流合作平台",
+      "description": "顺丰 / 德邦 / 京东等，客户下单时可指定",
+      "sort": 130,
+      "providers": [
+        {
+          "code": "sf",
+          "name": "顺丰速运",
+          "vendor": "sf",
+          "product": "logistics",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "debon",
+          "name": "德邦 / 大件",
+          "vendor": "debon",
+          "product": "logistics",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "jd",
+          "name": "京东物流",
+          "vendor": "jd",
+          "product": "logistics",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "anjie",
+          "name": "安捷大件",
+          "vendor": "anjie",
+          "product": "logistics",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "AIRLINE",
+      "name": "航空公司",
+      "description": "差旅机票查询，未填密钥不会出票",
+      "sort": 140,
+      "providers": [
+        {
+          "code": "cea",
+          "name": "中国东方航空",
+          "vendor": "cea",
+          "product": "airline",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "csn",
+          "name": "中国南方航空",
+          "vendor": "csn",
+          "product": "airline",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        },
+        {
+          "code": "airchina",
+          "name": "中国国际航空",
+          "vendor": "airchina",
+          "product": "airline",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "code": "RAIL",
+      "name": "铁路系统",
+      "description": "差旅火车票查询，对接 12306 合作接口",
+      "sort": 141,
+      "providers": [
+        {
+          "code": "12306",
+          "name": "铁路 12306 合作接口",
+          "vendor": "12306",
+          "product": "rail",
+          "docs": "",
+          "capability": "reference_only",
+          "supportedModes": [],
+          "sdkAvailable": false,
+          "businessVerified": false,
+          "implementedOperations": [],
+          "fields": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+import {computed,ref} from 'vue';
+import {ApiError,getBearer,type ApiClient,type EligiblePaymentRefund,type PaymentRefund,type PaymentRefundInput} from '@kuaixie/sdk';
+import {t,uiErrorMessage} from '@kuaixie/i18n';
+
+export interface PaymentRefundEvent {id:string;action:string;detail:string;createdAt:string}
+export function paymentRefundEventKey(action:string){return ({requested:'refund.event.requested',reviewed:'refund.event.reviewed',cancelled:'refund.event.cancelled',dispatch_claimed:'refund.event.dispatch_claimed',provider_processing:'refund.event.provider_processing',provider_succeeded:'refund.event.provider_succeeded',provider_closed:'refund.event.provider_closed'} as Record<string,string>)[action]??'refund.state.unknown'}
+export const refundStates=['requested','approved','dispatching','processing','succeeded','rejected','closed','cancelled'] as const;
+export function paymentRefundStateKey(status:string){return ({requested:'refund.state.requested',approved:'refund.state.approved',dispatching:'refund.state.dispatching',processing:'refund.state.processing',succeeded:'refund.state.succeeded',rejected:'refund.state.rejected',closed:'refund.state.closed',cancelled:'refund.state.cancelled'} as Record<string,string>)[status]??'refund.state.unknown'}
+function requestId(){return globalThis.crypto?.randomUUID?.()??'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const n=Math.floor(Math.random()*16);return(c==='x'?n:(n&3)|8).toString(16)})}
+function confirmedRow(row:PaymentRefund|undefined,id?:string,paymentId?:string){if(!row||typeof row.id!=='string'||!row.id||typeof row.paymentId!=='string'||!refundStates.includes(row.status as typeof refundStates[number])||id&&row.id!==id||paymentId&&row.paymentId!==paymentId)throw new Error(t('refund.responseUnconfirmed'));return row}
+type Uncertain={id:string;status:string;kind:'review'|'dispatch'|'cancel'};
+
+/** One source of refund decisions for all presentations. Only server receipts determine success. */
+export function usePaymentRefunds(api:ApiClient,confirm:(title:string,body:string)=>Promise<boolean>,admin=false){
+ const events=ref<PaymentRefundEvent[]>([]),eventsLoading=ref(false),moreEvents=ref(false);
+ const rows=ref<PaymentRefund[]>([]),eligible=ref<EligiblePaymentRefund[]>([]),entry=ref<PaymentRefund|null>(null),paymentId=ref(''),reason=ref(''),reviewReason=ref('');
+ const error=ref(''),notice=ref(''),busy=ref(false),confirming=ref(false),listLoading=ref(false),detailLoading=ref(false),more=ref(false),pending=ref<PaymentRefundInput|null>(null),uncertain=ref<Uncertain|null>(null);
+ const session=getBearer();
+ function sameSession(){if(getBearer()===session)return true;error.value=t('refund.sessionChanged');return false}
+ const loading=computed(()=>listLoading.value||detailLoading.value);
+ const selected=computed(()=>eligible.value.find(row=>row.id===paymentId.value));
+ const locked=computed(()=>busy.value||confirming.value||loading.value||!!pending.value||!!uncertain.value);
+ const canReview=computed(()=>admin&&entry.value?.status==='requested'&&!locked.value);
+ const canDispatch=computed(()=>admin&&entry.value?.status==='approved'&&!locked.value);
+ const canCancel=computed(()=>!admin&&entry.value?.status==='requested'&&!locked.value);
+ const canRefresh=computed(()=>!!entry.value&&['dispatching','processing'].includes(entry.value.status)&&!busy.value&&!confirming.value&&!loading.value&&!pending.value);
+ let offset=0,listGeneration=0,detailGeneration=0,eventsGeneration=0;
+ async function loadList(append=false){if(!sameSession())return;const generation=++listGeneration;listLoading.value=true;error.value='';try{const next=append?offset+20:0;const result=await(admin?api.paymentRefunds.queue(20,next):api.paymentRefunds.mine(20,next));if(generation!==listGeneration||!sameSession())return;rows.value=append?[...rows.value,...result]:result;offset=next;more.value=result.length===20}catch(e){if(generation===listGeneration)error.value=uiErrorMessage(e)}finally{if(generation===listGeneration)listLoading.value=false}}
+ async function loadEligible(){if(admin||!sameSession())return;try{const result=await api.paymentRefunds.eligible();if(sameSession())eligible.value=result}catch(e){error.value=uiErrorMessage(e)}}
+ function accept(row:PaymentRefund){if(!sameSession())return;if(entry.value?.id!==row.id){events.value=[];moreEvents.value=false}entry.value=row;if(uncertain.value?.id===row.id&&uncertain.value.status!==row.status)uncertain.value=null}
+ async function loadDetail(id:string,internal=false){if(!sameSession())return;if((busy.value||confirming.value)&&!internal){error.value=t('refund.pending');return}if(pending.value||uncertain.value&&uncertain.value.id!==id){error.value=t('refund.pending');return}const generation=++detailGeneration;detailLoading.value=true;error.value='';try{const row=confirmedRow(await api.paymentRefunds.detail(id,admin),id);if(generation===detailGeneration&&sameSession()){accept(row);await loadEvents(row.id)}}catch(e){if(generation===detailGeneration)error.value=uiErrorMessage(e)}finally{if(generation===detailGeneration)detailLoading.value=false}}
+ async function loadEvents(id=entry.value?.id,append=false){if(!sameSession())return;if(!id||entry.value?.id!==id||append&&eventsLoading.value)return;const generation=++eventsGeneration;eventsLoading.value=true;try{const next=await api.paymentRefunds.events(id,100,append?events.value.length:0,admin);if(generation!==eventsGeneration||entry.value?.id!==id||!sameSession())return;events.value=append?[...events.value,...next]:next;moreEvents.value=next.length===100}catch(e){if(generation===eventsGeneration)error.value=uiErrorMessage(e)}finally{if(generation===eventsGeneration)eventsLoading.value=false}}
+ async function ask(title:string,body:string){if(confirming.value||!sameSession())return false;confirming.value=true;try{const approved=await confirm(title,body);return sameSession()&&approved}finally{confirming.value=false}}
+ async function reconcile(){if(!sameSession())return;await loadList();await loadEligible();await loadEvents()}
+ async function apply(){if(!sameSession())return;if(admin||busy.value||confirming.value||loading.value||uncertain.value)return;
+  if(!pending.value){const row=selected.value,note=reason.value.trim();if(!row||!note||note.length>200){error.value=t('refund.fillFields');return}if(!await ask(t('refund.apply'),t('refund.confirmApply',{amount:row.baseAmount,refundAmount:row.paymentAmount,currency:row.paymentCurrency})))return;pending.value={paymentId:row.id,reason:note,requestId:requestId()}}
+  const body={...pending.value};busy.value=true;error.value='';notice.value='';try{if(!sameSession())return;const result=confirmedRow(await api.paymentRefunds.create(body),undefined,body.paymentId);if(!sameSession())return;pending.value=null;accept(result);await reconcile();notice.value=t('refund.recorded')}catch(e){error.value=uiErrorMessage(e);if(e instanceof ApiError&&[400,401,403,404,409,422].includes(e.status))pending.value=null}finally{busy.value=false}
+ }
+ async function transition(kind:'review'|'dispatch'|'cancel',approve?:boolean){if(!sameSession())return;const row=entry.value;if(!row||locked.value)return;if(kind==='review'&&!canReview.value||kind==='dispatch'&&!canDispatch.value||kind==='cancel'&&!canCancel.value)return;
+  const note=reviewReason.value.trim();if(kind==='review'&&(!note||note.length>200)){error.value=t('refund.reviewReasonRequired');return}const key=kind==='dispatch'?'refund.confirmDispatch':kind==='cancel'?'refund.confirmCancel':approve?'refund.confirmApprove':'refund.confirmReject';
+  if(!await ask(t('refund.confirmTitle'),t(key,{amount:row.paymentAmount,currency:row.paymentCurrency})))return;
+  busy.value=true;error.value='';notice.value='';try{if(!sameSession())return;const result=kind==='review'?await api.paymentRefunds.review(row.id,{approve:!!approve,reason:note}):kind==='dispatch'?await api.paymentRefunds.dispatch(row.id):await api.paymentRefunds.cancel(row.id);if(!sameSession())return;accept(confirmedRow(result,row.id,row.paymentId));await reconcile();notice.value=t('refund.recorded')}catch(e){error.value=uiErrorMessage(e);if(e instanceof ApiError&&e.status===503&&e.detail&&typeof e.detail==='object'&&(e.detail as {detail?:unknown}).detail==='REFUND_CHANNEL_NOT_CONFIGURED'){}else if(!(e instanceof ApiError)||![400,401,403,404,409,422].includes(e.status))uncertain.value={id:row.id,status:row.status,kind};else await loadDetail(row.id,true)}finally{busy.value=false}
+ }
+ async function refresh(){if(!sameSession())return;const row=entry.value;if(!row||!canRefresh.value)return;busy.value=true;error.value='';notice.value='';try{if(!sameSession())return;const result=confirmedRow(await api.paymentRefunds.refresh(row.id,admin),row.id,row.paymentId);if(!sameSession())return;accept(result);await reconcile();notice.value=t('refund.recorded')}catch(e){error.value=uiErrorMessage(e)}finally{busy.value=false}}
+ return {events,eventsLoading,moreEvents,loadEvents,rows,eligible,entry,paymentId,reason,reviewReason,error,notice,busy,confirming,loading,more,pending,uncertain,selected,locked,canReview,canDispatch,canCancel,canRefresh,loadList,loadEligible,loadDetail,apply,refresh,review:(approve:boolean)=>transition('review',approve),dispatch:()=>transition('dispatch'),cancel:()=>transition('cancel')};
+}

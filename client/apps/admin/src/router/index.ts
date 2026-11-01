@@ -1,2 +1,2 @@
 import type {AdminTabKey} from '../console/tabs';
-export type Section=AdminTabKey|'all'|'settings';
+export type Section=AdminTabKey|'all'|'settings'|'businessCoverage';

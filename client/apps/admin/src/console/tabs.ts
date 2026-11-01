@@ -1,9 +1,9 @@
 export type AdminGroupKey='core'|'review'|'trade'|'growth';
 export type AdminTabKey=
   |'overview'|'carrierKyc'|'buyerKyc'|'enterpriseKyc'|'trips'|'proofRecipes'|'products'|'categories'|'errorLogs'
-  |'orders'|'cancels'|'disputes'|'support'|'invoices'|'violations'|'privacyPool'|'pools'|'demands'|'notifyQueue'|'withdrawals'|'community'
+  |'paymentRefunds'|'shops'|'orders'|'cancels'|'disputes'|'support'|'invoices'|'violations'|'privacyPool'|'pools'|'demands'|'notifyQueue'|'withdrawals'|'community'
   |'distribution'|'users'|'finance'|'invite'|'broadcast'|'channelConfigs'|'locales';
-export type Section=AdminTabKey|'settings'|'all';
+export type Section=AdminTabKey|'settings'|'all'|'businessCoverage';
 
 export const ADMIN_GROUPS:{key:AdminGroupKey;labelKey:string;tabs:{key:AdminTabKey;labelKey:string;badge?:string}[]}[]=[
   {key:'core',labelKey:'admin.group.core',tabs:[{key:'overview',labelKey:'admin.tab.overview'}]},
@@ -18,6 +18,8 @@ export const ADMIN_GROUPS:{key:AdminGroupKey;labelKey:string;tabs:{key:AdminTabK
     {key:'errorLogs',labelKey:'admin.tab.errorLogs'},
   ]},
   {key:'trade',labelKey:'admin.group.trade',tabs:[
+    {key:'paymentRefunds',labelKey:'refund.adminTitle'},
+    {key:'shops',labelKey:'shop.review'},
     {key:'orders',labelKey:'admin.tab.orders',badge:'risk_orders'},
     {key:'cancels',labelKey:'admin.tab.cancels',badge:'todo_cancels'},
     {key:'disputes',labelKey:'admin.tab.disputes',badge:'todo_disputes'},

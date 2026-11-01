@@ -33,6 +33,7 @@ const nav:[Section,string,string][]=[
   ['settings','admin.nav.settings','security'],
 ];
 const groupConfigs:Record<string,{kicker:string;title:string;desc:string;groups:string[]}>= {
+ businessCoverage:{kicker:'coverage.title',title:'coverage.title',desc:'coverage.help',groups:[]},
  core:{kicker:'admin.group.core',title:'admin.tab.overview',desc:'admin.console.descCore',groups:[]},
  review:{kicker:'admin.group.review',title:'admin.group.review',desc:'admin.console.descReview',groups:[]},
  trade:{kicker:'admin.group.trade',title:'admin.group.trade',desc:'admin.console.descTrade',groups:[]},
