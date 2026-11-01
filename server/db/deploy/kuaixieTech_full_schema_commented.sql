@@ -2014,4 +2014,3 @@ EXECUTE kuaixie_order_status_stmt;
 DEALLOCATE PREPARE kuaixie_order_status_stmt;
 SET @kuaixie_order_status_ddl = NULL;
 -- END 011-order-status-width.proposed.sql
-

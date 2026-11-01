@@ -170,7 +170,7 @@ def products(catalog):
             f"-- 原始文件SHA256：{digest}；排除种子INSERT：{removed}条。\n\n")
     from build_deployment_sql import render
     incremental,_=render()
-    full=header+clean+'\n\n-- 以下为同库增量结构，不重复导入原始表。\n'+incremental
+    full=(header+clean+'\n\n-- 以下为同库增量结构，不重复导入原始表。\n'+incremental).rstrip()+'\n'
     rows=inventory()
     doc=['# 数据库中文数据字典\n',
          '数据库名：`suixinggou`。用途：随行带货交易撮合平台业务库，涵盖用户、商品、行程、订单、托管资金、店铺、保险、售后、配置与运营。MySQL不支持库级COMMENT；不重命名现有数据库。\n',
