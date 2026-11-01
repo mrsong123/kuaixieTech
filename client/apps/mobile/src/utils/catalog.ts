@@ -1,8 +1,9 @@
 import type {PublicProduct,PublicTrip} from '@kuaixie/sdk';
-import {productImage,tripAvailability} from '@kuaixie/sdk';
+import {productImage,productImages,tripAvailability} from '@kuaixie/sdk';
+import {publicMediaUrl} from '../api/client';
 import {formatAmount,formatDate,transportLabel,localizedField,t} from '@kuaixie/i18n';
 export function mobileProductName(product:PublicProduct){return localizedField(product as unknown as Record<string,unknown>,'name')}
-export function mobileProductPicture(product:PublicProduct){return productImage(product)??''}
+export function mobileProductPicture(product:PublicProduct){return productImage(product,publicMediaUrl)??''}
 export function mobileProductDetails(product:PublicProduct,categoryName:string){
   return [
     mobileProductName(product),
@@ -26,9 +27,4 @@ export function mobileTripDetails(trip:PublicTrip){return [
   ].join('\n');}
 
 /** Public-only gallery, never synthesize image URLs. */
-export function mobileProductImages(product:PublicProduct):string[]{
- let value:unknown=product.image_urls;
- if(typeof value==='string'&&value.trim().startsWith('[')){try{value=JSON.parse(value)}catch{return []}}
- const urls=Array.isArray(value)?value:[value];
- return urls.filter((url):url is string=>typeof url==='string'&&/^https?:\/\/[^\s/?#]+(?:[/?#]|$)/i.test(url));
-}
+export function mobileProductImages(product:PublicProduct):string[]{return productImages(product,publicMediaUrl)}

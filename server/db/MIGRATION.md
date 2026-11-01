@@ -72,7 +72,7 @@ java --class-path /path/to/mysql-connector-j.jar tools/DatabasePreflight.java /t
 
 ## 验证状态
 
-- Java 21 当前应用测试：`mvn -Pcurrent-app-tests test`，253 项通过，无失败或跳过。使用显式 profile 仅编译当前 `com.kuaixietech` 测试；这些是无业务库写入的单元与映射测试，不代表真实业务闭环通过。
+- Java 21 当前应用测试：`mvn -Pcurrent-app-tests test`，380 项通过，无失败或跳过。使用显式 profile 仅编译当前 `com.kuaixietech` 测试；这些是无业务库写入的单元与映射测试，不代表真实业务闭环通过。
 - 默认 `mvn test` 仍因历史 `com.kuaixie.market` 测试引用不存在的类、H2 和迁移文件而无法编译。这些原有测试没有删除或改弱，不属于已通过测试。
 - PC、运营后台、H5、微信小程序和 App 资源编译已执行；App 资源编译不代表完成 Android/iOS 签名安装包或真机验收。
 - 移动端完整 `vue-tsc --noEmit -p apps/mobile/tsconfig.json` 已通过，修复了模板 `uni` 注册、App 生命周期函数、嵌套 Ref 解包、表单事件和商品图片预览等现有问题。共享接口、国际化运行时、模块引用与显示设置检查已通过。
@@ -91,6 +91,15 @@ API 配置、短信、凭据与私有附件详见 [API_CONFIGURATION.md](API_CON
 
 ## 代理并行轮次新增
 
-006提议商品预占与店铺归因，007提议原充值退款及事件（含生成列active_slot保护预算）。001–007共23张提议表，含原始结构105表/1122字段，仍全部待完整验收。最终部署文件已重新生成并校验各来源SHA256，未执行。必填INSERT核验 `python3 server/tools/audit_required_inserts.py` 当前检查138条字面量插入，无必填字段缺失；该工具不连接数据库，也不证明SQL值/事务正确。
+006提议商品预占与店铺归因，007提议原充值退款及事件（含生成列active_slot保护预算）。001–011共31张提议表及订单状态扩宽，含原始结构113表/1186字段，仍全部待完整验收。最终部署文件已重新生成并校验各来源SHA256，未执行。必填INSERT核验 `python3 server/tools/audit_required_inserts.py` 当前检查150条字面量插入，无必填字段缺失；该工具不连接数据库，也不证明SQL值/事务正确。
 
-新业务边界见 [商品成单](PRODUCT_CHECKOUT.md) 与 [原充值退款](ORIGINAL_PAYMENT_REFUNDS.md)，最新对比见 [项目复盘](../../docs/PROJECT_REVIEW.md)。当前应用253项测试、四组共享模型80项断言通过，默认历史测试与旧视觉检查仍不属于已通过检查。
+新业务边界见 [商品成单](PRODUCT_CHECKOUT.md) 与 [原充值退款](ORIGINAL_PAYMENT_REFUNDS.md)，最新对比见 [项目复盘](../../docs/PROJECT_REVIEW.md)。当前应用380项测试通过；共享模型与跨端构建以项目复盘最新记录为准，默认历史测试与旧视觉检查仍不属于已通过检查。
+
+
+## 本次配置、售后与媒体部署补充
+
+008提供隔离的配置环境与不可变密文版本，009提供可证明的新订单托管钱包退款记录，010提供附件绑定与删除记录，011修复订单无责取消状态长度。最终文件由构建脚本汇总11份来源及其SHA256，不导入原始参考库，不移动业务余额，开发期间未执行。
+
+011仅在当前数据库元数据确认status为小于32字符的VARCHAR时扩宽，不缩短更宽定义。部署前必须核对实际类型、默认值、字符集、已有约束、DDL锁及备份恢复；不匹配时脚本输出跳过，不能据此认定该问题已解决。
+
+业务说明见 [商品媒体](PRODUCT_MEDIA.md)、[售后钱包退款](AFTERSALES_ESCROW_REFUNDS.md) 及 [SDK边界](../../docs/SDK_CLIENTS.md)。全部字段继续待完整验收。

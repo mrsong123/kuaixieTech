@@ -33,7 +33,9 @@
       "t_favorites",
       "t_cart_items",
       "t_addresses",
-      "t_cbec_product_reviews"
+      "t_cbec_product_reviews",
+      "t_upload_bindings",
+      "t_upload_deletions"
     ]
   },
   {
@@ -88,7 +90,9 @@
       "t_currency_payments",
       "t_currency_payment_receipts",
       "t_payment_refunds",
-      "t_payment_refund_events"
+      "t_payment_refund_events",
+      "t_order_escrow_refunds",
+      "t_order_escrow_refund_events"
     ]
   },
   {
@@ -200,7 +204,11 @@
       "t_integration_settings",
       "t_integration_secrets",
       "t_channel_configs",
-      "t_channel_secrets_probe"
+      "t_channel_secrets_probe",
+      "t_integration_runtime_state",
+      "t_integration_mode_scopes",
+      "t_integration_mode_configs",
+      "t_integration_config_values"
     ]
   },
   {

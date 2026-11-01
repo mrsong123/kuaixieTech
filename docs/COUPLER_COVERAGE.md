@@ -2,7 +2,13 @@
 
 审查日期：2026-11-01。依据用户附件 `已粘贴的文本.txt`；SHA256：`30ca4666171e6236851c92f4c6481e8ba4b631c1fbd8af175e5aa3763e9f8edb`。原件解析得到 **21 类、46 厂商**，本表逐一对应，不把新目录、已保存key、本地校验或SDK客户端构造作为业务接通证据。
 
-这是代码审查快照：本轮耦合器仍在并行实施，表中的“新增协议/工厂规划”需要与最终编译及consumer调用证据对照。没有真实厂商调用、收费、发信或数据库迁移。既有“存量调用”也只表示已有执行链，不表示真实业务验收。
+这是代码审查快照，尚未执行真实厂商调用、收费、发信或数据库迁移。既有调用链也不表示真实业务验收。新增版本化配置框架与旧消费者接线已独立编译，34 项配置/密钥隔离/调用路由测试通过，另有 19 项微信/RTC/支付宝环境与签名专项测试通过；typed SDK 的离线构造测试另见 `SDK_CLIENTS.md`（若文件尚未生成，以实际测试记录为准）。
+
+当前目录保留附件的 21 类 46 厂商，另增 EMAIL/aliyun DirectMail，与 SMTP 明确区分。新配置实际接到旧业务消费者的只有 SMS/aliyun、SMS/tencent、OSS/aliyun、OSS/tencent、MINIAPP/weixin、EMAIL/aliyun；FEATURES/flags 为本地开关策略。其他协议/SDK 可以保存参数与本地验证，但 `consumerWired=false` 不允许设为当前运行通道。所有 `businessVerified=false`；未接业务入口的 AI、翻译、地图、RTC、订阅、实人认证等不会因保存 key 自动执行。
+
+迁移 `008-coupler-environments.proposed.sql` 提供 4 张表，由最终部署人工执行，启动不建表、不复制旧明文或 LIVE 密钥。环境/类别/供应商/版本/字段共同参与 AES-GCM AAD；保存新版本保留历史密文。新耦合器的 `env:NAME` 仅在管理员保存时读取并将当时的实际值加密到该版本，环境变量轮换不影响既有版本；缺失或嵌套引用拒绝保存，历史版本若仍包含未固定引用则拒绝执行，需显式重存。旧专业配置 `legacyLiveRuntime` 仍兼容动态环境引用，不能对该旧路径承诺环境变量轮换后的历史凭据不变。类别与环境共用乐观版本控制，选中后禁用会暂停该通道，无旧配置自动回退。SANDBOX 拒绝现有真实新支付、退款派发、短信/邮件、微信登录、保险投保和上传；已有支付/退款查询、回调及历史对象读取继续使用原 LIVE 上下文。此模式只隔离 API 路由，不提供独立测试钱包或数据库。
+
+通用 WXPAY/ALIPAY 参数不替代专业多商户实例配置；现有支付/退款保留原商户快照，新业务入口只增加 LIVE gate。保险继续采用保险企业报价、出单和收费，平台不担保。
 
 ## 46 个厂商的具体映射
 
@@ -13,19 +19,19 @@
 | AI/deepseek（DeepSeek） | 新增公开协议 | JDK REST；可选OpenAI兼容客户端 | chat/completions；模型和额度需开通 | 接到客服回复/消息落库；目前客服仍调用自定义support-ai-reply桥接 |
 | AI/cursor（Cursor） | 新增独立agent协议 | JDK REST；不伪装ChatCompletion SDK | Cloud Agents API；需授权仓库/ref、agent生命周期 | 不是聊天模型接口；创建/停止agent与客服回复不可混用，需明确业务入口 |
 | AI/chatgpt（ChatGPT） | 新增公开协议 | JDK REST；可选OpenAI官方Java SDK | OpenAI API项目key和支持的model；ChatGPT订阅不等于API授权 | 接到客服会话并处理拒绝/限额；不能将客户端初始化或HTTP200当回复已落库 |
-| MINIAPP/weixin（微信小程序） | 存量登录调用；新耦合器协议在补 | JDK REST；WxJava miniapp为社区SDK | jscode2session；appid/appsecret和对应小程序 | AuthLoginService目前读旧配置；新选中厂商/模式尚需consumer切换及openid/AppID绑定 |
+| MINIAPP/weixin（微信小程序） | 存量登录调用；新耦合器协议在补 | JDK REST；WxJava miniapp为社区SDK | jscode2session；appid/appsecret和对应小程序 | AuthLoginService通过IntegrationConfiguration读取新选中配置；AppID与openid绑定、真实账号验收仍需完成 |
 | RTC/tencent（腾讯云 TRTC） | 仅本地信令；UserSig协议在补 | tls-sig-api-v2/厂商SDK；还需各端媒体SDK | TRTC SDKAppID+SDKSecret不同于云API AK；room/user受限签名 | start/accept RPC尚不连接媒体；需五端join、真正connected事件、录音回执 |
 | RTC/aliyun（阿里云 RTC） | 未接媒体业务；SDK工厂规划 | 阿里RTC SDK可选；不等于端侧媒体SDK | 应用、频道/用户令牌、产品版本和区域 | 补order participant→频道、各端媒体join、退出/录制/结果审计 |
 | RTC/agora（声网 Agora） | 未接媒体业务；SDK工厂规划 | Agora Authentication/RtcTokenBuilder2 | AppID/AppCertificate、token版本、频道/用户权限 | 端侧RTC、媒体连接/断线回调未接；token可生成不等于通话已通 |
 | SUBSCRIBE/weixin（微信订阅消息） | 新增公开协议在补 | JDK REST/WxJava miniapp | 稳定access token、订阅模板、同AppID openid和用户授权 | 通知outbox需要模板映射、授权与真正send结果；不是写t_notifications即已发送 |
 | FACE/tencent（腾讯云人脸核身） | 未接实人核验；SDK工厂规划 | 腾讯Faceid SDK，不能用普通人脸检测替代 | 核身产品/RuleID、企业准入、回跳及结果查询方案 | BizToken/init不是passed；补身份资料、前端认证SDK和签名结果核验 |
 | FACE/aliyun（阿里云实人认证） | 未接实人核验；SDK工厂规划 | 阿里cloudauth SDK | 具体认证方案、场景ID、资料类别、结果查询/回调 | 初始化CertifyId不等于认证通过；当前本地取证不得冒充供应商实人核验 |
-| SMS/aliyun（阿里云短信） | 存量验证码队列原生协议 | 无需新增SDK，JDK RPC；可选dysmsapi SDK | 2017-05-25 SendSms、签名/模板和国内短信产品 | 新耦合器未接旧dispatcher前，填新表key不驱动旧队列；无官方sandbox即拒绝SANDBOX |
+| SMS/aliyun（阿里云短信） | 存量验证码队列原生协议 | 无需新增SDK，JDK RPC；可选dysmsapi SDK | 2017-05-25 SendSms、签名/模板和国内短信产品 | 已接旧dispatcher的新配置路由；无官方sandbox即拒绝SANDBOX |
 | SMS/tencent（腾讯云短信） | 存量验证码队列原生协议 | 无需新增SDK，JDK TC3；可选腾讯SMS SDK | 2021-01-11 SendSms、SdkAppId、签名/模板、E.164 | 同上；sent仅供应商受理，不代表手机终端送达 |
 | SMS/huawei（华为云短信） | 未接队列；SDK工厂规划 | 须确认华为云具体短信产品；JDK REST或对应SDK | 应用key/secret、签名通道、模板、区域endpoint | 接到同一outbox幂等claim/回执/未决不重发；不能仅构造MsgSms客户端 |
 | PRIVACY_NUMBER/aliyun（阿里云隐私号） | 仅参考/通用桥接 | dypls号码保护SDK可选 | 必须确定AXB/AXN方案、号码池/签约号码、绑定/解绑和租约接口 | 没有号码池不会得到可拨中间号；补订单双方绑定、超时解绑、通话回执 |
 | PRIVACY_NUMBER/tencent（腾讯云隐私号） | 未接号码业务；SDK工厂规划 | 须确认仍可开通的腾讯号码保护产品/SDK | 现售产品、供应商/代理商、号码池、绑定/续租/回执 | 不能把普通RTC或NPP类构造当隐私号分配；需实际合同产品资料 |
-| WXPAY/weixin（微信支付） | 存量原生充值/原路退款协议 | JDK APIv3；可选官方wechatpay-java | APIv3商户号、AppID、商户私钥、平台验签公钥/证书 | 新耦合器切换未接时仍是旧生产入口；旧支付/退款快照必须固定LEGACY_LIVE |
+| WXPAY/weixin（微信支付） | 存量原生充值/原路退款协议 | JDK APIv3；可选官方wechatpay-java | APIv3商户号、AppID、商户私钥、平台验签公钥/证书 | 新quote/create/退款派发已加LIVE gate；旧支付/退款查询保留专业商户LIVE快照 |
 | TRANSLATE/tencent（腾讯云翻译） | 新增公开协议 | JDK TC3；可选tmt SDK | 2018-03-21 TextTranslate、region/projectId、语言代码 | 新协议需接消息翻译/使用者入口、长度/计费边界，不把返回JSON当消息已更新 |
 | TRANSLATE/aliyun（阿里云翻译） | 新增公开协议 | JDK RPC；可选alimt SDK | TranslateGeneral 2018-10-12、区域和语言 | 接消息/商品展示翻译；禁止覆盖原文且需明确译文语言与来源 |
 | TRANSLATE/deepl（DeepL） | 新增公开协议 | JDK REST；可选deepl-java | /v2/translate、free/pro端点与语言变体 | api-free是正式免费额度服务，不是sandbox；consumer及输出映射待验 |

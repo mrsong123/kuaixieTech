@@ -57,6 +57,7 @@ export function createApiClient(transport:Transport, settings:ClientSettings={})
   return {
     request, invoke,
     catalog: {
+      categoryOptions:(limit=100,offset=0,search?:string)=>request<import('./types').PublicCategory[]>('GET','/public/category-options',{query:{limit,offset,search}}),
       categories:(limit=100,countryCode?:string)=>request<import('./types').PublicCategory[]>('GET','/public/categories',{query:{limit,countryCode}}),
       product:(id:string)=>request<import('./types').PublicProduct>('GET','/public/products/{id}',{pathParams:{id}}),
       products:(limit=30)=>request<import('./types').PublicProduct[]>('GET','/public/products',{query:{limit}}),
@@ -127,7 +128,16 @@ export function createApiClient(transport:Transport, settings:ClientSettings={})
       review:(id:string,body:{approve:boolean;reason:string})=>request<import('./types').PaymentRefund>('POST','/portal/admin/payment-refunds/{id}/review',{pathParams:{id},body}),
       dispatch:(id:string)=>request<import('./types').PaymentRefund>('POST','/portal/admin/payment-refunds/{id}/dispatch',{pathParams:{id}}),
     },
+    aftersalesEscrow: {
+      budget:(id:string)=>request<import('./types').EscrowRefundBudget>('GET','/portal/admin/after-sales/{id}/escrow-budget',{pathParams:{id}}),
+      execute:(id:string,body:{requestId:string;expectedRound:number;note:string})=>request<import('./types').EscrowWalletRefund>('POST','/portal/admin/after-sales/{id}/escrow-refund',{pathParams:{id},body}),
+      mine:(limit=20,offset=0)=>request<import('./types').EscrowWalletRefund[]>('GET','/me/after-sales/escrow-refunds',{query:{limit,offset}}),
+      events:(id:string,limit=50,offset=0,admin=false)=>request<import('./types').EscrowRefundEvent[]>('GET',admin?'/portal/admin/after-sales/escrow-refunds/{id}/events':'/me/after-sales/escrow-refunds/{id}/events',{pathParams:{id},query:{limit,offset}}),
+    },
     files: {
+      publicUrl:(path:string)=>{if(!/^\/public\/media\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(path))throw new Error('PUBLIC_IMAGE_PATH_INVALID');return join(baseUrl,path)},
+      remove:(id:string)=>request<{id:string;status:'deleted'|'deleting'}>('DELETE','/me/uploads/{id}',{pathParams:{id}}),
+      deletions:()=>request<import('./types').BackendRecord[]>('GET','/me/uploads/deletions'),
       upload:(file:Blob,name:string,purpose:string)=>{const body=new FormData();body.append('file',file,name);return request<import('./types').UploadedDocument>('POST','/me/uploads',{body,query:{purpose},timeoutMs:45000})},
       mine:(purpose:string)=>request<import('./types').BackendRecord[]>('GET','/me/uploads',{query:{purpose}}),
       download:(id:string)=>request<ArrayBuffer>('GET','/me/uploads/{id}/content',{pathParams:{id},responseType:'arraybuffer',timeoutMs:45000}),

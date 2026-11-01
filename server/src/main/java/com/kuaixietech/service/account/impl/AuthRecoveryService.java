@@ -19,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthRecoveryService {
+  private com.kuaixietech.coupler.CouplerModeGate couplerMode;
+  @org.springframework.beans.factory.annotation.Autowired public void couplerMode(com.kuaixietech.coupler.CouplerModeGate gate){this.couplerMode=gate;}
   private static final String LICENSE="[0-9A-HJ-NPQRTUWXY]{18}";
   private final AuthLoginMapper mapper;
   private final LocalHmacJwtService jwt;
@@ -35,6 +37,7 @@ public class AuthRecoveryService {
 
   @Transactional
   public Map<String,Object> sendCode(String channel,String contact,String countryCode,String purpose,String captchaId,String captchaCode){
+    if(couplerMode!=null)couplerMode.requireLiveNewCall("verification_code");
     captcha.consume(captchaId,captchaCode);
     String use=purpose(purpose);
     Contact contactValue=requireContact(channel,contact,countryCode);

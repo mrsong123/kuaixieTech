@@ -25,6 +25,9 @@ public class ProductPublishingService {
   }
   public record State(@NotBlank @Pattern(regexp="on|off") String status){}
   private final JdbcTemplate db;private final DomainAccessGuard guard;private final ObjectMapper json;
+  private com.kuaixietech.storage.UploadBindings uploads;
+  @org.springframework.beans.factory.annotation.Autowired public void uploadBindings(com.kuaixietech.storage.UploadBindings uploads){this.uploads=uploads;}
+  private void bindImages(String id,String owner,List<String> paths){if(uploads!=null)uploads.replaceProduct(id,owner,paths);else if(!com.kuaixietech.storage.UploadBindings.ids(paths).isEmpty())throw new IllegalStateException("PRODUCT_IMAGE_BINDING_UNAVAILABLE");}
   private final Set<String> mediaHosts=new HashSet<>();
   public ProductPublishingService(JdbcTemplate db,DomainAccessGuard guard,ObjectMapper json,
       @Value("${kuaixie.portal.allowed-media-hosts:}") String hosts){
@@ -34,7 +37,8 @@ public class ProductPublishingService {
   private ResponseStatusException invalid(String message){return new ResponseStatusException(HttpStatus.BAD_REQUEST,message);}
   private String images(Input input){
     for(String image:input.imageUrls()){
-      try{URI uri=URI.create(image);if(!"https".equalsIgnoreCase(uri.getScheme())||uri.getHost()==null||uri.getUserInfo()!=null||uri.getFragment()!=null||(uri.getPort()!=-1&&uri.getPort()!=443)||!mediaHosts.contains(uri.getHost().toLowerCase(Locale.ROOT)))throw new IllegalArgumentException();}
+      if(com.kuaixietech.storage.UploadBindings.imageId(image)!=null)continue;
+      try{URI uri=URI.create(image);if(!"https".equalsIgnoreCase(uri.getScheme())||uri.getHost()==null||uri.getUserInfo()!=null||uri.getFragment()!=null||uri.getPath().startsWith("/public/media/")||(uri.getPort()!=-1&&uri.getPort()!=443)||!mediaHosts.contains(uri.getHost().toLowerCase(Locale.ROOT)))throw new IllegalArgumentException();}
       catch(Exception error){throw invalid("image must use a configured HTTPS upload host");}
     }
     try{return json.writeValueAsString(input.imageUrls());}catch(JsonProcessingException error){throw invalid("invalid images");}
@@ -45,11 +49,12 @@ public class ProductPublishingService {
   public List<Map<String,Object>> mine(int limit,int offset){
     String user=guard.requireActiveProfile();
     if(limit<1||limit>100||offset<0)throw invalid("invalid pagination");
-    return db.queryForList("SELECT id,category_id,name,spec,region,price,stock,image_urls,note,status,created_at,updated_at FROM t_products WHERE owner_id=? ORDER BY created_at DESC,id DESC LIMIT ? OFFSET ?",user,limit,offset);
+    return db.queryForList("SELECT id,CAST(category_id AS CHAR) AS category_id,name,spec,region,price,stock,image_urls,note,status,created_at,updated_at FROM t_products WHERE owner_id=? ORDER BY created_at DESC,id DESC LIMIT ? OFFSET ?",user,limit,offset);
   }
-  @Transactional public Map<String,String> create(Input input){
+  @Transactional(isolation=org.springframework.transaction.annotation.Isolation.READ_COMMITTED) public Map<String,String> create(Input input){
     String user=guard.requireVerifiedCarrier();String images=images(input);category(input);String id=UUID.randomUUID().toString();
     db.update("INSERT INTO t_products(id,owner_id,category_id,name,spec,region,price,stock,image_urls,note,status) VALUES(?,?,?,?,?,?,?,?,?,?,'off')",id,user,input.categoryId(),input.name().trim(),input.spec(),input.region().trim(),input.price(),input.stock(),images,input.note());
+    bindImages(id,user,input.imageUrls());
     return Map.of("id",id,"status","off");
   }
   @Transactional(isolation=org.springframework.transaction.annotation.Isolation.READ_COMMITTED) public Map<String,String> update(String id,Input input){
@@ -66,6 +71,7 @@ public class ProductPublishingService {
     Object currentStock=currentProduct.get("stock");
     if(currentStock instanceof Number current&&current.intValue()!=input.stock()&&!db.queryForList("SELECT order_id FROM t_product_order_reservations WHERE product_id=? LIMIT 1",id).isEmpty()&&(input.expectedStock()==null||input.expectedStock()!=current.intValue()))throw new ResponseStatusException(HttpStatus.CONFLICT,"PRODUCT_STOCK_CHANGED_REFRESH");
     db.update("UPDATE t_products SET category_id=?,name=?,spec=?,region=?,price=?,stock=?,image_urls=?,note=?,status='off' WHERE id=? AND owner_id=?",input.categoryId(),input.name().trim(),input.spec(),input.region().trim(),input.price(),input.stock(),images,input.note(),id,user);
+    bindImages(id,user,input.imageUrls());
     return Map.of("id",id,"status","off");
   }
   @Transactional public Map<String,String> state(String id,State input){

@@ -74,6 +74,7 @@ export function uiErrorMessage(error:unknown): string {
     'ERR:INSUFFICIENT_BALANCE':'order.insufficientBalance','ERR:SHIPPING_FEE_CHANGED_RECONFIRM':'order.priceChanged'
   };
   const commerceErrors:Record<string,string>={PRODUCT_STOCK_UNAVAILABLE:'checkout.stockUnavailable',PRODUCT_STORE_UNAVAILABLE:'checkout.storeUnavailable',PRODUCT_TRIP_UNAVAILABLE:'checkout.tripUnavailable',CATEGORY_NOT_ALLOWED_FOR_TRIP:'checkout.tripUnavailable',PRODUCT_CHANGED_REQUOTE:'checkout.changed',PRODUCT_ORDER_REQUEST_REUSED:'checkout.requestReused',PRODUCT_IDENTITY_HELD:'product.stockChanged',PRODUCT_STOCK_CHANGED_REFRESH:'product.stockChanged',REFUND_INSUFFICIENT_AVAILABLE_BALANCE:'refund.insufficientBalance',REFUND_CHANNEL_NOT_CONFIGURED:'refund.channelMissing',REFUND_ALREADY_REQUESTED:'refund.sourcePending'};
+  if(code==='SERVICE_LIVE_MODE_REQUIRED')return t('common.liveServiceRequired');
   if(commerceErrors[code])return t(commerceErrors[code]);
   if(code.startsWith('REFUND_'))return t('refund.requestRejected');
   if(code.startsWith('PRODUCT_ORDER_')||code==='PRODUCT_UNAVAILABLE')return t('checkout.serviceUnavailable');

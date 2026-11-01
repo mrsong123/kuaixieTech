@@ -389,3 +389,143 @@ CREATE TABLE IF NOT EXISTS t_payment_refund_events (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- END 007-refunds.proposed.sql
 
+-- BEGIN 008-coupler-environments.proposed.sql
+-- SHA256 3e65b243df2e300ed7c09cf2961e034644454a08500fa61d3b2c8b6767801221
+-- Deployment-only proposal: isolated API configuration environments.
+-- No startup DDL, no copying legacy plaintext/ciphertext, no business balance or payment mutation.
+CREATE TABLE IF NOT EXISTS t_integration_runtime_state (
+ id TINYINT NOT NULL PRIMARY KEY,
+ current_mode VARCHAR(8) NOT NULL DEFAULT 'SANDBOX',
+ revision BIGINT NOT NULL DEFAULT 0,
+ updated_by CHAR(36) NULL,
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ CONSTRAINT chk_coupler_runtime_id CHECK(id=1),
+ CONSTRAINT chk_coupler_runtime_mode CHECK(current_mode IN('SANDBOX','LIVE'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS t_integration_mode_scopes (
+ mode VARCHAR(8) NOT NULL,
+ category VARCHAR(32) NOT NULL,
+ selected_provider VARCHAR(32) NULL,
+ revision BIGINT NOT NULL DEFAULT 0,
+ updated_by CHAR(36) NULL,
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ PRIMARY KEY(mode,category),
+ CONSTRAINT chk_coupler_scope_mode CHECK(mode IN('SANDBOX','LIVE'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS t_integration_mode_configs (
+ mode VARCHAR(8) NOT NULL,
+ category VARCHAR(32) NOT NULL,
+ provider VARCHAR(32) NOT NULL,
+ enabled BOOLEAN NOT NULL DEFAULT FALSE,
+ config_revision BIGINT NOT NULL DEFAULT 0,
+ updated_by CHAR(36) NULL,
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ PRIMARY KEY(mode,category,provider),
+ CONSTRAINT chk_coupler_config_mode CHECK(mode IN('SANDBOX','LIVE')),
+ CONSTRAINT fk_coupler_config_scope FOREIGN KEY(mode,category) REFERENCES t_integration_mode_scopes(mode,category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS t_integration_config_values (
+ mode VARCHAR(8) NOT NULL,
+ category VARCHAR(32) NOT NULL,
+ provider VARCHAR(32) NOT NULL,
+ config_revision BIGINT NOT NULL,
+ field_key VARCHAR(64) NOT NULL,
+ field_cipher TEXT NOT NULL,
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ PRIMARY KEY(mode,category,provider,config_revision,field_key),
+ CONSTRAINT chk_coupler_value_mode CHECK(mode IN('SANDBOX','LIVE')),
+ CONSTRAINT chk_coupler_value_revision CHECK(config_revision>0),
+ CONSTRAINT fk_coupler_value_config FOREIGN KEY(mode,category,provider) REFERENCES t_integration_mode_configs(mode,category,provider)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- END 008-coupler-environments.proposed.sql
+
+-- BEGIN 009-order-escrow-refunds.proposed.sql
+-- SHA256 f3976c5b0aef4b0929995f780e29a7d74a7a3d509b23d31048cfa3f0cc7054b0
+-- Deployment proposal only: proven goods-escrow wallet refunds, never original payment-channel refunds.
+-- Does not backfill legacy orders, move balances, invent insurance protection or change fee policy.
+CREATE TABLE IF NOT EXISTS t_order_escrow_refunds (
+ id CHAR(36) NOT NULL PRIMARY KEY,
+ case_id CHAR(36) NOT NULL,
+ order_id CHAR(36) NOT NULL,
+ buyer_id CHAR(36) NOT NULL,
+ operator_id CHAR(36) NOT NULL,
+ request_id CHAR(36) NOT NULL,
+ request_hash CHAR(64) NOT NULL,
+ source_round INT NOT NULL,
+ currency CHAR(3) NOT NULL DEFAULT 'CNY',
+ amount DECIMAL(12,2) NOT NULL,
+ original_goods_amount DECIMAL(12,2) NOT NULL,
+ service_fee_held DECIMAL(12,2) NOT NULL,
+ shipping_held DECIMAL(12,2) NOT NULL,
+ buyer_escrow_before DECIMAL(12,2) NOT NULL,
+ buyer_escrow_after DECIMAL(12,2) NOT NULL,
+ source_deposit_id CHAR(36) NOT NULL,
+ wallet_ledger_id CHAR(36) NOT NULL,
+ requires_accounting BOOLEAN NOT NULL,
+ source_snapshot JSON NOT NULL,
+ note VARCHAR(200) NOT NULL,
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ UNIQUE KEY uq_order_escrow_case(case_id),
+ UNIQUE KEY uq_order_escrow_request(operator_id,request_id),
+ UNIQUE KEY uq_order_escrow_ledger(wallet_ledger_id),
+ INDEX idx_order_escrow_source(order_id,created_at,id),
+ INDEX idx_order_escrow_buyer(buyer_id,created_at,id),
+ CONSTRAINT chk_order_escrow_currency CHECK(currency='CNY'),
+ CONSTRAINT chk_order_escrow_amount CHECK(amount>0 AND amount<=original_goods_amount AND buyer_escrow_after>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS t_order_escrow_refund_events (
+ id CHAR(36) NOT NULL PRIMARY KEY,
+ execution_id CHAR(36) NOT NULL,
+ actor_id CHAR(36) NOT NULL,
+ action VARCHAR(32) NOT NULL,
+ detail VARCHAR(250) NOT NULL,
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ INDEX idx_order_escrow_event(execution_id,created_at,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- END 009-order-escrow-refunds.proposed.sql
+
+-- BEGIN 010-upload-bindings.proposed.sql
+-- SHA256 1f44915485f890c9d3e9b8c87ce8bd3f197487d738b0f1d2012588ed707ca551
+-- Deployment proposal only. Keep private objects private; no business rows are backfilled or deleted.
+CREATE TABLE IF NOT EXISTS t_upload_bindings (
+ upload_id VARCHAR(36) NOT NULL,
+ domain_type VARCHAR(20) NOT NULL,
+ resource_id CHAR(36) NOT NULL,
+ created_by CHAR(36) NOT NULL,
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ PRIMARY KEY(upload_id,domain_type,resource_id),
+ INDEX idx_upload_binding_resource(domain_type,resource_id),
+ CONSTRAINT chk_upload_binding_domain CHECK(domain_type IN('product','order','dispute'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS t_upload_deletions (
+ id CHAR(36) PRIMARY KEY,
+ upload_id VARCHAR(36) NOT NULL,
+ user_id CHAR(36) NOT NULL,
+ status VARCHAR(16) NOT NULL,
+ last_error_code VARCHAR(64),
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ UNIQUE KEY uq_upload_deletion(upload_id),
+ INDEX idx_upload_deletion_user(user_id,created_at),
+ CONSTRAINT chk_upload_deletion_status CHECK(status IN('deleting','deleted'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- END 010-upload-bindings.proposed.sql
+
+-- BEGIN 011-order-status-width.proposed.sql
+-- SHA256 a540494713ebcc2bbde0f61de85586eb2b534dbb6be4865574b5516c88beb4c3
+-- Deployment-only widening for existing status cancelled_no_fault (18 characters).
+-- Preserve the existing public state protocol. Do not shrink an already wider column.
+-- Requires the intended 82-table business database to be selected before execution.
+SET @kuaixie_order_status_ddl = IF(
+ EXISTS(SELECT 1 FROM information_schema.columns
+        WHERE table_schema=DATABASE() AND table_name='t_orders' AND column_name='status'
+          AND data_type='varchar' AND character_maximum_length<32),
+ 'ALTER TABLE t_orders MODIFY COLUMN status VARCHAR(32) NOT NULL DEFAULT ''requesting'' COMMENT ''订单状态机''',
+ 'SELECT ''Order status widening skipped; verify existing definition in deployment preflight'' AS migration_status'
+);
+PREPARE kuaixie_order_status_stmt FROM @kuaixie_order_status_ddl;
+EXECUTE kuaixie_order_status_stmt;
+DEALLOCATE PREPARE kuaixie_order_status_stmt;
+SET @kuaixie_order_status_ddl = NULL;
+-- END 011-order-status-width.proposed.sql
+

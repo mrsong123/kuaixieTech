@@ -77,8 +77,8 @@ export interface FxConfig {id?:string;name:string;kind:'open_er_api'|'rates_json
 export interface PaymentSettings {settlementCurrency:'CNY';merchants:MerchantConfig[];fxSources:FxConfig[];currencies:CurrencyInfo[];adapters:{id:string;methods:string[];platforms:PaymentPlatform[];currencies:string[]}[]}
 
 /** Existing product prices and wallet balances are denominated in CNY. */
-export interface ProductPublishInput {name:string;spec?:string;region:string;price:string;stock:number;expectedStock?:number;categoryId?:number;imageUrls:string[];note?:string}
-export interface OwnedProduct {id:string;name:string;spec?:string;region:string;price:string|number;stock:number;category_id?:number;image_urls:string|string[];note?:string;status:'on'|'off'}
+export interface ProductPublishInput {name:string;spec?:string;region:string;price:string;stock:number;expectedStock?:number;categoryId?:string|number;imageUrls:string[];note?:string}
+export interface OwnedProduct {id:string;name:string;spec?:string;region:string;price:string|number;stock:number;category_id?:string|number;image_urls:string|string[];note?:string;status:'on'|'off'}
 
 export interface AddressInput {contactName:string;contactPhone:string;province?:string;city?:string;district?:string;detail:string;isDefault:boolean}
 export interface SavedAddress {id:string;contact_name:string;contact_phone:string;province?:string;city?:string;district?:string;detail:string;is_default:boolean|number}
@@ -95,7 +95,7 @@ export interface InsuranceSettings {directory:InsuranceCompany[];products:Insura
 
 export interface TradeCaseEvent {id:string;actor_role:string;action:string;before_stage:string|null;after_stage:string;created_at:string;payload:{input:{note?:string;reason?:string;description?:string;outcome?:string;evidenceUrls?:string[];refundAmount?:Amount}}}
 export interface TradeCaseSummary extends OriginalDispute {round:number;expect_resolution:string;item_name:string;order_no:string;refund_status?:string}
-export interface TradeCaseDetail extends TradeCaseSummary {round:number;expect_resolution:string;respondent_id?:string;respondent_note?:string;evidence_urls:string[];respondent_evidence_urls:string[];deposit_owner?:string;verdict_reason?:string;review_appeal?:string;review_result?:string;negotiation_deadline?:string;resolved_at?:string;reopened_used:boolean|number;goods_amount:Amount;item_name:string;order_no:string;myRole:'buyer'|'merchant'|'operator';events:TradeCaseEvent[];refund_status?:string}
+export interface TradeCaseDetail extends TradeCaseSummary {refund_method?:'escrow_wallet';escrowRefund?:EscrowWalletRefund;round:number;expect_resolution:string;respondent_id?:string;respondent_note?:string;evidence_urls:string[];respondent_evidence_urls:string[];deposit_owner?:string;verdict_reason?:string;review_appeal?:string;review_result?:string;negotiation_deadline?:string;resolved_at?:string;reopened_used:boolean|number;goods_amount:Amount;item_name:string;order_no:string;myRole:'buyer'|'merchant'|'operator';events:TradeCaseEvent[];refund_status?:string}
 export interface TradeCaseAction {expectedRound:number;requestId:string}
 export interface TradeCaseResponse extends TradeCaseAction {note:string;evidenceUrls:string[]}
 export interface TradeCaseReason extends TradeCaseAction {reason:string}
@@ -106,7 +106,7 @@ export interface IntegrationProduct {vendor:string;code:string;category:string;m
 export interface IntegrationSettings {encryptionReady:boolean;nativeDeliveryManaged?:boolean;products:IntegrationProduct[];specialized:string[]}
 export interface IntegrationInput {enabled:boolean;remark:string;values:Record<string,string>;clearFields:string[]}
 
-export interface UploadedDocument {id:string;purpose:string;contentType:string;byteSize:number;sha256:string}
+export interface UploadedDocument {publicPath?:string;id:string;purpose:string;contentType:string;byteSize:number;sha256:string}
 export interface ShopApplicationInput {businessName:string;creditCode:string;representative:string;licenseUploadId:string;invitationCode?:string;channel:PaymentPlatform;requestId:string}
 export interface ShopApplication {id:string;business_name:string;unified_social_credit_code:string;legal_representative:string;license_upload_id:string;invitation_code?:string;application_channel:string;status:string;review_note?:string;reviewed_at?:string;created_at:string;store_id?:string;store_status?:string;license_content_type?:string}
 export interface Shop {id:string;name:string;description:string;status:string;matching_fee_rate:Amount;application_id:string;created_at:string}
@@ -136,3 +136,7 @@ export interface CouplerSettings {runtime:CouplerRuntime;categories:CouplerCateg
 export interface CouplerValidation {mode:CouplerMode;revision:number;ready:boolean;missingFields:string[];invalidFields:string[];unreadableFields:string[];sdkAvailable:boolean;businessVerified:boolean;checks?:{code:string;status:string;message:string}[]}
 export interface CouplerSaveInput {values:Record<string,string>;clearFields:string[];enabled:boolean;selected:boolean;expectedRevision:number}
 export interface CouplerRuntimeInput {mode:CouplerMode;expectedRevision:number}
+
+export interface EscrowWalletRefund {id:string;caseId:string;orderId:string;requestId:string;sourceRound:number;amount:string;currency:'CNY';status:'succeeded';refundMethod:'escrow_wallet';destination:'platform_wallet';requiresAccounting:boolean;rewardReviewRequired:true;createdAt:string}
+export type EscrowRefundBudget = EscrowWalletRefund | {caseId:string;orderId:string;currency:'CNY';refundMethod:'escrow_wallet';destination:'platform_wallet';status:'blocked';reasonCode:string} | {caseId:string;orderId:string;currency:'CNY';refundMethod:'escrow_wallet';destination:'platform_wallet';status:'eligible';goodsAmount:string;alreadyRefunded:string;refundableGoods:string;requestedAmount:string;buyerEscrowHeld:string;serviceFeeHeld:string;shippingHeld:string;sourceRound:number;requiresAccounting:boolean;rewardReviewRequired:true};
+export interface EscrowRefundEvent {id:string;action:string;detail:string;createdAt:string}

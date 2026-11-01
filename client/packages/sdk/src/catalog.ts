@@ -1,15 +1,21 @@
 import type {PublicCategory,PublicProduct,PublicTrip} from './types';
 /** Read-only public projections. No frontend-generated catalog items or assumed currency. */
-export function productImage(product: PublicProduct):string | undefined {
-  let images: unknown=product.image_urls;
-  if(typeof images==='string' && images.trim().startsWith('[')) {
-    try {images=JSON.parse(images)}catch{return undefined}
-  }
-  const candidate=Array.isArray(images)?images[0]:images;
+export type PublicMediaResolver=(path:string)=>string;
+const canonicalMedia=/^\/public\/media\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+function imageReference(candidate:unknown,resolve?:PublicMediaResolver):string|undefined {
   if(typeof candidate!=='string')return undefined;
-  // UniApp mini-program JS runtimes may not expose the WHATWG URL constructor.
-  return /^https?:\/\/[^\s/?#]+(?:[/?#]|$)/i.test(candidate) ? candidate : undefined;
+  if(canonicalMedia.test(candidate)){try{return resolve?resolve(candidate):candidate}catch{return undefined}}
+  // Mini-program runtimes may not expose WHATWG URL. Preserve validated legacy public URLs.
+  return /^https?:\/\/[^\s/?#]+(?:[/?#]|$)/i.test(candidate)?candidate:undefined;
 }
+function imageValues(product:PublicProduct):unknown[]{
+ let values:unknown=product.image_urls;
+ if(typeof values==='string'&&values.trim().startsWith('[')){try{values=JSON.parse(values)}catch{return []}}
+ return Array.isArray(values)?values:[values];
+}
+/** Resolve canonical media through the caller's public gateway; never append bearer credentials. */
+export function productImage(product:PublicProduct,resolve?:PublicMediaResolver):string|undefined{return imageReference(imageValues(product)[0],resolve)}
+export function productImages(product:PublicProduct,resolve?:PublicMediaResolver):string[]{return imageValues(product).flatMap(value=>{const image=imageReference(value,resolve);return image?[image]:[]})}
 export function catalogMatch(product:PublicProduct, query:string, categoryId:string | null):boolean {
   if(categoryId!==null && String(product.category_id??'')!==categoryId)return false;
   const needle=query.trim().toLocaleLowerCase();

@@ -24,7 +24,7 @@ const heroStats=computed(()=>{void localeRef.value;return [{n:t('pc.stat.journey
 const navItems:[Page,string][]=primaryNavigation.map(item=>[item.id,item.titleKey]);
 function nav(to:Page){page.value=to;location.hash=to;menu.value=false;selectedItem.value=null;window.scrollTo({top:0,behavior:'smooth'})}
 function displayName(value:PublicProduct|PublicCategory){return localizedField(value as unknown as Record<string,unknown>,'name')}
-function img(item:PublicProduct){return productImage(item)??''}
+function img(item:PublicProduct){return productImage(item,api.files.publicUrl)??''}
 const filtered=computed(()=>products.value.filter(p=>catalogMatch(p,search.value,activeCategory.value==='__all__'?null:activeCategory.value)));
 function money(v:unknown,currency?:string){return formatAmount(v as number|string|null|undefined,currency)}
 function date(v?:string){return formatDate(v)}

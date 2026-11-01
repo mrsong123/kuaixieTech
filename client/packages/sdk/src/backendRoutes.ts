@@ -2,6 +2,31 @@
 export const declaredBackendRoutes = [
   {
     "method": "GET",
+    "path": "/portal/admin/after-sales/{id}/escrow-budget",
+    "controller": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowController.java"
+  },
+  {
+    "method": "POST",
+    "path": "/portal/admin/after-sales/{id}/escrow-refund",
+    "controller": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowController.java"
+  },
+  {
+    "method": "GET",
+    "path": "/me/after-sales/escrow-refunds",
+    "controller": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowController.java"
+  },
+  {
+    "method": "GET",
+    "path": "/me/after-sales/escrow-refunds/{id}/events",
+    "controller": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowController.java"
+  },
+  {
+    "method": "GET",
+    "path": "/portal/admin/after-sales/escrow-refunds/{id}/events",
+    "controller": "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowController.java"
+  },
+  {
+    "method": "GET",
     "path": "/me/disputes",
     "controller": "server/src/main/java/com/kuaixietech/cases/TradeCaseController.java"
   },
@@ -672,6 +697,11 @@ export const declaredBackendRoutes = [
   },
   {
     "method": "GET",
+    "path": "/public/category-options",
+    "controller": "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java"
+  },
+  {
+    "method": "GET",
     "path": "/public/announcements",
     "controller": "server/src/main/java/com/kuaixietech/controller/PublicInformationController.java"
   },
@@ -814,6 +844,26 @@ export const declaredBackendRoutes = [
     "method": "POST",
     "path": "/rpc/refund_publish_deposit",
     "controller": "server/src/main/java/com/kuaixietech/controller/TradeRpcController.java"
+  },
+  {
+    "method": "GET",
+    "path": "/portal/admin/integration-center",
+    "controller": "server/src/main/java/com/kuaixietech/coupler/CouplerController.java"
+  },
+  {
+    "method": "PUT",
+    "path": "/portal/admin/integration-center/runtime",
+    "controller": "server/src/main/java/com/kuaixietech/coupler/CouplerController.java"
+  },
+  {
+    "method": "PUT",
+    "path": "/portal/admin/integration-center/{category}/{provider}/{mode}",
+    "controller": "server/src/main/java/com/kuaixietech/coupler/CouplerController.java"
+  },
+  {
+    "method": "POST",
+    "path": "/portal/admin/integration-center/{category}/{provider}/{mode}/validate",
+    "controller": "server/src/main/java/com/kuaixietech/coupler/CouplerController.java"
   },
   {
     "method": "GET",
@@ -1076,6 +1126,11 @@ export const declaredBackendRoutes = [
     "controller": "server/src/main/java/com/kuaixietech/shops/ShopController.java"
   },
   {
+    "method": "GET",
+    "path": "/public/media/{id}",
+    "controller": "server/src/main/java/com/kuaixietech/storage/PublicMediaController.java"
+  },
+  {
     "method": "POST",
     "path": "/me/uploads",
     "controller": "server/src/main/java/com/kuaixietech/storage/UploadController.java"
@@ -1083,6 +1138,16 @@ export const declaredBackendRoutes = [
   {
     "method": "GET",
     "path": "/me/uploads",
+    "controller": "server/src/main/java/com/kuaixietech/storage/UploadController.java"
+  },
+  {
+    "method": "DELETE",
+    "path": "/me/uploads/{id}",
+    "controller": "server/src/main/java/com/kuaixietech/storage/UploadController.java"
+  },
+  {
+    "method": "GET",
+    "path": "/me/uploads/deletions",
     "controller": "server/src/main/java/com/kuaixietech/storage/UploadController.java"
   },
   {

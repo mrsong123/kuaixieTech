@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  private static void changed(int n){if(n!=1)throw new IllegalStateException("Concurrent cancellation decision");}
  private void notice(String uid,String kind,String title,String body,String orderId){if(uid!=null)changed(m.addNotice(UUID.randomUUID().toString(),uid,kind,title,body,orderId));}
  private void lockParticipants(String buyer,String vendor){for(String uid:new TreeSet<>(Arrays.asList(buyer,vendor==null?buyer:vendor)))if(money.lockBalance(uid)==null)throw new IllegalStateException("Missing account");}
+ private void finalizeDeposits(String orderId,String buyerStatus,String vendorStatus){var rows=m.frozenDepositRows(orderId);if(rows.isEmpty())return;var terminal=Set.of("refunded","forfeited","partial_forfeit");for(var row:rows){String role=str(row.get("party_role")),outcome="buyer".equals(role)?buyerStatus:"vendor".equals(role)?vendorStatus:null;if(!terminal.contains(outcome==null?"":outcome))throw new IllegalStateException("Cancellation deposit outcome is unproven");}if(m.finalizeDepositRows(orderId,buyerStatus,vendorStatus,"订单取消结案，分配金额见订单处理结果及余额流水")!=rows.size())throw new IllegalStateException("Cancellation deposit finalization changed concurrently");}
  private void refund(String uid,BigDecimal value,String orderId,String note){if(uid!=null&&value.signum()>0)money.addBalance(uid,value,"refund",orderId,note);}
  @Transactional public String requestCancelV2(String orderId,String reason,boolean force,String note,String proofJson){
   String actor=TrustedActor.currentUserId();Map<String,Object> o=m.lockOrder(orderId);if(o==null)return "ERR:NO_ORDER";
@@ -50,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
    finalStatus="cancelled_no_fault";
   }else if("hour_24".equals(tier)){
    penalty=money(bd.multiply(new BigDecimal("0.30")));
-   if(bf){refund(buyer,bd.subtract(penalty),orderId,"24 小时档：退还 70% 冻结金额");buyerStatus="forfeited_partial";}
+   if(bf){refund(buyer,bd.subtract(penalty),orderId,"24 小时档：退还 70% 冻结金额");buyerStatus="partial_forfeit";}
    refund(vendor,penalty,orderId,"买家 24 小时取消补偿");
    if(vf){refund(vendor,vd,orderId,"带单人保证金退回");vendorStatus="refunded";}
    changed(m.reduceScore(buyer,5,false));finalStatus="cancelled_breach";
@@ -67,6 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
    }
   }
   changed(m.markCancelled(orderId,finalStatus,tier,reason==null?"other":reason,force,proof,buyerStatus,vendorStatus,penalty,null));
+  finalizeDeposits(orderId,buyerStatus,vendorStatus);
   if(inventory!=null)inventory.transition(orderId,"released");
   // Source has a terminal reward recall hook; preserve it within the same transaction.
   rewards.revokeOrderRewards(orderId,"订单取消/违约结案，提成已按规则追回");
@@ -85,9 +87,11 @@ import org.springframework.transaction.annotation.Transactional;
    String buyer=str(o.get("buyer_id")),vendor=str(o.get("vendor_id"));lockParticipants(buyer,vendor);
    if("frozen".equals(status(o,"buyer_deposit_status")))refund(buyer,amount(o.get("buyer_deposit")),orderId,"取消核准：保证金退回");
    if("frozen".equals(status(o,"vendor_deposit_status")))refund(vendor,amount(o.get("vendor_deposit")),orderId,"取消核准：保证金退回");
-   changed(m.markCancelled(orderId,"cancelled_no_fault",null,str(cr.get("reason_type")),false,"[]","refunded","refunded",BigDecimal.ZERO,"运营核准取消："+why));
+   String buyerFinal="frozen".equals(status(o,"buyer_deposit_status"))?"refunded":status(o,"buyer_deposit_status"),vendorFinal="frozen".equals(status(o,"vendor_deposit_status"))?"refunded":status(o,"vendor_deposit_status");
+   changed(m.markCancelled(orderId,"cancelled_no_fault",null,str(cr.get("reason_type")),false,"[]",buyerFinal,vendorFinal,BigDecimal.ZERO,"运营核准取消："+why));
+   finalizeDeposits(orderId,buyerFinal,vendorFinal);
    if(inventory!=null)inventory.transition(orderId,"released");
-   m.markDepositRows(orderId,"运营核准取消");rewards.revokeOrderRewards(orderId,"取消申请获运营核准，订单无责结束");
+   rewards.revokeOrderRewards(orderId,"取消申请获运营核准，订单无责结束");
   }else{
    tier=tiers.compute(orderId,"buyer".equals(str(cr.get("applicant_role"))));m.restoreLocked(orderId);
   }

@@ -4,7 +4,7 @@
 
 此清单只核对 Java 声明和 SDK 字面量路径；不证明权限、数据库、外部服务或页面业务已验收。核心 API 工作台目录与全量清单分开维护。
 
-当前 Java 接口 218 项；SDK 字面量请求 121 项；其中 0 项未找到当前控制器。
+当前 Java 接口 231 项；SDK 字面量请求 131 项；其中 0 项未找到当前控制器。
 
 ## SDK 中缺少后端声明的请求
 
@@ -15,6 +15,11 @@
 
 | 方法 | 路径 | 控制器 |
 | --- | --- | --- |
+| GET | `/portal/admin/after-sales/{id}/escrow-budget` | AftersalesEscrowController.java |
+| POST | `/portal/admin/after-sales/{id}/escrow-refund` | AftersalesEscrowController.java |
+| GET | `/me/after-sales/escrow-refunds` | AftersalesEscrowController.java |
+| GET | `/me/after-sales/escrow-refunds/{id}/events` | AftersalesEscrowController.java |
+| GET | `/portal/admin/after-sales/escrow-refunds/{id}/events` | AftersalesEscrowController.java |
 | GET | `/me/disputes` | TradeCaseController.java |
 | GET | `/me/disputes/{id}` | TradeCaseController.java |
 | POST | `/me/disputes` | TradeCaseController.java |
@@ -149,6 +154,7 @@
 | GET | `/public/products/{id}` | PublicCatalogController.java |
 | GET | `/public/trips` | PublicCatalogController.java |
 | GET | `/public/profiles/masked` | PublicCatalogController.java |
+| GET | `/public/category-options` | PublicCategoryOptionsController.java |
 | GET | `/public/announcements` | PublicInformationController.java |
 | GET | `/public/legal-documents/{key}` | PublicInformationController.java |
 | GET | `/public/reviews` | PublicInformationController.java |
@@ -178,6 +184,10 @@
 | POST | `/rpc/quote_pk_award` | TradeRpcController.java |
 | POST | `/rpc/create_publish_deposit` | TradeRpcController.java |
 | POST | `/rpc/refund_publish_deposit` | TradeRpcController.java |
+| GET | `/portal/admin/integration-center` | CouplerController.java |
+| PUT | `/portal/admin/integration-center/runtime` | CouplerController.java |
+| PUT | `/portal/admin/integration-center/{category}/{provider}/{mode}` | CouplerController.java |
+| POST | `/portal/admin/integration-center/{category}/{provider}/{mode}/validate` | CouplerController.java |
 | GET | `/public/insurance/companies` | InsuranceController.java |
 | GET | `/public/insurance/products` | InsuranceController.java |
 | GET | `/me/insurance/pk-subject` | InsuranceController.java |
@@ -230,6 +240,9 @@
 | GET | `/portal/admin/shops/applications` | ShopController.java |
 | POST | `/portal/admin/shops/applications/{id}/review` | ShopController.java |
 | PUT | `/portal/admin/shops/{id}/status` | ShopController.java |
+| GET | `/public/media/{id}` | PublicMediaController.java |
 | POST | `/me/uploads` | UploadController.java |
 | GET | `/me/uploads` | UploadController.java |
+| DELETE | `/me/uploads/{id}` | UploadController.java |
+| GET | `/me/uploads/deletions` | UploadController.java |
 | GET | `/me/uploads/{id}/content` | UploadController.java |

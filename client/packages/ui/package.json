@@ -5,6 +5,8 @@
   "type": "module",
   "main": "./src/ApiWorkbench.vue",
   "exports": {
+    "./useEscrowRefunds": "./src/useEscrowRefunds.ts",
+    "./EscrowRefundPanel.vue": "./src/EscrowRefundPanel.vue",
     "./ApiWorkbench.vue": "./src/ApiWorkbench.vue",
     "./PreferencesPanel.vue": "./src/PreferencesPanel.vue",
     "./VoiceDraft.vue": "./src/VoiceDraft.vue",
@@ -40,7 +42,8 @@
     "./PaymentRefunds.vue": "./src/PaymentRefunds.vue",
     "./useShopOrders": "./src/useShopOrders.ts",
     "./ShopOrders.vue": "./src/ShopOrders.vue",
-    "./useCouplerSettings": "./src/useCouplerSettings.ts"
+    "./useCouplerSettings": "./src/useCouplerSettings.ts",
+    "./OrderProductImages.vue": "./src/OrderProductImages.vue"
   },
   "peerDependencies": {
     "vue": "^3.5.0"

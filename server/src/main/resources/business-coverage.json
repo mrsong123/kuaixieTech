@@ -1,8 +1,8 @@
 {
-  "tableCount": 105,
+  "tableCount": 113,
   "suppliedTableCount": 82,
-  "fieldCount": 1122,
-  "unverifiedFieldCount": 1122,
+  "fieldCount": 1186,
+  "unverifiedFieldCount": 1186,
   "note": "SQL candidates are not proof of endpoint reachability, field semantics or complete business behaviour. Pending fields must not be called complete.",
   "domains": [
     {
@@ -39,7 +39,9 @@
         "t_favorites",
         "t_cart_items",
         "t_addresses",
-        "t_cbec_product_reviews"
+        "t_cbec_product_reviews",
+        "t_upload_bindings",
+        "t_upload_deletions"
       ]
     },
     {
@@ -94,7 +96,9 @@
         "t_currency_payments",
         "t_currency_payment_receipts",
         "t_payment_refunds",
-        "t_payment_refund_events"
+        "t_payment_refund_events",
+        "t_order_escrow_refunds",
+        "t_order_escrow_refund_events"
       ]
     },
     {
@@ -206,7 +210,11 @@
         "t_integration_settings",
         "t_integration_secrets",
         "t_channel_configs",
-        "t_channel_secrets_probe"
+        "t_channel_secrets_probe",
+        "t_integration_runtime_state",
+        "t_integration_mode_scopes",
+        "t_integration_mode_configs",
+        "t_integration_config_values"
       ]
     },
     {
@@ -491,6 +499,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -538,6 +547,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -566,6 +576,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -594,6 +605,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -622,6 +634,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -650,6 +663,7 @@
       "adminIntent": "公告、协议、语言、错误处理与只读审计",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java",
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceCatalog.java",
@@ -678,6 +692,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml"
       ],
       "status": "pending",
@@ -709,6 +724,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
       ],
@@ -739,6 +755,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
@@ -787,6 +804,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
@@ -822,7 +840,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -837,7 +856,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -853,6 +873,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
@@ -870,6 +891,7 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml"
@@ -1366,6 +1388,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/finance/WithdrawMigrationMapper.xml",
@@ -1401,6 +1425,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
@@ -1418,6 +1444,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/finance/WithdrawMigrationMapper.xml",
@@ -1436,6 +1464,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/finance/WithdrawMigrationMapper.xml",
@@ -1454,6 +1484,7 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/finance/WithdrawMigrationMapper.xml",
@@ -1472,6 +1503,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
@@ -1489,6 +1522,8 @@
       "frontendIntent": "钱包、支付、资金流水、提现与发票",
       "adminIntent": "支付配置、财务审核、退款与对账",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/AtomicMoneyMapper.xml",
         "server/src/main/resources/mapper/finance/WithdrawMigrationMapper.xml",
@@ -1668,6 +1703,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -1683,6 +1719,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -1758,6 +1795,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -1773,6 +1811,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -1801,6 +1840,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -1831,6 +1871,7 @@
       "frontendIntent": "隐私通话、订单通话与违规提示",
       "adminIntent": "隐私号码池、绑定、呼叫记录与违规审核",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/communication/Batch12CallMapper.xml"
       ],
       "status": "pending",
@@ -2211,6 +2252,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -2275,6 +2317,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -2294,6 +2337,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
@@ -2323,6 +2367,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -2354,6 +2399,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
@@ -2418,6 +2464,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
@@ -2434,6 +2481,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
       "status": "pending",
@@ -2449,6 +2497,7 @@
       "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/controller/PublicCategoryOptionsController.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
       "status": "pending",
@@ -2896,7 +2945,8 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2912,7 +2962,9 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2928,7 +2980,8 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2944,7 +2997,8 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2960,7 +3014,9 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2976,7 +3032,9 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -2990,7 +3048,9 @@
       "domain": "community",
       "frontendIntent": "社区动态、评论、点赞、收藏、分享与媒体上传",
       "adminIntent": "社区审核、下架、媒体与锚点管理",
-      "sqlCandidates": [],
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
       "status": "pending",
       "acceptance": {}
     },
@@ -3020,7 +3080,9 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -3036,7 +3098,8 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -3051,7 +3114,8 @@
       "frontendIntent": "社区动态、评论、点赞、收藏、分享与媒体上传",
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -3065,7 +3129,9 @@
       "domain": "community",
       "frontendIntent": "社区动态、评论、点赞、收藏、分享与媒体上传",
       "adminIntent": "社区审核、下架、媒体与锚点管理",
-      "sqlCandidates": [],
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
       "status": "pending",
       "acceptance": {}
     },
@@ -3080,7 +3146,9 @@
       "adminIntent": "社区审核、下架、媒体与锚点管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
-        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java"
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4370,6 +4438,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/ShippingNegotiationMapper.xml",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
@@ -4389,6 +4459,8 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
         "server/src/main/resources/mapper/trading/TradeRpcMapper.xml",
@@ -4408,6 +4480,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -4431,6 +4505,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -4454,6 +4530,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -4477,7 +4555,9 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
+        "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/TimeoutAndPaymentMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/ShippingNegotiationMapper.xml",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
@@ -4496,7 +4576,9 @@
       "domain": "trade",
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
-      "sqlCandidates": [],
+      "sqlCandidates": [
+        "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml"
+      ],
       "status": "pending",
       "acceptance": {}
     },
@@ -4511,6 +4593,9 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+        "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/ShippingNegotiationMapper.xml",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
         "server/src/main/resources/mapper/trading/TradeRpcMapper.xml"
@@ -4550,6 +4635,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -4573,6 +4660,7 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -4737,7 +4825,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4752,7 +4841,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4767,7 +4857,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4782,7 +4873,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4797,7 +4889,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4812,7 +4905,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4827,7 +4921,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4842,7 +4937,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4857,7 +4953,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4872,7 +4969,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4887,7 +4985,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4903,6 +5002,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml",
@@ -4921,7 +5021,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -4984,6 +5085,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -5003,7 +5105,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -5034,6 +5137,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -5053,6 +5157,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
       "status": "pending",
@@ -5084,6 +5189,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/operations/AdminConsoleMapper.xml"
       ],
@@ -5115,7 +5221,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -5191,7 +5298,8 @@
       "frontendIntent": "取消、纠纷、退货、售后与评价",
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java"
+        "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -5207,6 +5315,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -5243,6 +5352,7 @@
       "adminIntent": "取消审核、纠纷裁决与售后处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml"
       ],
       "status": "pending",
@@ -6789,6 +6899,304 @@
       "acceptance": {}
     },
     {
+      "table": "t_integration_config_values",
+      "column": "category",
+      "description": "category",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "config_revision",
+      "description": "config_revision",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "created_at",
+      "description": "created_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "field_cipher",
+      "description": "field_cipher",
+      "usage": "restricted",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "field_key",
+      "description": "field_key",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "mode",
+      "description": "mode",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_config_values",
+      "column": "provider",
+      "description": "provider",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "category",
+      "description": "category",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "config_revision",
+      "description": "config_revision",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "enabled",
+      "description": "enabled",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "mode",
+      "description": "mode",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "provider",
+      "description": "provider",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "updated_at",
+      "description": "updated_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_configs",
+      "column": "updated_by",
+      "description": "updated_by",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "category",
+      "description": "category",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "mode",
+      "description": "mode",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "revision",
+      "description": "revision",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "selected_provider",
+      "description": "selected_provider",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "updated_at",
+      "description": "updated_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_mode_scopes",
+      "column": "updated_by",
+      "description": "updated_by",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
       "table": "t_integration_product_fields",
       "column": "field_key",
       "description": "field_key",
@@ -6958,6 +7366,81 @@
       "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/integration/IntegrationConfiguration.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_runtime_state",
+      "column": "current_mode",
+      "description": "current_mode",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_runtime_state",
+      "column": "id",
+      "description": "id",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_runtime_state",
+      "column": "revision",
+      "description": "revision",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_runtime_state",
+      "column": "updated_at",
+      "description": "updated_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_integration_runtime_state",
+      "column": "updated_by",
+      "description": "updated_by",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "integration",
+      "frontendIntent": "业务中的服务可用状态与执行结果",
+      "adminIntent": "厂商、产品、字段、渠道、密钥引用与探测",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/coupler/CouplerService.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -8324,6 +8807,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8366,6 +8850,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8397,6 +8882,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8440,6 +8926,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8481,6 +8968,7 @@
       "adminIntent": "通知发送与投递异常处理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
@@ -8533,6 +9021,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8575,6 +9064,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
         "server/src/main/resources/mapper/account/KycRpcMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -8781,6 +9271,425 @@
       "acceptance": {}
     },
     {
+      "table": "t_order_escrow_refund_events",
+      "column": "action",
+      "description": "action",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refund_events",
+      "column": "actor_id",
+      "description": "actor_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refund_events",
+      "column": "created_at",
+      "description": "created_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refund_events",
+      "column": "detail",
+      "description": "detail",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refund_events",
+      "column": "execution_id",
+      "description": "execution_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refund_events",
+      "column": "id",
+      "description": "id",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "amount",
+      "description": "amount",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "buyer_escrow_after",
+      "description": "buyer_escrow_after",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "buyer_escrow_before",
+      "description": "buyer_escrow_before",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "buyer_id",
+      "description": "buyer_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "case_id",
+      "description": "case_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "created_at",
+      "description": "created_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "currency",
+      "description": "currency",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "id",
+      "description": "id",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "note",
+      "description": "note",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "operator_id",
+      "description": "operator_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "order_id",
+      "description": "order_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "original_goods_amount",
+      "description": "original_goods_amount",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "request_hash",
+      "description": "request_hash",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "request_id",
+      "description": "request_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "requires_accounting",
+      "description": "requires_accounting",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "service_fee_held",
+      "description": "service_fee_held",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "shipping_held",
+      "description": "shipping_held",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "source_deposit_id",
+      "description": "source_deposit_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "source_round",
+      "description": "source_round",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "source_snapshot",
+      "description": "source_snapshot",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_order_escrow_refunds",
+      "column": "wallet_ledger_id",
+      "description": "wallet_ledger_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "finance",
+      "frontendIntent": "钱包、支付、资金流水、提现与发票",
+      "adminIntent": "支付配置、财务审核、退款与对账",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
       "table": "t_order_logistics",
       "column": "created_at",
       "description": "记录时间",
@@ -8930,6 +9839,7 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceTransactions.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -8968,6 +9878,7 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -8992,6 +9903,7 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
@@ -9020,6 +9932,9 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceTransactions.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/account/ReadAccessMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/account/LegacyAccountClosureRpcMapper.xml",
@@ -9239,6 +10154,8 @@
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/communication/Batch12PrivacyMapper.xml",
@@ -9477,6 +10394,7 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/finance/InvoiceRpcMapper.xml",
@@ -9506,6 +10424,10 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/account/ReadAccessMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
@@ -9739,6 +10661,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/ShippingNegotiationMapper.xml",
@@ -10017,6 +10940,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
+        "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
         "server/src/main/resources/mapper/trading/TradeRpcMapper.xml"
       ],
@@ -10058,6 +10983,7 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/OrderProofMigrationMapper.xml",
@@ -10252,6 +11178,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/insurance/InsuranceTransactions.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml",
         "server/src/main/resources/mapper/trading/TradeRpcMapper.xml"
       ],
@@ -10273,6 +11200,9 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/account/LegacyAccountClosureRpcMapper.xml",
@@ -10405,6 +11335,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/trip/PoolGroupMigrationMapper.xml",
         "server/src/main/resources/mapper/order_fulfillment/CancellationRpcMapper.xml",
@@ -10448,6 +11379,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/communication/Batch12PrivacyMapper.xml",
@@ -10538,6 +11471,9 @@
         "server/src/main/java/com/kuaixietech/cases/TradeCaseService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/AftersalesEscrowFunds.java",
+        "server/src/main/java/com/kuaixietech/integrationsdk/social/TencentRtcOrderCredentials.java",
         "server/src/main/resources/mapper/account/ReadAccessMapper.xml",
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/account/LegacyAccountClosureRpcMapper.xml",
@@ -12859,7 +13795,8 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -12875,6 +13812,7 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java"
       ],
       "status": "pending",
@@ -12891,7 +13829,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -12907,7 +13846,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -12925,6 +13865,7 @@
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java"
       ],
       "status": "pending",
@@ -12943,6 +13884,7 @@
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java"
       ],
       "status": "pending",
@@ -12960,7 +13902,8 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -12991,7 +13934,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -13006,7 +13950,8 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -13024,6 +13969,7 @@
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java"
       ],
       "status": "pending",
@@ -13055,7 +14001,8 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -13070,7 +14017,8 @@
       "frontendIntent": "广场、发布、报价、订单详情与履约",
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -13103,7 +14051,8 @@
       "adminIntent": "行程核验、订单与求购管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
-        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java"
+        "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java"
       ],
       "status": "pending",
       "acceptance": {}
@@ -13136,6 +14085,8 @@
       "adminIntent": "商品、分类与地区管理",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13160,6 +14111,8 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13183,6 +14136,8 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/trading/TradeRpcMapper.xml"
@@ -13202,6 +14157,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13242,6 +14198,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13323,6 +14280,8 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13347,6 +14306,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13369,6 +14329,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/commerce/ProductInventory.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java",
         "server/src/main/java/com/kuaixietech/service/catalog/support/ProductPublishingService.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/order_fulfillment/FulfillmentMigrationMapper.xml",
@@ -13444,6 +14405,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/java/com/kuaixietech/service/portal/impl/PublicInformationService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13608,6 +14570,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
         "server/src/main/resources/mapper/account/Batch12AccountMapper.xml",
@@ -13760,6 +14723,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/java/com/kuaixietech/service/portal/impl/PublicInformationService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml",
@@ -13819,6 +14783,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/payments/WechatJsapiAdapter.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/java/com/kuaixietech/service/portal/impl/PublicInformationService.java",
@@ -13956,6 +14921,7 @@
         "server/src/main/java/com/kuaixietech/insurance/InsuranceService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
         "server/src/main/java/com/kuaixietech/commerce/OrderProfileLocks.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/payments/WechatJsapiAdapter.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/java/com/kuaixietech/service/portal/impl/PublicInformationService.java",
@@ -15334,6 +16300,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/growth/InviteTierMigrationMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
@@ -15369,6 +16336,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/operations/LegacyAdminRpcMapper.xml",
         "server/src/main/resources/mapper/operations/AdminReviewRpcMapper.xml"
       ],
@@ -15385,6 +16353,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/growth/InviteTierMigrationMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
@@ -15421,6 +16390,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/growth/InviteTierMigrationMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
@@ -15510,6 +16480,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
         "server/src/main/resources/mapper/operations/LegacyAdminRpcMapper.xml"
@@ -15606,6 +16577,7 @@
       "frontendIntent": "邀请、等级、团队与奖励明细",
       "adminIntent": "邀请码、分销、积分与加入审批",
       "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/aftersalesfunds/EscrowFundsProof.java",
         "server/src/main/resources/mapper/growth/InviteTierMigrationMapper.xml",
         "server/src/main/resources/mapper/finance/RewardSettlementMapper.xml",
         "server/src/main/resources/mapper/operations/OperationsRpcMapper.xml",
@@ -16410,6 +17382,7 @@
       "adminIntent": "开店审核、店铺运营、保险与风险池",
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16443,6 +17416,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16461,6 +17435,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16494,6 +17469,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16528,6 +17504,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16561,6 +17538,7 @@
       "sqlCandidates": [
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16580,6 +17558,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -16599,6 +17578,7 @@
         "server/src/main/java/com/kuaixietech/shops/ShopService.java",
         "server/src/main/java/com/kuaixietech/commerce/StoreOrderAttributionController.java",
         "server/src/main/java/com/kuaixietech/commerce/ProductCheckoutService.java",
+        "server/src/main/java/com/kuaixietech/storage/PrivateUploads.java",
         "server/src/main/java/com/kuaixietech/service/account/impl/SavedCommerceService.java",
         "server/src/main/resources/mapper/catalog/PublicCatalogMapper.xml"
       ],
@@ -18007,6 +18987,187 @@
         "server/src/main/resources/mapper/account/AccountCentreMapper.xml",
         "server/src/main/resources/mapper/portal/PortalMapper.xml",
         "server/src/main/resources/mapper/trading/IntentOrderMapper.xml"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_bindings",
+      "column": "created_at",
+      "description": "created_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_bindings",
+      "column": "created_by",
+      "description": "created_by",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_bindings",
+      "column": "domain_type",
+      "description": "domain_type",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_bindings",
+      "column": "resource_id",
+      "description": "resource_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_bindings",
+      "column": "upload_id",
+      "description": "upload_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadBindings.java",
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "created_at",
+      "description": "created_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "id",
+      "description": "id",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "last_error_code",
+      "description": "last_error_code",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "status",
+      "description": "status",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "updated_at",
+      "description": "updated_at",
+      "usage": "system-derived",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "upload_id",
+      "description": "upload_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
+      ],
+      "status": "pending",
+      "acceptance": {}
+    },
+    {
+      "table": "t_upload_deletions",
+      "column": "user_id",
+      "description": "user_id",
+      "usage": "business",
+      "origin": "proposed",
+      "domain": "catalog",
+      "frontendIntent": "商品目录、商品管理、收藏、购物车、地址簿",
+      "adminIntent": "商品、分类与地区管理",
+      "sqlCandidates": [
+        "server/src/main/java/com/kuaixietech/storage/UploadLifecycle.java"
       ],
       "status": "pending",
       "acceptance": {}

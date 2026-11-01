@@ -1,0 +1,14 @@
+<script setup lang="ts">
+import {computed,ref,watch,onBeforeUnmount} from 'vue';
+import {getBearer,productImages,type PublicProduct} from '@kuaixie/sdk';
+import {productImageId} from '@kuaixie/ui/useProductPublishing';
+import {publicMediaUrl,downloadPrivateFile} from '../api/client';
+const props=defineProps<{images?:unknown}>();const session=getBearer(),privateSources=ref<Record<string,string>>({}),failed=ref<Record<string,boolean>>({}),loading=ref<Record<string,boolean>>({}),attempted=new Set<string>();let generation=0;
+const images=computed(()=>productImages({id:'order-image',name:'',image_urls:props.images as PublicProduct['image_urls']}));
+function source(path:string){return privateSources.value[path]||(productImageId(path)?publicMediaUrl(path):path)}
+async function fallback(path:string,retry=false){if(getBearer()!==session)return;if(retry)attempted.delete(path);if(attempted.has(path)){failed.value={...failed.value,[path]:true};return}const id=productImageId(path);if(!id){failed.value={...failed.value,[path]:true};return}attempted.add(path);loading.value={...loading.value,[path]:true};const current=generation;try{const local=await downloadPrivateFile(id,'product_image');if(current!==generation||getBearer()!==session)return;privateSources.value={...privateSources.value,[path]:local};failed.value={...failed.value,[path]:false}}catch{if(current===generation)failed.value={...failed.value,[path]:true}}finally{if(current===generation)loading.value={...loading.value,[path]:false}}}
+function preview(path:string){if(!failed.value[path])uni.previewImage({urls:[source(path)],fail:()=>{void fallback(path)}})}
+function reset(){generation++;privateSources.value={};failed.value={};loading.value={};attempted.clear()}watch(()=>props.images,reset);onBeforeUnmount(reset);
+</script>
+<template><view v-if="images.length" class="order-images"><view class="op-card-title">{{$t('productMedia.orderImages')}}</view><view class="op-muted">{{$t('productMedia.orderImageHelp')}}</view><view class="image-grid"><view v-for="(path,index) in images" :key="path" class="image-item"><image v-if="!failed[path]" :src="source(path)" mode="aspectFit" @error="fallback(path)" @click="preview(path)"/><view v-if="loading[path]" class="op-muted">{{$t('account.loading')}}</view><template v-if="failed[path]"><text>{{$t('productMedia.orderImageUnavailable')}} {{index+1}}</text><button @click="fallback(path,true)">{{$t('productMedia.preview')}}</button></template></view></view></view></template>
+<style scoped>.order-images{margin:24rpx 0}.image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16rpx;margin-top:16rpx}.image-item{border:1rpx solid #cbd5e1;border-radius:12rpx;padding:10rpx}.image-item image{width:100%;height:220rpx}.image-item text{font-size:24rpx}.image-item button{font-size:24rpx}</style>

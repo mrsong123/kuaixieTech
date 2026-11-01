@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;import org.springframework.transac
  @Transactional public Map<String,Object> acceptOrderCall(String id){
   String actor=TrustedActor.currentUserId();Map<String,Object> c=m.lockCall(id);if(c==null)return err("NOT_FOUND");
   if(!actor.equals(s(c.get("callee_id"))))return err("NOT_CALLEE");if(!"ringing".equals(s(c.get("status"))))return err("STALE");
-  if(m.accept(id)!=1)return err("STALE");notifyUser(s(c.get("caller_id")),s(c.get("order_id")),"call","对方已接听","网络通话已接通。");
+  if(m.accept(id)!=1)return err("STALE");notifyUser(s(c.get("caller_id")),s(c.get("order_id")),"call","通话邀请已接受","对方已接受通话邀请，等待媒体连接。");
   return Map.of("ok",true,"room_id",s(c.get("room_id")));
  }
  @Transactional public String rejectOrderCall(String id,boolean callee){

@@ -41,4 +41,5 @@ class ProductPublishingTest {
   var error=assertThrows(ResponseStatusException.class,()->service.update("own",new ProductPublishingService.Input("Camera","new","JP",new BigDecimal("100.01"),2,null,List.of(),"sealed",2)));assertEquals("PRODUCT_STOCK_CHANGED_REFRESH",error.getReason());verify(db,never()).update(anyString(),any(Object[].class));
  }
  @Test void paginationChecksAndOwnerFilter(){assertThrows(ResponseStatusException.class,()->service.mine(101,0));assertThrows(ResponseStatusException.class,()->service.mine(20,-1));service.mine(20,40);verify(db).queryForList(contains("WHERE owner_id=?"),eq("seller"),eq(20),eq(40));}
+ @Test void canonicalImageUsesOwnershipBindingAndCannotBypassThroughAbsoluteHost(){String image="/public/media/123e4567-e89b-42d3-a456-426614174000";var bindings=mock(com.kuaixietech.storage.UploadBindings.class);service.uploadBindings(bindings);var result=service.create(input(List.of(image)));verify(bindings).replaceProduct(result.get("id"),"seller",List.of(image));assertThrows(ResponseStatusException.class,()->service.create(input(List.of("https://uploads.example.com"+image))));}
 }

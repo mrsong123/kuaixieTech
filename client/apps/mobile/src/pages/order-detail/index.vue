@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import OrderProductImagesMobile from '../../components/OrderProductImagesMobile.vue';
 import InsuranceApplicationMobile from '../../components/InsuranceApplicationMobile.vue';
 import {useOrderSummary} from '../../stores/useOrderSummary';
 const {prefs,detail,loading,error,load,formatAmount,formatDate,formatBusinessStatus,mobilePreferenceStyle}=useOrderSummary();
@@ -18,7 +19,7 @@ const {prefs,detail,loading,error,load,formatAmount,formatDate,formatBusinessSta
   <view v-if="detail.shipping_fee!==undefined&&detail.shipping_fee!==null" class="account-line"><text>{{$t('account.shippingFee')}}</text><text>{{formatAmount(detail.shipping_fee,'CNY')}}</text></view>
   <view v-if="detail.tracking_no" class="account-line"><text>{{$t('account.trackingNo')}}</text><text>{{detail.tracking_no}}</text></view>
   <view class="account-line"><text>{{$t('account.created')}}</text><text>{{formatDate(detail.created_at)}}</text></view>
-  <InsuranceApplicationMobile v-if="detail.insurance_quote_id&&detail.my_role==='buyer'" :order-id="String(detail.id)"/>
+  <OrderProductImagesMobile :key="String(detail.id)" :images="detail.ref_image_urls"/><InsuranceApplicationMobile v-if="detail.insurance_quote_id&&detail.my_role==='buyer'" :order-id="String(detail.id)"/>
   <view class="account-note">{{$t('account.noCheckout')}}</view><button v-if="detail.status==='requesting'" class="account-migration-link" @click="uni.navigateTo({url:'/pages/intent-detail/index?id='+encodeURIComponent(String(detail.id))})">{{$t('v15.intentDetail')}}</button><button v-if="detail.my_role==='buyer'&&['purchased','shipped','delivered','completed'].includes(detail.status)" class="account-migration-link" @click="uni.navigateTo({url:'/pages/dispute-create/index?id='+encodeURIComponent(String(detail.id))})">{{$t('v15.disputeCreate')}}</button>
  </view>
  </view></template>

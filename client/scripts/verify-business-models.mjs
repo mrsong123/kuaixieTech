@@ -72,6 +72,32 @@ try{
  });
  const malformed=useTradeCases(createApiClient(async()=>({})),async()=>true);malformed.entry.value={id:'case',stage:'negotiating',round:2,events:[]};malformed.note.value='Review';await malformed.act('escalate');check(!!malformed.pending.value,'A malformed success response remains unconfirmed and keeps its retry identity');
  const declinedCalls=[];const declined=useTradeCases(createApiClient(async r=>{declinedCalls.push(r);return {}}),async()=>false);declined.order.value={id:'order',my_role:'buyer',status:'purchased'};declined.draft.orderId='order';declined.draft.description='Damaged';declined.draft.amount='5.00';await declined.create();check(!declinedCalls.some(r=>r.method==='POST'),'Declining confirmation does not open a case');
+ // Deferred network and confirmation responses must never cross an authentication transition.
+ setBearer('case-session-A');
+ let resolveOldList;const oldList=new Promise(resolve=>{resolveOldList=resolve});
+ await mounted(()=>useTradeCases(createApiClient(async()=>oldList),async()=>true),async p=>{
+  p.entry.value={id:'private-case',description:'old private claim',events:[]};p.draft.description='old private text';p.note.value='old private note';
+  const request=p.loadList();setBearer('case-session-B');
+  check(p.entry.value===null&&p.draft.description===''&&p.note.value==='','An account switch immediately clears case details and private draft text');
+  resolveOldList([{id:'old-private-case'}]);await request;
+  check(p.rows.value.length===0,'A delayed case list cannot repopulate another account page');
+ });
+ setBearer('case-session-A');let approveOldConfirm;const heldConfirm=new Promise(resolve=>{approveOldConfirm=resolve});const afterConfirmCalls=[];
+ await mounted(()=>useTradeCases(createApiClient(async r=>{afterConfirmCalls.push(r);return {id:'case',stage:'platform_review'}}),async()=>heldConfirm),async p=>{
+  p.entry.value={id:'case',stage:'negotiating',round:2,events:[]};p.note.value='Review old account';const action=p.act('escalate');setBearer('case-session-B');approveOldConfirm(true);await action;
+  check(!afterConfirmCalls.some(r=>r.method==='POST'),'Approving an old-account case confirmation cannot send a new-account mutation');
+ });
+ setBearer('case-session-A');let resolveOldMutation;const mutation=new Promise(resolve=>{resolveOldMutation=resolve});const lateMutationCalls=[];let signalMutationStarted;const mutationStarted=new Promise(resolve=>{signalMutationStarted=resolve});
+ await mounted(()=>useTradeCases(createApiClient(async r=>{lateMutationCalls.push(r);signalMutationStarted();return mutation}),async()=>true),async p=>{
+  p.entry.value={id:'case',stage:'negotiating',round:2,events:[]};p.note.value='Escalate';const action=p.act('escalate');await mutationStarted;setBearer('case-session-B');resolveOldMutation({id:'case',stage:'platform_review'});await action;
+  check(p.entry.value===null&&!p.pending.value&&lateMutationCalls.length===1,'A late old-account mutation receipt cannot populate state or trigger new-account follow-up reads');
+ });
+ setBearer('case-session-A');let resolveOldEvents;const oldEvents=new Promise(resolve=>{resolveOldEvents=resolve});
+ await mounted(()=>useTradeCases(createApiClient(async r=>r.url.includes('/events')?oldEvents:{id:'next-case',round:1,events:[]}),async()=>true),async p=>{
+  p.entry.value={id:'old-case',events:[]};const history=p.history();await p.loadDetail('next-case');resolveOldEvents([{id:'old-event'}]);await history;
+  check(p.entry.value.id==='next-case'&&p.entry.value.events.length===0,'A delayed event page cannot append old-case events to a newly opened case');
+ });
+ setBearer('unit.test.token');
  const {useShop}=model('useShop');const shopCalls=[];let ambiguousShop=true;const shopApi=createApiClient(async r=>{shopCalls.push(r);if(r.method==='POST'&&r.url==='/me/shop/applications'){if(ambiguousShop)throw new ApiError('API_NETWORK_ERROR',0);return {id:'application',status:'pending'}}if(r.url==='/me/shop')return {store:null,applications:[],products:[]};return []});
  await mounted(()=>useShop(shopApi,async()=>true,'app'),async p=>{Object.assign(p.application,{businessName:'Example',creditCode:'91350211M000100Y46',representative:'Representative',licenseUploadId:'upload'});await p.apply();check(!!p.pending.value,'An ambiguous shop application keeps its original request');p.application.businessName='Edited';ambiguousShop=false;await p.apply();const posts=shopCalls.filter(r=>r.method==='POST');check(posts.length===2&&JSON.stringify(posts[0].data)===JSON.stringify(posts[1].data),'Shop retries cannot silently change the submitted business or attachment');check(posts[0].data.channel==='app'&&!('ownerId'in posts[0].data),'Native shop applications use the shared model and server-side ownership');});
  const {useProductPublishing}=model('useProductPublishing');const editCalls=[];const editApi=createApiClient(async r=>{editCalls.push(r);return r.method==='GET'?[]:{id:'product',status:'off'}});const editor=useProductPublishing(editApi);const owned={id:'product',name:'Camera',region:'JP',price:'100.00',stock:5,status:'off',image_urls:[]};editor.rows.value=[owned];editor.edit(owned);owned.stock=1;editor.draft.value.stock='8';await editor.save();check(editCalls.find(r=>r.method==='PUT')?.data.expectedStock===5,'Product editing confirms the original loaded stock rather than overwriting a concurrent reservation');
