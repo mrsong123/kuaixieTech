@@ -7,111 +7,111 @@
 -- No migration in this bundle has been executed by the coding agent.
 
 -- BEGIN 001-missing-business-tables.proposed.sql
--- SHA256 d474201c8c073615f72f28d6ac9bf7a28a03cd68f0b0aa12659390f2a3bbef1b
+-- SHA256 11fe3776a604adeed52ef5740aff37d497cc78026624896355d964f7cc7ad6c6
 -- PROPOSAL ONLY: review against live information_schema and a verified backup before execution.
 -- MySQL 8.0+. Select the existing business database in the client; no USE or database creation here.
 -- No application startup runner executes this file. No existing table or row is changed.
 -- CREATE IF NOT EXISTS does not validate an existing table: run the metadata preflight first.
 
 CREATE TABLE IF NOT EXISTS t_withdrawals (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  user_id CHAR(36) NOT NULL,
-  amount DECIMAL(12,2) NOT NULL,
-  channel VARCHAR(32) NOT NULL DEFAULT 'manual',
-  status VARCHAR(16) NOT NULL DEFAULT 'pending',
-  admin_note VARCHAR(2000) NULL,
-  reviewed_by CHAR(36) NULL,
-  reviewed_at DATETIME(3) NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '提现申请主键',
+  user_id CHAR(36) NOT NULL COMMENT '申请提现的用户ID',
+  amount DECIMAL(12,2) NOT NULL COMMENT '申请提现金额，单位元，保留两位小数',
+  channel VARCHAR(32) NOT NULL DEFAULT 'manual' COMMENT '提现渠道代码，默认manual',
+  status VARCHAR(16) NOT NULL DEFAULT 'pending' COMMENT '提现申请处理状态代码，默认pending',
+  admin_note VARCHAR(2000) NULL COMMENT '提现审核管理备注',
+  reviewed_by CHAR(36) NULL COMMENT '审核人用户ID',
+  reviewed_at DATETIME(3) NULL COMMENT '提现审核时间',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '提现申请创建时间',
   INDEX idx_withdrawals_user_status (user_id,status),
   INDEX idx_withdrawals_queue (status,created_at),
   CONSTRAINT chk_withdrawals_amount CHECK(amount > 0),
   CONSTRAINT chk_withdrawals_status CHECK(status IN ('pending','approved','rejected','paid')),
   CONSTRAINT fk_withdrawals_user FOREIGN KEY(user_id) REFERENCES t_profiles(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户提现申请及后台审核记录';
 
 CREATE TABLE IF NOT EXISTS t_announcements (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  body TEXT NOT NULL,
-  kind VARCHAR(32) NOT NULL DEFAULT 'system',
-  pinned TINYINT(1) NOT NULL DEFAULT 0,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_by CHAR(36) NOT NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  title_i18n JSON NULL,
-  body_i18n JSON NULL,
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '公告主键',
+  title VARCHAR(255) NOT NULL COMMENT '公告默认语言标题',
+  body TEXT NOT NULL COMMENT '公告默认语言正文',
+  kind VARCHAR(32) NOT NULL DEFAULT 'system' COMMENT '公告类型代码，默认system',
+  pinned TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶，1是、0否',
+  active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '公告是否启用，1是、0否',
+  created_by CHAR(36) NOT NULL COMMENT '公告创建人用户ID',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '公告创建时间',
+  title_i18n JSON NULL COMMENT '多语言公告标题，JSON对象，按语言代码存储',
+  body_i18n JSON NULL COMMENT '多语言公告正文，JSON对象，按语言代码存储',
   INDEX idx_announcements_public (active,pinned,created_at),
   CONSTRAINT fk_announcements_creator FOREIGN KEY(created_by) REFERENCES t_profiles(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='平台公告及多语言内容';
 
 CREATE TABLE IF NOT EXISTS t_proof_recipes (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  trip_type VARCHAR(32) NOT NULL,
-  transport_mode VARCHAR(32) NOT NULL,
-  country_code VARCHAR(8) NULL,
-  items JSON NOT NULL,
-  note VARCHAR(2000) NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  sort_order INT NOT NULL DEFAULT 100,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '凭证规则主键',
+  trip_type VARCHAR(32) NOT NULL COMMENT '适用行程类型代码',
+  transport_mode VARCHAR(32) NOT NULL COMMENT '适用交通方式代码',
+  country_code VARCHAR(8) NULL COMMENT '适用国家或地区代码，空值表示未指定',
+  items JSON NOT NULL COMMENT '规则要求的凭证材料项目，JSON结构',
+  note VARCHAR(2000) NULL COMMENT '凭证规则补充说明',
+  active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '规则是否启用，1是、0否',
+  sort_order INT NOT NULL DEFAULT 100 COMMENT '规则排序值',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '凭证规则创建时间',
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '凭证规则最后更新时间',
   INDEX idx_proof_recipes_scope (trip_type,transport_mode,country_code,active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='按行程及交通方式配置的凭证材料规则';
 
 -- Compatibility settings for existing RPCs. These are not proof of provider connectivity.
 -- Existing t_integration_* tables remain the vendor/product/field catalog.
 -- Do not duplicate or move existing secret values into config. A unified runtime adapter is pending.
 CREATE TABLE IF NOT EXISTS t_channel_configs (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  channel_type VARCHAR(32) NOT NULL,
-  provider VARCHAR(64) NOT NULL,
-  config JSON NOT NULL,
-  enabled TINYINT(1) NOT NULL DEFAULT 0,
-  remark VARCHAR(2000) NULL,
-  updated_by CHAR(36) NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '渠道配置主键',
+  channel_type VARCHAR(32) NOT NULL COMMENT '渠道类型：sms短信、email邮件、wx_subscribe微信订阅、privacy_number隐私号、logistics物流、payment支付、ai人工智能、rtc实时通信',
+  provider VARCHAR(64) NOT NULL COMMENT '渠道供应商标识',
+  config JSON NOT NULL COMMENT '渠道参数JSON对象；可能包含凭据，管理端按敏感键名脱敏，不代表已加密',
+  enabled TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否启用该供应商配置，1启用、0停用',
+  remark VARCHAR(2000) NULL COMMENT '配置说明',
+  updated_by CHAR(36) NULL COMMENT '最后更新配置的管理员用户ID',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
   UNIQUE KEY uk_channel_provider (channel_type,provider),
   INDEX idx_channel_enabled (channel_type,enabled)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='外部渠道供应商配置，保存渠道参数与启用状态';
 
 CREATE TABLE IF NOT EXISTS t_channel_secrets_probe (
-  channel VARCHAR(32) NOT NULL PRIMARY KEY,
-  ready TINYINT(1) NOT NULL DEFAULT 0,
-  probed_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  channel VARCHAR(32) NOT NULL PRIMARY KEY COMMENT '渠道标识：wechat_subscribe、sms、email或ai_call',
+  ready TINYINT(1) NOT NULL DEFAULT 0 COMMENT '渠道密钥是否标记就绪，1就绪、0未就绪；不代表真实调用成功',
+  probed_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '最近记录探测状态的时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='渠道密钥就绪状态的人工探测记录';
 
 CREATE TABLE IF NOT EXISTS t_error_logs (
-  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  scope VARCHAR(128) NOT NULL,
-  message TEXT NOT NULL,
-  stack MEDIUMTEXT NULL,
-  page VARCHAR(1024) NULL,
-  user_id CHAR(36) NULL,
-  extra JSON NULL,
-  status VARCHAR(16) NOT NULL DEFAULT 'open',
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  resolved_at DATETIME(3) NULL,
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增异常日志主键',
+  scope VARCHAR(128) NOT NULL COMMENT '异常来源或作用域',
+  message TEXT NOT NULL COMMENT '异常消息正文',
+  stack MEDIUMTEXT NULL COMMENT '异常堆栈文本，可能含运行上下文，避免泄露敏感数据',
+  page VARCHAR(1024) NULL COMMENT '发生异常的页面路径或地址',
+  user_id CHAR(36) NULL COMMENT '关联用户ID',
+  extra JSON NULL COMMENT '异常补充上下文JSON，避免记录凭据及敏感原文',
+  status VARCHAR(16) NOT NULL DEFAULT 'open' COMMENT '处理状态：open待处理、resolved已处理',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '异常记录时间',
+  resolved_at DATETIME(3) NULL COMMENT '标记处理完成的时间',
   INDEX idx_error_logs_queue (status,created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端及服务异常日志与处理记录';
 
 CREATE TABLE IF NOT EXISTS t_assist_requests (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  order_id CHAR(36) NOT NULL,
-  requester_id CHAR(36) NOT NULL,
-  assistant_id CHAR(36) NULL,
-  share_rate DECIMAL(5,2) NOT NULL,
-  note VARCHAR(2000) NULL,
-  status VARCHAR(16) NOT NULL DEFAULT 'pending',
-  handover_a_urls JSON NOT NULL,
-  handover_a_city VARCHAR(64) NULL,
-  handover_a_at DATETIME(3) NULL,
-  handover_b_urls JSON NOT NULL,
-  handover_b_city VARCHAR(64) NULL,
-  finished_at DATETIME(3) NULL,
-  settled_amount DECIMAL(12,2) NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '协带申请主键',
+  order_id CHAR(36) NOT NULL COMMENT '关联订单ID',
+  requester_id CHAR(36) NOT NULL COMMENT '发起协带的原带单人用户ID',
+  assistant_id CHAR(36) NULL COMMENT '承接协带的用户ID',
+  share_rate DECIMAL(5,2) NOT NULL COMMENT '协带分润百分比，按货款与运费之和计算，代码允许20至60',
+  note VARCHAR(2000) NULL COMMENT '协带需求说明',
+  status VARCHAR(16) NOT NULL DEFAULT 'pending' COMMENT '协带状态：pending待承接、accepted已承接、carrying携带中、done已完成、cancelled已取消',
+  handover_a_urls JSON NOT NULL COMMENT '原带单人向协带人交接的照片地址JSON数组',
+  handover_a_city VARCHAR(64) NULL COMMENT '首次交接所在城市',
+  handover_a_at DATETIME(3) NULL COMMENT '首次交接凭证提交时间',
+  handover_b_urls JSON NOT NULL COMMENT '协带人向买家交付的照片地址JSON数组',
+  handover_b_city VARCHAR(64) NULL COMMENT '最终交付所在城市',
+  finished_at DATETIME(3) NULL COMMENT '协带完成并结算的时间',
+  settled_amount DECIMAL(12,2) NULL COMMENT '实际结算分润金额，单位人民币元',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '协带申请创建时间',
   INDEX idx_assist_order (order_id,status),
   INDEX idx_assist_assistant (assistant_id,status),
   CONSTRAINT chk_assist_share CHECK(share_rate >= 0 AND share_rate <= 100),
@@ -119,221 +119,221 @@ CREATE TABLE IF NOT EXISTS t_assist_requests (
   CONSTRAINT fk_assist_order FOREIGN KEY(order_id) REFERENCES t_orders(id),
   CONSTRAINT fk_assist_requester FOREIGN KEY(requester_id) REFERENCES t_profiles(id),
   CONSTRAINT fk_assist_assistant FOREIGN KEY(assistant_id) REFERENCES t_profiles(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单协带申请、两次交接凭证与分润结算';
 
 CREATE TABLE IF NOT EXISTS t_enterprise_license_files (
-  id CHAR(36) NOT NULL PRIMARY KEY,
-  user_id CHAR(36) NOT NULL,
-  storage_url VARCHAR(1024) NOT NULL,
-  position_no INT NOT NULL DEFAULT 0,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  id CHAR(36) NOT NULL PRIMARY KEY COMMENT '营业执照附件主键',
+  user_id CHAR(36) NOT NULL COMMENT '提交营业执照的用户ID',
+  storage_url VARCHAR(1024) NOT NULL COMMENT '营业执照文件存储地址，属认证资料，访问应受控',
+  position_no INT NOT NULL DEFAULT 0 COMMENT '附件显示顺序编号',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '附件记录创建时间',
   INDEX idx_enterprise_license_user (user_id,position_no),
   CONSTRAINT fk_enterprise_license_user FOREIGN KEY(user_id) REFERENCES t_profiles(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企业认证营业执照附件及排列顺序';
 
 CREATE TABLE IF NOT EXISTS t_locales (
-  code VARCHAR(16) NOT NULL PRIMARY KEY,
-  native_name VARCHAR(64) NOT NULL,
-  label_zh VARCHAR(64) NOT NULL,
-  sort_order INT NOT NULL DEFAULT 0,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  fallback_code VARCHAR(16) NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  code VARCHAR(16) NOT NULL PRIMARY KEY COMMENT '语言或地区代码，作为主键',
+  native_name VARCHAR(64) NOT NULL COMMENT '该语言的本地名称',
+  label_zh VARCHAR(64) NOT NULL COMMENT '语言的中文显示名称',
+  sort_order INT NOT NULL DEFAULT 0 COMMENT '语言选项排序值',
+  active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用该语言，1启用、0停用',
+  fallback_code VARCHAR(16) NULL COMMENT '翻译缺失时使用的回退语言代码',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '语言配置创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='可用界面语言、显示名称与回退语言配置';
 
 CREATE TABLE IF NOT EXISTS t_logistics_tracking (
-  order_id CHAR(36) NOT NULL PRIMARY KEY,
-  provider VARCHAR(64) NULL,
-  tracking_no VARCHAR(64) NULL,
-  latest_state VARCHAR(64) NULL,
-  events_json JSON NULL,
-  refreshed_at DATETIME(3) NULL,
+  order_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '关联订单ID，每单一条物流缓存',
+  provider VARCHAR(64) NULL COMMENT '物流服务商或承运商标识',
+  tracking_no VARCHAR(64) NULL COMMENT '物流运单号',
+  latest_state VARCHAR(64) NULL COMMENT '最近一次查询返回的物流状态文本，含义由服务商定义',
+  events_json JSON NULL COMMENT '物流轨迹事件JSON，结构随查询适配器返回内容确定',
+  refreshed_at DATETIME(3) NULL COMMENT '最近刷新物流信息的时间',
   CONSTRAINT fk_logistics_tracking_order FOREIGN KEY(order_id) REFERENCES t_orders(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单物流单号及最近查询的轨迹缓存';
 -- END 001-missing-business-tables.proposed.sql
 
 -- BEGIN 002-configurable-payments.proposed.sql
--- SHA256 c94cddc15aa28892f220a8d2e1953726685728408165be2f8d6450f8a27ba52a
+-- SHA256 9c4d720a69253a4e62f421c7776ab734078f61ad2c7ccd200810511ff219c027
 -- PROPOSAL ONLY. Existing business database; MySQL 8+. No balances are migrated or modified.
 -- Review live metadata before application. No application startup executes this file.
 CREATE TABLE IF NOT EXISTS t_payment_merchants (
- id CHAR(36) PRIMARY KEY, name VARCHAR(80) NOT NULL, adapter VARCHAR(40) NOT NULL,
- method VARCHAR(24) NOT NULL, platform VARCHAR(24) NOT NULL, currencies JSON NOT NULL,
- credential_prefix VARCHAR(40) NULL, spread_bps INT NOT NULL DEFAULT 0,
- quote_ttl_seconds INT NOT NULL DEFAULT 300, enabled BOOLEAN NOT NULL DEFAULT FALSE,
- revision BIGINT NOT NULL DEFAULT 1, settings JSON NOT NULL, updated_by CHAR(36) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '支付商户配置主键', name VARCHAR(80) NOT NULL COMMENT '商户显示名称', adapter VARCHAR(40) NOT NULL COMMENT '支付渠道适配器标识',
+ method VARCHAR(24) NOT NULL COMMENT '支付方式标识', platform VARCHAR(24) NOT NULL COMMENT '适用客户端平台标识', currencies JSON NOT NULL COMMENT '支持支付币种代码的JSON集合',
+ credential_prefix VARCHAR(40) NULL COMMENT '支付凭据配置引用前缀，不是密钥明文', spread_bps INT NOT NULL DEFAULT 0 COMMENT '汇率加点，单位基点，1基点为0.01%',
+ quote_ttl_seconds INT NOT NULL DEFAULT 300 COMMENT '报价有效期上限，单位秒', enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否启用该商户，1启用、0停用',
+ revision BIGINT NOT NULL DEFAULT 1 COMMENT '商户配置版本号，用于检测报价后配置变化', settings JSON NOT NULL COMMENT '支付适配器设置JSON，含通知地址、返回地址、网关及收银台域名等配置', updated_by CHAR(36) NOT NULL COMMENT '最后更新配置的管理员用户ID',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  CONSTRAINT chk_payment_spread CHECK(spread_bps BETWEEN 0 AND 2000),
  CONSTRAINT chk_payment_ttl CHECK(quote_ttl_seconds BETWEEN 30 AND 900)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='多币种支付商户、支付能力与报价参数配置';
 CREATE TABLE IF NOT EXISTS t_fx_sources (
- id CHAR(36) PRIMARY KEY, name VARCHAR(80) NOT NULL, kind VARCHAR(32) NOT NULL,
- endpoint VARCHAR(1000) NULL, credential_prefix VARCHAR(40) NULL,
- max_age_seconds INT NOT NULL DEFAULT 86400, enabled BOOLEAN NOT NULL DEFAULT FALSE,
- transaction_enabled BOOLEAN NOT NULL DEFAULT FALSE, updated_by CHAR(36) NOT NULL,
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ id CHAR(36) PRIMARY KEY COMMENT '汇率源配置主键', name VARCHAR(80) NOT NULL COMMENT '汇率源显示名称', kind VARCHAR(32) NOT NULL COMMENT '汇率源适配类型：open_er_api或rates_json_v1',
+ endpoint VARCHAR(1000) NULL COMMENT '汇率数据接口地址', credential_prefix VARCHAR(40) NULL COMMENT '访问凭据配置引用前缀，不是密钥明文',
+ max_age_seconds INT NOT NULL DEFAULT 86400 COMMENT '可接受汇率数据的最长年龄，单位秒', enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否启用汇率源，1启用、0停用',
+ transaction_enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否允许该汇率源用于实际交易报价，1允许、0禁止', updated_by CHAR(36) NOT NULL COMMENT '最后更新配置的管理员用户ID',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='外汇汇率数据源及交易使用开关配置';
 CREATE TABLE IF NOT EXISTS t_payment_quotes (
- id CHAR(36) PRIMARY KEY, user_id CHAR(36) NOT NULL, merchant_id CHAR(36) NOT NULL,
- merchant_revision BIGINT NOT NULL, merchant_snapshot JSON NOT NULL,
- base_currency CHAR(3) NOT NULL DEFAULT 'CNY', base_minor DECIMAL(24,0) NOT NULL,
- payment_currency CHAR(3) NOT NULL, payment_minor DECIMAL(24,0) NOT NULL, payment_minor_digits INT NOT NULL,
- fx_rate DECIMAL(36,18) NOT NULL, spread_bps INT NOT NULL, rate_source VARCHAR(80) NOT NULL,
- rate_as_of TIMESTAMP(3) NOT NULL, expires_at TIMESTAMP(3) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '支付报价主键', user_id CHAR(36) NOT NULL COMMENT '申请报价的用户ID', merchant_id CHAR(36) NOT NULL COMMENT '支付商户配置ID',
+ merchant_revision BIGINT NOT NULL COMMENT '报价时商户配置版本号', merchant_snapshot JSON NOT NULL COMMENT '报价时商户配置JSON快照，含配置引用，按敏感支付配置受控访问',
+ base_currency CHAR(3) NOT NULL DEFAULT 'CNY' COMMENT '基准金额币种代码，默认CNY', base_minor DECIMAL(24,0) NOT NULL COMMENT '基准金额的最小货币单位整数，CNY时单位分',
+ payment_currency CHAR(3) NOT NULL COMMENT '实际支付币种代码', payment_minor DECIMAL(24,0) NOT NULL COMMENT '支付金额的最小货币单位整数，小数位由payment_minor_digits定义', payment_minor_digits INT NOT NULL COMMENT '支付币种主单位的小数位数',
+ fx_rate DECIMAL(36,18) NOT NULL COMMENT '从基准币种换算为支付币种的汇率', spread_bps INT NOT NULL COMMENT '本次报价汇率加点，单位基点，1基点为0.01%', rate_source VARCHAR(80) NOT NULL COMMENT '本次报价使用的汇率来源标识',
+ rate_as_of TIMESTAMP(3) NOT NULL COMMENT '汇率数据对应时间', expires_at TIMESTAMP(3) NOT NULL COMMENT '报价失效时间',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '报价创建时间',
  INDEX idx_payment_quotes_user(user_id,created_at),
  CONSTRAINT chk_quote_cny CHECK(base_currency='CNY'),
  CONSTRAINT chk_quote_amount CHECK(base_minor>0 AND payment_minor>0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='锁定支付商户配置和汇率的限时支付报价';
 CREATE TABLE IF NOT EXISTS t_currency_payments (
- id CHAR(32) PRIMARY KEY, user_id CHAR(36) NOT NULL, request_id CHAR(36) NOT NULL,
- quote_id CHAR(36) NOT NULL, merchant_id CHAR(36) NOT NULL, merchant_snapshot JSON NOT NULL,
- base_currency CHAR(3) NOT NULL DEFAULT 'CNY', base_minor DECIMAL(24,0) NOT NULL,
- payment_currency CHAR(3) NOT NULL, payment_minor DECIMAL(24,0) NOT NULL, payment_minor_digits INT NOT NULL,
- status VARCHAR(16) NOT NULL DEFAULT 'creating', checkout_kind VARCHAR(24) NULL,
- checkout_value TEXT NULL, provider_transaction_id VARCHAR(128) NULL,
- last_checked_at TIMESTAMP(3) NULL, last_error_code VARCHAR(64) NULL,
- paid_at TIMESTAMP(3) NULL, created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ id CHAR(32) PRIMARY KEY COMMENT '支付单主键，32位标识', user_id CHAR(36) NOT NULL COMMENT '充值用户ID', request_id CHAR(36) NOT NULL COMMENT '用户请求幂等标识',
+ quote_id CHAR(36) NOT NULL COMMENT '锁定的支付报价ID', merchant_id CHAR(36) NOT NULL COMMENT '支付商户配置ID', merchant_snapshot JSON NOT NULL COMMENT '支付时商户配置JSON快照，用于后续查询核验，敏感配置受控访问',
+ base_currency CHAR(3) NOT NULL DEFAULT 'CNY' COMMENT '基准充值币种代码，默认CNY', base_minor DECIMAL(24,0) NOT NULL COMMENT '基准充值金额的最小货币单位整数，CNY时单位分',
+ payment_currency CHAR(3) NOT NULL COMMENT '支付币种代码', payment_minor DECIMAL(24,0) NOT NULL COMMENT '支付金额的最小货币单位整数，小数位由payment_minor_digits定义', payment_minor_digits INT NOT NULL COMMENT '支付币种主单位的小数位数',
+ status VARCHAR(16) NOT NULL DEFAULT 'creating' COMMENT '支付状态：creating创建中、pending待支付、paid已核验到账', checkout_kind VARCHAR(24) NULL COMMENT '收银台类型：dispatching请求已占用，或redirect、qr_text、wechat_jsapi、wechat_app、alipay_app',
+ checkout_value TEXT NULL COMMENT '收银台跳转地址、二维码文本或客户端支付参数，可能含临时支付数据，访问应受控', provider_transaction_id VARCHAR(128) NULL COMMENT '渠道交易流水号',
+ last_checked_at TIMESTAMP(3) NULL COMMENT '最近核查时间', last_error_code VARCHAR(64) NULL COMMENT '最近一次支付查询的安全错误码',
+ paid_at TIMESTAMP(3) NULL COMMENT '支付成功核验入账时间', created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  UNIQUE KEY uk_currency_payment_request(user_id,request_id), UNIQUE KEY uk_currency_payment_quote(quote_id),
  UNIQUE KEY uk_currency_payment_transaction(merchant_id,provider_transaction_id),
  INDEX idx_currency_payment_pending(status,created_at),
  CONSTRAINT chk_currency_payment_status CHECK(status IN('creating','pending','paid')),
  CONSTRAINT chk_currency_payment_cny CHECK(base_currency='CNY'),
  CONSTRAINT chk_currency_payment_amount CHECK(base_minor>0 AND payment_minor>0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='多币种充值支付尝试、渠道收银台信息与核验状态';
 CREATE TABLE IF NOT EXISTS t_currency_payment_receipts (
- id CHAR(36) PRIMARY KEY, payment_id CHAR(32) NOT NULL,
- merchant_id CHAR(36) NOT NULL, provider_transaction_id VARCHAR(128) NOT NULL,
- payment_currency CHAR(3) NOT NULL, payment_minor DECIMAL(24,0) NOT NULL, payment_minor_digits INT NOT NULL,
- base_minor DECIMAL(24,0) NOT NULL, verified_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '回执主键', payment_id CHAR(32) NOT NULL COMMENT '关联支付单ID',
+ merchant_id CHAR(36) NOT NULL COMMENT '支付商户配置ID', provider_transaction_id VARCHAR(128) NOT NULL COMMENT '已核验的渠道交易流水号',
+ payment_currency CHAR(3) NOT NULL COMMENT '回执支付币种代码', payment_minor DECIMAL(24,0) NOT NULL COMMENT '已核验支付金额的最小货币单位整数', payment_minor_digits INT NOT NULL COMMENT '支付币种主单位的小数位数',
+ base_minor DECIMAL(24,0) NOT NULL COMMENT '对应基准充值金额的最小货币单位整数，人民币以分计', verified_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '渠道回执核验并持久化时间',
  UNIQUE KEY uk_currency_receipt_payment(payment_id),
  UNIQUE KEY uk_currency_receipt_provider(merchant_id,provider_transaction_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='已核验支付回执，用于防止重复充值入账';
 -- Intentionally no default enabled merchant, no sample exchange rates, no fake credentials.
 -- END 002-configurable-payments.proposed.sql
 
 -- BEGIN 003-goods-insurance.proposed.sql
--- SHA256 412fda4c6e5baa045746d72b504977504b50087851f0a8f21ccce8b0fc0610af
+-- SHA256 59b81fa70d669dd8268244cf1b02f07510488f5fbded05c9f0900fb1fcc553aa
 -- PROPOSAL ONLY. Existing insurance/store policy tables and historical balances are not rewritten.
 -- Consumer insurance is issued by a contracted insurer, paid directly to that insurer.
 CREATE TABLE IF NOT EXISTS t_goods_insurance_products (
- id VARCHAR(64) PRIMARY KEY,
- insurer_code VARCHAR(64) NOT NULL,
- config_json JSON NOT NULL,
- enabled BOOLEAN NOT NULL DEFAULT FALSE,
- revision BIGINT NOT NULL DEFAULT 1,
- updated_by CHAR(36) NOT NULL,
- updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ id VARCHAR(64) PRIMARY KEY COMMENT '保险产品标识',
+ insurer_code VARCHAR(64) NOT NULL COMMENT '承保保险机构代码',
+ config_json JSON NOT NULL COMMENT '保险产品配置JSON，含适配器、产品代码、凭据引用前缀、条款及服务域名等；不应存放密钥明文',
+ enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '产品是否启用，1启用、0停用',
+ revision BIGINT NOT NULL DEFAULT 1 COMMENT '保险产品配置版本号',
+ updated_by CHAR(36) NOT NULL COMMENT '最后更新产品的管理员用户ID',
+ updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='货物保险产品及保险方接入参数配置';
 CREATE TABLE IF NOT EXISTS t_goods_insurance_quotes (
- id CHAR(36) PRIMARY KEY,
- user_id CHAR(36) NOT NULL,
- subject_type VARCHAR(16) NOT NULL,
- platform VARCHAR(16) NOT NULL,
- subject_id CHAR(36) NOT NULL,
- item_name VARCHAR(255) NOT NULL,
- product_id VARCHAR(64) NOT NULL,
- product_revision BIGINT NOT NULL,
- declared_value DECIMAL(14,2) NOT NULL,
- premium DECIMAL(24,6) NOT NULL,
- currency CHAR(3) NOT NULL,
- provider_ref VARCHAR(160) NOT NULL,
- terms_version VARCHAR(160) NOT NULL,
- snapshot_json JSON NOT NULL,
- expires_at DATETIME(3) NOT NULL,
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '保险报价主键',
+ user_id CHAR(36) NOT NULL COMMENT '申请报价的用户ID',
+ subject_type VARCHAR(16) NOT NULL COMMENT '报价标的类型：trip行程、pk_quote竞价报价、order订单',
+ platform VARCHAR(16) NOT NULL COMMENT '发起报价的客户端平台：web、h5、app或mp_weixin',
+ subject_id CHAR(36) NOT NULL COMMENT '对应行程、竞价报价或订单ID',
+ item_name VARCHAR(255) NOT NULL COMMENT '投保货物名称',
+ product_id VARCHAR(64) NOT NULL COMMENT '保险产品标识',
+ product_revision BIGINT NOT NULL COMMENT '报价时保险产品配置版本号',
+ declared_value DECIMAL(14,2) NOT NULL COMMENT '货物申报价值，按输入货物价格主单位记录；当前订单货款为人民币元',
+ premium DECIMAL(24,6) NOT NULL COMMENT '保险方报价保费，单位为currency对应币种的主单位',
+ currency CHAR(3) NOT NULL COMMENT '保险保费币种代码',
+ provider_ref VARCHAR(160) NOT NULL COMMENT '保险方返回的报价引用标识',
+ terms_version VARCHAR(160) NOT NULL COMMENT '保险方返回的条款版本标识',
+ snapshot_json JSON NOT NULL COMMENT '报价时保险产品配置JSON快照，含凭据引用，访问应受控',
+ expires_at DATETIME(3) NOT NULL COMMENT '报价失效时间',
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '报价创建时间',
  INDEX idx_goods_insurance_quote_user(user_id,created_at),
  UNIQUE KEY uq_goods_insurance_quote_ref(product_id,provider_ref)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='保险方返回的货物保险限时报价及产品快照';
 CREATE TABLE IF NOT EXISTS t_goods_insurance_applications (
- id CHAR(36) PRIMARY KEY,
- user_id CHAR(36) NOT NULL,
- order_id CHAR(36) NOT NULL,
- quote_id CHAR(36) NOT NULL,
- insurer_code VARCHAR(64) NOT NULL,
- request_id CHAR(36) NOT NULL,
- status VARCHAR(32) NOT NULL DEFAULT 'reserved',
- provider_application_ref VARCHAR(160) NULL,
- checkout_url VARCHAR(1500) NULL,
- policy_number VARCHAR(160) NULL,
- coverage_ref VARCHAR(160) NULL,
- certificate_url VARCHAR(1500) NULL,
- coverage_starts_at DATETIME(3) NULL,
- coverage_ends_at DATETIME(3) NULL,
- terms_accepted_at DATETIME(3) NOT NULL,
- disclosures_accepted_at DATETIME(3) NOT NULL,
- last_checked_at DATETIME(3) NULL,
- last_error_code VARCHAR(64) NULL,
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '投保申请主键',
+ user_id CHAR(36) NOT NULL COMMENT '投保用户ID',
+ order_id CHAR(36) NOT NULL COMMENT '关联订单ID',
+ quote_id CHAR(36) NOT NULL COMMENT '采用的保险报价ID',
+ insurer_code VARCHAR(64) NOT NULL COMMENT '保险机构代码',
+ request_id CHAR(36) NOT NULL COMMENT '用户投保请求幂等标识',
+ status VARCHAR(32) NOT NULL DEFAULT 'reserved' COMMENT '投保状态：reserved已预留、dispatching提交中、awaiting_provider待保险方确认、scheduled待生效、active已生效、rejected拒保、cancelled已取消、expired已过期',
+ provider_application_ref VARCHAR(160) NULL COMMENT '保险方申请引用标识',
+ checkout_url VARCHAR(1500) NULL COMMENT '保险方收银台地址，可能包含临时访问参数',
+ policy_number VARCHAR(160) NULL COMMENT '保险方核验返回的保单号',
+ coverage_ref VARCHAR(160) NULL COMMENT '保险保障记录引用标识',
+ certificate_url VARCHAR(1500) NULL COMMENT '保险凭证地址，含投保资料，访问应受控',
+ coverage_starts_at DATETIME(3) NULL COMMENT '保障起始时间',
+ coverage_ends_at DATETIME(3) NULL COMMENT '保障结束时间',
+ terms_accepted_at DATETIME(3) NOT NULL COMMENT '用户确认保险条款的时间',
+ disclosures_accepted_at DATETIME(3) NOT NULL COMMENT '用户确认告知事项的时间',
+ last_checked_at DATETIME(3) NULL COMMENT '最近向保险方核查的时间',
+ last_error_code VARCHAR(64) NULL COMMENT '最近核查的安全错误码',
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '申请创建时间',
  UNIQUE KEY uq_goods_insurance_order(order_id),
  UNIQUE KEY uq_goods_insurance_quote(quote_id),
  UNIQUE KEY uq_goods_insurance_request(user_id,request_id),
  UNIQUE KEY uq_goods_insurance_coverage(insurer_code,coverage_ref),
  UNIQUE KEY uq_goods_insurance_provider_application(insurer_code,provider_application_ref),
  INDEX idx_goods_insurance_pending(status,last_checked_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单保险投保申请及承保方核验结果';
 -- END 003-goods-insurance.proposed.sql
 
 -- BEGIN 004-dispute-events.proposed.sql
--- SHA256 d422f0c8241ef4537ea2bd87a4b814f1e6e215494eaf0d22334d3bd7f6c2f820
+-- SHA256 342c712441621c3b8112e8c457dd80d1181356171d4f400c9743a379686402af
 -- PROPOSAL ONLY: append-only dispute history and request deduplication.
 -- No business rows, wallet balances or insurer funds are modified by this script.
 CREATE TABLE IF NOT EXISTS t_dispute_events (
- id CHAR(36) NOT NULL PRIMARY KEY,
- dispute_id CHAR(36) NOT NULL,
- order_id CHAR(36) NOT NULL,
- actor_id CHAR(36) NOT NULL,
- actor_role VARCHAR(16) NOT NULL,
- action VARCHAR(32) NOT NULL,
- request_id CHAR(36) NOT NULL,
- before_stage VARCHAR(24) NULL,
- after_stage VARCHAR(24) NOT NULL,
- payload JSON NOT NULL,
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) NOT NULL PRIMARY KEY COMMENT '争议事件主键',
+ dispute_id CHAR(36) NOT NULL COMMENT '关联争议案件ID',
+ order_id CHAR(36) NOT NULL COMMENT '关联订单ID',
+ actor_id CHAR(36) NOT NULL COMMENT '执行操作的用户ID',
+ actor_role VARCHAR(16) NOT NULL COMMENT '操作者在争议中的角色标识',
+ action VARCHAR(32) NOT NULL COMMENT '争议操作标识',
+ request_id CHAR(36) NOT NULL COMMENT '操作请求幂等标识',
+ before_stage VARCHAR(24) NULL COMMENT '操作前的争议阶段，首次事件可为空',
+ after_stage VARCHAR(24) NOT NULL COMMENT '操作后的争议阶段',
+ payload JSON NOT NULL COMMENT '事件输入与结果等JSON载荷，可能含争议证据及请求摘要，访问应受控',
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '事件创建时间',
  UNIQUE KEY uq_dispute_action_request(dispute_id,actor_id,request_id),
  INDEX idx_dispute_event_history(dispute_id,created_at,id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单争议处理操作及阶段变更审计事件';
 -- END 004-dispute-events.proposed.sql
 
 -- BEGIN 005-store-products.proposed.sql
--- SHA256 4273b407bd4490c7f1f2f18061eb567323b3e40d9da8f733de973310e95cede7
+-- SHA256 9f058d5c93aabca7ac72cf83bc52029532bca17c94505a1d5c85d4c3142fe683
 -- Deployment proposal only: explicit ownership-checked storefront associations.
 -- No changes to historical orders, prices, commission rates, insurance or account balances.
 CREATE TABLE IF NOT EXISTS t_store_products (
- store_id CHAR(36) NOT NULL,
- product_id CHAR(36) NOT NULL,
- created_by CHAR(36) NOT NULL,
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ store_id CHAR(36) NOT NULL COMMENT '店铺ID',
+ product_id CHAR(36) NOT NULL COMMENT '商品ID',
+ created_by CHAR(36) NOT NULL COMMENT '建立店铺商品关联的用户ID',
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '关联创建时间',
  PRIMARY KEY(store_id,product_id),
  UNIQUE KEY uq_store_product(product_id),
  CONSTRAINT fk_store_product_store FOREIGN KEY(store_id) REFERENCES t_stores(id),
  CONSTRAINT fk_store_product_product FOREIGN KEY(product_id) REFERENCES t_products(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺与商品的归属关联';
 -- END 005-store-products.proposed.sql
 
 -- BEGIN 006-commerce-checkout.proposed.sql
--- SHA256 c408c00d92d3c137bbef9c1e0a715c04e4557e4f20240e83daa10c4074901096
+-- SHA256 40229acd3d8ba8cc219d67c5b5ac275cebcef9744978f296b2094ab5c5f3e1c9
 -- Deployment-only proposal: product checkout attribution and exact stock reservation state.
 -- Stock is decremented in the same transaction as order escrow; no historical backfill or fund writes here.
 CREATE TABLE IF NOT EXISTS t_product_order_reservations (
- order_id CHAR(36) NOT NULL PRIMARY KEY,
- product_id CHAR(36) NOT NULL,
- buyer_id CHAR(36) NOT NULL,
- vendor_id CHAR(36) NOT NULL,
- trip_id CHAR(36) NOT NULL,
- store_id CHAR(36) NULL,
- quantity INT NOT NULL,
- unit_price DECIMAL(12,2) NOT NULL,
- goods_amount DECIMAL(12,2) NOT NULL,
- service_fee DECIMAL(12,2) NOT NULL,
- currency CHAR(3) NOT NULL DEFAULT 'CNY',
- stock_state VARCHAR(16) NOT NULL DEFAULT 'held',
- request_hash CHAR(64) NOT NULL,
- snapshot JSON NOT NULL,
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
- updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ order_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '关联订单ID，作为预留记录主键',
+ product_id CHAR(36) NOT NULL COMMENT '下单商品ID',
+ buyer_id CHAR(36) NOT NULL COMMENT '买家用户ID',
+ vendor_id CHAR(36) NOT NULL COMMENT '商品卖家及带单人用户ID',
+ trip_id CHAR(36) NOT NULL COMMENT '用于履约的行程ID',
+ store_id CHAR(36) NULL COMMENT '下单时商品归属店铺ID',
+ quantity INT NOT NULL COMMENT '下单商品数量',
+ unit_price DECIMAL(12,2) NOT NULL COMMENT '商品成交单价，单位为currency对应币种的主单位',
+ goods_amount DECIMAL(12,2) NOT NULL COMMENT '商品货款总额，单位为currency对应币种的主单位',
+ service_fee DECIMAL(12,2) NOT NULL COMMENT '订单服务费，单位为currency对应币种的主单位',
+ currency CHAR(3) NOT NULL DEFAULT 'CNY' COMMENT '金额币种代码，当前下单写入CNY',
+ stock_state VARCHAR(16) NOT NULL DEFAULT 'held' COMMENT '库存占用状态：held已预留、consumed已消耗、released已释放',
+ request_hash CHAR(64) NOT NULL COMMENT '下单请求内容哈希，用于核对幂等请求一致性',
+ snapshot JSON NOT NULL COMMENT '下单时商品与订单约定JSON快照，用于核对计价和归属',
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+ updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  INDEX idx_product_reservation_state(product_id,stock_state),
  INDEX idx_store_order_attribution(store_id,created_at),
  CONSTRAINT chk_product_order_quantity CHECK(quantity BETWEEN 1 AND 100),
@@ -341,130 +341,130 @@ CREATE TABLE IF NOT EXISTS t_product_order_reservations (
  CONSTRAINT fk_product_order_order FOREIGN KEY(order_id) REFERENCES t_orders(id),
  CONSTRAINT fk_product_order_product FOREIGN KEY(product_id) REFERENCES t_products(id),
  CONSTRAINT fk_product_order_store FOREIGN KEY(store_id) REFERENCES t_stores(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品下单时的库存占用、计价与归属快照';
 -- END 006-commerce-checkout.proposed.sql
 
 -- BEGIN 007-refunds.proposed.sql
--- SHA256 9bfc57c7b54e604d3a5b9cdf7dfa782170e276f0a028815ffdd9bdb17540e738
+-- SHA256 7b3b9697427954d050684c58a58a790e046a5455880036071ea6c6858406a4f5
 -- Deployment proposal only. Full original CNY recharge refunds, separate from goods/order refunds.
 -- No existing payment status, wallet balance, business order or merchant credential is migrated.
 CREATE TABLE IF NOT EXISTS t_payment_refunds (
- id CHAR(32) PRIMARY KEY,
- payment_id CHAR(32) NOT NULL,
- user_id CHAR(36) NOT NULL,
- request_id CHAR(36) NOT NULL,
- base_currency CHAR(3) NOT NULL,
- base_minor DECIMAL(24,0) NOT NULL,
- payment_currency CHAR(3) NOT NULL,
- payment_minor DECIMAL(24,0) NOT NULL,
- merchant_snapshot JSON NOT NULL,
- provider_transaction_id VARCHAR(128) NOT NULL,
- status VARCHAR(16) NOT NULL DEFAULT 'requested',
- reason VARCHAR(200) NOT NULL,
- review_note VARCHAR(200) NULL,
- reviewed_by CHAR(36) NULL,
- reviewed_at TIMESTAMP(3) NULL,
- dispatched_at TIMESTAMP(3) NULL,
- provider_refund_id VARCHAR(128) NULL,
- last_error_code VARCHAR(64) NULL,
- wallet_released BOOLEAN NOT NULL DEFAULT FALSE,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
- active_slot TINYINT GENERATED ALWAYS AS (CASE WHEN status IN('cancelled','rejected') AND dispatched_at IS NULL AND wallet_released=1 THEN NULL ELSE 1 END) STORED,
+ id CHAR(32) PRIMARY KEY COMMENT '退款单主键，32位标识',
+ payment_id CHAR(32) NOT NULL COMMENT '原充值支付单ID',
+ user_id CHAR(36) NOT NULL COMMENT '申请退款的用户ID',
+ request_id CHAR(36) NOT NULL COMMENT '用户退款请求幂等标识',
+ base_currency CHAR(3) NOT NULL COMMENT '退款基准币种代码，当前退款仅支持CNY',
+ base_minor DECIMAL(24,0) NOT NULL COMMENT '基准退款金额的最小货币单位整数，CNY时单位分',
+ payment_currency CHAR(3) NOT NULL COMMENT '原渠道支付及退款币种代码',
+ payment_minor DECIMAL(24,0) NOT NULL COMMENT '渠道退款金额的最小货币单位整数，当前支持CNY分',
+ merchant_snapshot JSON NOT NULL COMMENT '原支付商户配置JSON快照，用于原路退款，敏感配置受控访问',
+ provider_transaction_id VARCHAR(128) NOT NULL COMMENT '原渠道支付交易流水号',
+ status VARCHAR(16) NOT NULL DEFAULT 'requested' COMMENT '退款状态：requested待审核、approved已批准、rejected已驳回、cancelled已撤回、dispatching派发中、processing渠道处理中、succeeded成功、closed关闭',
+ reason VARCHAR(200) NOT NULL COMMENT '用户申请退款原因',
+ review_note VARCHAR(200) NULL COMMENT '管理员审核说明',
+ reviewed_by CHAR(36) NULL COMMENT '审核管理员用户ID',
+ reviewed_at TIMESTAMP(3) NULL COMMENT '审核时间',
+ dispatched_at TIMESTAMP(3) NULL COMMENT '占用渠道派发请求的时间，记录后不得当作未派发申请重试',
+ provider_refund_id VARCHAR(128) NULL COMMENT '渠道退款流水号',
+ last_error_code VARCHAR(64) NULL COMMENT '最近渠道操作的安全错误码',
+ wallet_released BOOLEAN NOT NULL DEFAULT FALSE COMMENT '退款预留的钱包余额是否已释放，1已释放、0未释放',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
+ active_slot TINYINT GENERATED ALWAYS AS (CASE WHEN status IN('cancelled','rejected') AND dispatched_at IS NULL AND wallet_released=1 THEN NULL ELSE 1 END) STORED COMMENT '自动生成的退款占用槽；撤回或驳回且未派发并已释放钱包预留时为空，其余为1，用于限制同笔支付重复退款',
  UNIQUE KEY uq_payment_refund_source(payment_id,active_slot),
  UNIQUE KEY uq_payment_refund_request(user_id,request_id),
  INDEX idx_payment_refund_queue(status,created_at),
  CONSTRAINT chk_payment_refund_currency CHECK(base_currency='CNY' AND payment_currency='CNY'),
  CONSTRAINT chk_payment_refund_amount CHECK(base_minor>0 AND payment_minor>0),
  CONSTRAINT chk_payment_refund_status CHECK(status IN('requested','approved','dispatching','processing','succeeded','rejected','closed','cancelled'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='充值原路退款申请、审核、渠道派发与钱包冻结释放记录';
 CREATE TABLE IF NOT EXISTS t_payment_refund_events (
- id CHAR(36) PRIMARY KEY,
- refund_id CHAR(32) NOT NULL,
- actor_id CHAR(36) NULL,
- action VARCHAR(32) NOT NULL,
- detail VARCHAR(250) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '退款事件主键',
+ refund_id CHAR(32) NOT NULL COMMENT '关联退款单ID',
+ actor_id CHAR(36) NULL COMMENT '执行操作的用户ID，渠道自动事件可为空',
+ action VARCHAR(32) NOT NULL COMMENT '退款操作或渠道结果标识',
+ detail VARCHAR(250) NOT NULL COMMENT '退款事件说明，记录核验结果而非渠道敏感报文',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '事件创建时间',
  INDEX idx_payment_refund_event(refund_id,created_at,id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='充值退款审核、派发及渠道结果审计事件';
 -- END 007-refunds.proposed.sql
 
 -- BEGIN 008-coupler-environments.proposed.sql
--- SHA256 3e65b243df2e300ed7c09cf2961e034644454a08500fa61d3b2c8b6767801221
+-- SHA256 48d4aa5af570b7dd26e68ca4a11ffd969736475b628bccc4e2102f24e152c0fa
 -- Deployment-only proposal: isolated API configuration environments.
 -- No startup DDL, no copying legacy plaintext/ciphertext, no business balance or payment mutation.
 CREATE TABLE IF NOT EXISTS t_integration_runtime_state (
- id TINYINT NOT NULL PRIMARY KEY,
- current_mode VARCHAR(8) NOT NULL DEFAULT 'SANDBOX',
- revision BIGINT NOT NULL DEFAULT 0,
- updated_by CHAR(36) NULL,
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ id TINYINT NOT NULL PRIMARY KEY COMMENT '运行状态单例主键，代码使用1',
+ current_mode VARCHAR(8) NOT NULL DEFAULT 'SANDBOX' COMMENT '当前集成运行模式：SANDBOX沙箱或LIVE真实环境',
+ revision BIGINT NOT NULL DEFAULT 0 COMMENT '运行模式版本号，用于并发变更校验',
+ updated_by CHAR(36) NULL COMMENT '最后切换模式的管理员用户ID',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  CONSTRAINT chk_coupler_runtime_id CHECK(id=1),
  CONSTRAINT chk_coupler_runtime_mode CHECK(current_mode IN('SANDBOX','LIVE'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='外部集成当前运行模式及切换版本';
 CREATE TABLE IF NOT EXISTS t_integration_mode_scopes (
- mode VARCHAR(8) NOT NULL,
- category VARCHAR(32) NOT NULL,
- selected_provider VARCHAR(32) NULL,
- revision BIGINT NOT NULL DEFAULT 0,
- updated_by CHAR(36) NULL,
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ mode VARCHAR(8) NOT NULL COMMENT '集成运行模式：SANDBOX沙箱或LIVE真实环境',
+ category VARCHAR(32) NOT NULL COMMENT '集成能力类别代码',
+ selected_provider VARCHAR(32) NULL COMMENT '当前为该类别选择的供应商代码',
+ revision BIGINT NOT NULL DEFAULT 0 COMMENT '类别选择状态版本号，用于并发变更校验',
+ updated_by CHAR(36) NULL COMMENT '最后更新选择的管理员用户ID',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  PRIMARY KEY(mode,category),
  CONSTRAINT chk_coupler_scope_mode CHECK(mode IN('SANDBOX','LIVE'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='各运行模式下集成类别的供应商选择与版本';
 CREATE TABLE IF NOT EXISTS t_integration_mode_configs (
- mode VARCHAR(8) NOT NULL,
- category VARCHAR(32) NOT NULL,
- provider VARCHAR(32) NOT NULL,
- enabled BOOLEAN NOT NULL DEFAULT FALSE,
- config_revision BIGINT NOT NULL DEFAULT 0,
- updated_by CHAR(36) NULL,
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ mode VARCHAR(8) NOT NULL COMMENT '集成运行模式：SANDBOX沙箱或LIVE真实环境',
+ category VARCHAR(32) NOT NULL COMMENT '集成能力类别代码',
+ provider VARCHAR(32) NOT NULL COMMENT '集成供应商代码',
+ enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '供应商在该模式下是否启用，1启用、0停用',
+ config_revision BIGINT NOT NULL DEFAULT 0 COMMENT '当前引用的供应商配置值版本号',
+ updated_by CHAR(36) NULL COMMENT '最后更新配置的管理员用户ID',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
  PRIMARY KEY(mode,category,provider),
  CONSTRAINT chk_coupler_config_mode CHECK(mode IN('SANDBOX','LIVE')),
  CONSTRAINT fk_coupler_config_scope FOREIGN KEY(mode,category) REFERENCES t_integration_mode_scopes(mode,category)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='按运行模式与集成类别隔离的供应商启用配置';
 CREATE TABLE IF NOT EXISTS t_integration_config_values (
- mode VARCHAR(8) NOT NULL,
- category VARCHAR(32) NOT NULL,
- provider VARCHAR(32) NOT NULL,
- config_revision BIGINT NOT NULL,
- field_key VARCHAR(64) NOT NULL,
- field_cipher TEXT NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ mode VARCHAR(8) NOT NULL COMMENT '集成运行模式：SANDBOX沙箱或LIVE真实环境',
+ category VARCHAR(32) NOT NULL COMMENT '集成能力类别代码',
+ provider VARCHAR(32) NOT NULL COMMENT '集成供应商代码',
+ config_revision BIGINT NOT NULL COMMENT '该配置值所属版本号',
+ field_key VARCHAR(64) NOT NULL COMMENT '配置字段键名',
+ field_cipher TEXT NOT NULL COMMENT 'AES-GCM加密的配置值，认证上下文绑定模式、类别、供应商、版本和字段；禁止作为明文展示',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '加密配置值创建时间',
  PRIMARY KEY(mode,category,provider,config_revision,field_key),
  CONSTRAINT chk_coupler_value_mode CHECK(mode IN('SANDBOX','LIVE')),
  CONSTRAINT chk_coupler_value_revision CHECK(config_revision>0),
  CONSTRAINT fk_coupler_value_config FOREIGN KEY(mode,category,provider) REFERENCES t_integration_mode_configs(mode,category,provider)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='按模式、供应商和版本隔离的加密集成配置值';
 -- END 008-coupler-environments.proposed.sql
 
 -- BEGIN 009-order-escrow-refunds.proposed.sql
--- SHA256 f3976c5b0aef4b0929995f780e29a7d74a7a3d509b23d31048cfa3f0cc7054b0
+-- SHA256 d2881b3a5b9f832c4051b9f16c230d54e5e6412471eec7f6ebfcfacbb3120c13
 -- Deployment proposal only: proven goods-escrow wallet refunds, never original payment-channel refunds.
 -- Does not backfill legacy orders, move balances, invent insurance protection or change fee policy.
 CREATE TABLE IF NOT EXISTS t_order_escrow_refunds (
- id CHAR(36) NOT NULL PRIMARY KEY,
- case_id CHAR(36) NOT NULL,
- order_id CHAR(36) NOT NULL,
- buyer_id CHAR(36) NOT NULL,
- operator_id CHAR(36) NOT NULL,
- request_id CHAR(36) NOT NULL,
- request_hash CHAR(64) NOT NULL,
- source_round INT NOT NULL,
- currency CHAR(3) NOT NULL DEFAULT 'CNY',
- amount DECIMAL(12,2) NOT NULL,
- original_goods_amount DECIMAL(12,2) NOT NULL,
- service_fee_held DECIMAL(12,2) NOT NULL,
- shipping_held DECIMAL(12,2) NOT NULL,
- buyer_escrow_before DECIMAL(12,2) NOT NULL,
- buyer_escrow_after DECIMAL(12,2) NOT NULL,
- source_deposit_id CHAR(36) NOT NULL,
- wallet_ledger_id CHAR(36) NOT NULL,
- requires_accounting BOOLEAN NOT NULL,
- source_snapshot JSON NOT NULL,
- note VARCHAR(200) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) NOT NULL PRIMARY KEY COMMENT '托管退款执行主键',
+ case_id CHAR(36) NOT NULL COMMENT '关联售后争议案件ID',
+ order_id CHAR(36) NOT NULL COMMENT '关联订单ID',
+ buyer_id CHAR(36) NOT NULL COMMENT '接收退款的买家用户ID',
+ operator_id CHAR(36) NOT NULL COMMENT '执行退款的运营管理员用户ID',
+ request_id CHAR(36) NOT NULL COMMENT '执行请求幂等标识',
+ request_hash CHAR(64) NOT NULL COMMENT '执行请求内容哈希，用于校验重试参数一致性',
+ source_round INT NOT NULL COMMENT '退款依据的争议裁决轮次',
+ currency CHAR(3) NOT NULL DEFAULT 'CNY' COMMENT '金额币种代码，当前为CNY',
+ amount DECIMAL(12,2) NOT NULL COMMENT '实际退回买家钱包的货款金额，单位元',
+ original_goods_amount DECIMAL(12,2) NOT NULL COMMENT '核验的订单原始货款金额，单位元',
+ service_fee_held DECIMAL(12,2) NOT NULL COMMENT '仍保留托管的服务费金额，单位元',
+ shipping_held DECIMAL(12,2) NOT NULL COMMENT '仍保留托管的运费金额，单位元',
+ buyer_escrow_before DECIMAL(12,2) NOT NULL COMMENT '退款前买家托管余额，单位元',
+ buyer_escrow_after DECIMAL(12,2) NOT NULL COMMENT '退款后买家托管余额，单位元',
+ source_deposit_id CHAR(36) NOT NULL COMMENT '作为托管资金来源的保证金记录ID',
+ wallet_ledger_id CHAR(36) NOT NULL COMMENT '实际退款入账对应的钱包流水ID',
+ requires_accounting BOOLEAN NOT NULL COMMENT '是否需要进入核算阶段，1表示已退完剩余货款',
+ source_snapshot JSON NOT NULL COMMENT '核验的托管资金来源JSON快照，用于资金审计，访问应受控',
+ note VARCHAR(200) NOT NULL COMMENT '运营执行退款时填写的说明',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '退款执行记录创建时间',
  UNIQUE KEY uq_order_escrow_case(case_id),
  UNIQUE KEY uq_order_escrow_request(operator_id,request_id),
  UNIQUE KEY uq_order_escrow_ledger(wallet_ledger_id),
@@ -472,43 +472,43 @@ CREATE TABLE IF NOT EXISTS t_order_escrow_refunds (
  INDEX idx_order_escrow_buyer(buyer_id,created_at,id),
  CONSTRAINT chk_order_escrow_currency CHECK(currency='CNY'),
  CONSTRAINT chk_order_escrow_amount CHECK(amount>0 AND amount<=original_goods_amount AND buyer_escrow_after>=0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='售后裁决退回未花费货款托管资金至买家平台钱包的执行记录';
 CREATE TABLE IF NOT EXISTS t_order_escrow_refund_events (
- id CHAR(36) NOT NULL PRIMARY KEY,
- execution_id CHAR(36) NOT NULL,
- actor_id CHAR(36) NOT NULL,
- action VARCHAR(32) NOT NULL,
- detail VARCHAR(250) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ id CHAR(36) NOT NULL PRIMARY KEY COMMENT '托管退款事件主键',
+ execution_id CHAR(36) NOT NULL COMMENT '关联托管退款执行记录ID',
+ actor_id CHAR(36) NOT NULL COMMENT '执行操作的用户ID',
+ action VARCHAR(32) NOT NULL COMMENT '执行事件标识，当前写入wallet_refunded表示钱包已退款',
+ detail VARCHAR(250) NOT NULL COMMENT '执行结果说明，用于区分平台钱包退款与外部银行退款',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '事件创建时间',
  INDEX idx_order_escrow_event(execution_id,created_at,id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='托管货款退款执行的钱包入账审计事件';
 -- END 009-order-escrow-refunds.proposed.sql
 
 -- BEGIN 010-upload-bindings.proposed.sql
--- SHA256 1f44915485f890c9d3e9b8c87ce8bd3f197487d738b0f1d2012588ed707ca551
+-- SHA256 a89cc015bfbd59b1b0e823facac95b855711a4d55859c16725d5afe806bbe5df
 -- Deployment proposal only. Keep private objects private; no business rows are backfilled or deleted.
 CREATE TABLE IF NOT EXISTS t_upload_bindings (
- upload_id VARCHAR(36) NOT NULL,
- domain_type VARCHAR(20) NOT NULL,
- resource_id CHAR(36) NOT NULL,
- created_by CHAR(36) NOT NULL,
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ upload_id VARCHAR(36) NOT NULL COMMENT '上传文件记录ID',
+ domain_type VARCHAR(20) NOT NULL COMMENT '使用文件的领域类型标识',
+ resource_id CHAR(36) NOT NULL COMMENT '使用文件的领域资源ID',
+ created_by CHAR(36) NOT NULL COMMENT '建立文件绑定的用户ID',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '绑定创建时间',
  PRIMARY KEY(upload_id,domain_type,resource_id),
  INDEX idx_upload_binding_resource(domain_type,resource_id),
  CONSTRAINT chk_upload_binding_domain CHECK(domain_type IN('product','order','dispute'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='上传文件与使用该文件的领域资源之间的引用绑定';
 CREATE TABLE IF NOT EXISTS t_upload_deletions (
- id CHAR(36) PRIMARY KEY,
- upload_id VARCHAR(36) NOT NULL,
- user_id CHAR(36) NOT NULL,
- status VARCHAR(16) NOT NULL,
- last_error_code VARCHAR(64),
- created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
- updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ id CHAR(36) PRIMARY KEY COMMENT '文件删除请求主键，由上传文件标识确定',
+ upload_id VARCHAR(36) NOT NULL COMMENT '待删除的上传文件记录ID',
+ user_id CHAR(36) NOT NULL COMMENT '发起删除的文件所属用户ID',
+ status VARCHAR(16) NOT NULL COMMENT '删除状态：deleting删除中或待存储确认、deleted已确认删除',
+ last_error_code VARCHAR(64) COMMENT '对象存储删除确认失败的安全错误码',
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '删除请求创建时间',
+ updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '删除状态最后更新时间',
  UNIQUE KEY uq_upload_deletion(upload_id),
  INDEX idx_upload_deletion_user(user_id,created_at),
  CONSTRAINT chk_upload_deletion_status CHECK(status IN('deleting','deleted'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='上传文件删除请求及对象存储删除确认日志';
 -- END 010-upload-bindings.proposed.sql
 
 -- BEGIN 011-order-status-width.proposed.sql
