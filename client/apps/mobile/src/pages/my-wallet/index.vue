@@ -1,9 +1,11 @@
-<script setup lang="ts">import WalletFundingMobile from '../../components/WalletFundingMobile.vue';import {useWalletSummary} from '../../stores/useWalletSummary';const {prefs,wallet,error,loading,load,formatAmount,mobilePreferenceStyle}=useWalletSummary();</script>
+<script setup lang="ts">import WalletFundingMobile from '../../components/WalletFundingMobile.vue';import {useWalletSummary} from '../../stores/useWalletSummary';const {prefs,wallet,error,loading,load,scope,formatAmount,mobilePreferenceStyle}=useWalletSummary();</script>
 <template><view class="app-page account-wallet" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark'}" :style="mobilePreferenceStyle(prefs)">
  <text class="account-back" @click="uni.navigateBack()">‹ {{$t('m2.mobile.back')}}</text><view class="wallet-title">{{$t('account.wallet')}}</view>
  <view v-if="loading" class="wallet-info">{{$t('account.loading')}}</view><view v-else-if="error" class="wallet-info">{{$t(error)}}<button @click="load">{{$t('account.retry')}}</button></view>
  <view v-else-if="wallet" class="wallet-card"><view class="wallet-caption">{{$t('account.balance')}}</view><view class="wallet-amount">{{formatAmount(wallet.balance_amount,wallet.currency)}}</view><view class="wallet-info">{{$t('account.points')}} · {{wallet.points??0}}</view>
  <view class="wallet-divider"></view><view class="wallet-link" @click="uni.navigateTo({url:'/pages/wallet-ledger/index'})">{{$t('account.ledger')}} ›</view></view>
- <WalletFundingMobile @paid="load"/>
+ <view class="wallet-link" @click="uni.navigateTo({url:'/pages/my-refunds/index'})">{{$t('refund.title')}} ›</view>
+ <view class="wallet-link" @click="uni.navigateTo({url:'/pages/my-disputes/index'})">{{$t('escrowRefund.title')}} ›</view>
+ <WalletFundingMobile :key="scope" @paid="load"/>
  </view></template>
 <style scoped>.account-wallet{min-height:100vh;padding:24rpx 27rpx;background:#f7f9fc}.account-back{color:var(--kx-accent,#2476ce);padding:14rpx;display:block}.wallet-title{font-size:36rpx;font-weight:740;margin:30rpx 0}.wallet-card{background:#fff;border-radius:23rpx;border:1rpx solid #e2e8f0;padding:35rpx 28rpx}.wallet-caption{color:#64748b;font-size:24rpx}.wallet-amount{font-size:46rpx;font-weight:770;margin:17rpx 0;overflow-wrap:anywhere;color:var(--kx-accent,#2476ce)}.wallet-info{font-size:24rpx;color:#64748b;padding:24rpx 0;line-height:1.65}.wallet-divider{border-bottom:1rpx solid #e2e8f0}.wallet-link{padding:26rpx 0;color:var(--kx-accent,#2476ce);font-size:26rpx}.kx-dark .wallet-card{background:#202629;border-color:#475569}</style>

@@ -1,8 +1,9 @@
-import {computed,ref} from 'vue';
+import {computed,ref,getCurrentScope,onScopeDispose} from 'vue';
 import {primaryNavigation} from '@kuaixie/sdk';
 import {onShow} from '@dcloudio/uni-app';
 import {api} from '../api/client';
-import {getBearer,clearBearer,type MyProfile,type MyWallet,type MyNotification} from '@kuaixie/sdk';
+import {getBearer,clearBearer,subscribeSession,type MyProfile,type MyWallet,type MyNotification} from '@kuaixie/sdk';
+import {queuePublishEntry} from '../utils/publishEntry';
 import {formatAmount,t,getLocale,setLocale} from '@kuaixie/i18n';
 import {preferenceRef} from '@kuaixie/preferences/vue';
 import {mobilePreferenceStyle} from '../utils/prototype';
@@ -13,7 +14,11 @@ export function useMineOriginalPage(){
   const prefs=preferenceRef;
   const profile=ref<MyProfile|null>(null),wallet=ref<MyWallet|null>(null);
   const unread=ref<number|null>(null),loading=ref(false),error=ref('');
-  const signedIn=computed(()=>Boolean(getBearer()));
+  const session=ref(getBearer());let active=true,generation=0;
+  const signedIn=computed(()=>Boolean(session.value));
+  function clearPrivate(){profile.value=null;wallet.value=null;unread.value=null;error.value='';loading.value=false}
+  const unsubscribe=subscribeSession(()=>{generation++;session.value=getBearer();clearPrivate()});
+  if(getCurrentScope())onScopeDispose(()=>{active=false;generation++;unsubscribe();clearPrivate()});
   const nickname=computed(()=>profile.value?.nickname||t('mine.wechatUser'));
   const score=computed(()=>profile.value?.performance_score);
   const verified=computed(()=>profile.value?.carrier_verify_status==='approved');
@@ -21,9 +26,11 @@ export function useMineOriginalPage(){
   const isEnterprise=computed(()=>profile.value?.user_role==='enterprise');
   const isAdmin=computed(()=>Boolean((profile.value as (MyProfile & {is_admin?:boolean})|null)?.is_admin));
   async function reload(){
-    if(!getBearer()){profile.value=null;wallet.value=null;unread.value=null;error.value='';return}
+    if(!active)return;const current=++generation,bearer=getBearer();
+    if(!bearer){clearPrivate();return}
     loading.value=true;error.value='';
     const results=await Promise.allSettled([api.account.profile(),api.account.wallet(),api.account.notifications(100,0)]);
+    if(!active||current!==generation||bearer!==getBearer())return;
     if(results[0].status==='fulfilled')profile.value=results[0].value;else{profile.value=null;error.value='mine.profileUnavailable'}
     wallet.value=results[1].status==='fulfilled'?results[1].value:null;
     unread.value=results[2].status==='fulfilled'?results[2].value.filter((x:MyNotification)=>!x.read_flag).length:null;
@@ -36,12 +43,17 @@ export function useMineOriginalPage(){
   }
   function unavailable(){uni.showToast({title:t('mine.unavailable'),icon:'none',duration:2400})}
   function select(item:string){
+    if(item==='publishTrip'||item==='publishDemand'){
+      if(queuePublishEntry(item==='publishTrip'?'trip':'demand'))uni.switchTab({url:'/pages/publish-hub/index'});
+      return;
+    }
     const routes:Record<string,[string,boolean?]>={
       orders:['my-orders'],wallet:['my-wallet'],notice:['my-notifications'],support:['support-center'],
       profile:['settings/profile'],publishTrip:['publish-hub',true],myTrips:['my-trips'],
       publishDemand:['publish-hub',true],buyerKyc:['buyer-verify'],carrierKyc:['carrier-verify'],enterpriseKyc:['enterprise-verify'],
       assist:['assist'],invoice:['invoice-request'],community:['demand-pool',true],myProducts:['my-products'],favorites:['favorites'],cart:['cart'],address:['address-book'],
       invites:['invite'],team:['invite-team'],inviteShare:['invite-share'],inviteApply:['invite-apply'],announcements:['announcements'],shipments:['my-shipments'],
+      myDemands:['my-demands'],shop:['my-shop'],insurance:['my-insurance'],disputes:['my-disputes'],refunds:['my-refunds'],services:['services'],inviteTier:['invite-tier'],
       settings:['settings'],appearance:['settings/appearance'],admin:['admin'],login:['login']
     };
     const route=routes[item];if(!route){unavailable();return}

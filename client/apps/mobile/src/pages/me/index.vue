@@ -42,6 +42,7 @@ const {prefs,profile,wallet,unread,loading,error,signedIn,nickname,score,verifie
       <MineRow icon="i-mdi-airplane" :label="$t('mine.publishTrip')" :value="!verified?$t('mine.needCarrierVerifyShort'):undefined" @press="select('publishTrip')"/>
       <MineRow icon="i-mdi-map-marker-path" :label="$t('hub.myTrips')" @press="select('myTrips')"/>
       <MineRow icon="i-mdi-clipboard-search-outline" :label="$t('mine.publishDemand')" :value="!buyerVerified?$t('mine.needRealnameShort'):undefined" @press="select('publishDemand')"/>
+      <MineRow icon="i-mdi-clipboard-text-outline" :label="$t('account.myDemands')" @press="select('myDemands')"/>
       <MineRow icon="i-mdi-account-check-outline" :label="$t('mine.buyerKyc')" :value="statusLabel(profile?.buyer_verify_status)" @press="select('buyerKyc')"/>
       <MineRow icon="i-mdi-card-account-details-outline" :label="$t('mine.carrierKyc')" :value="statusLabel(profile?.carrier_verify_status)" @press="select('carrierKyc')"/>
       <MineRow v-if="isEnterprise" icon="i-mdi-domain" :label="$t('mine.enterpriseKyc')" :value="statusLabel(profile?.enterprise_verify_status)" @press="select('enterpriseKyc')"/>
@@ -52,17 +53,25 @@ const {prefs,profile,wallet,unread,loading,error,signedIn,nickname,score,verifie
       <MineRow icon="i-mdi-receipt-text-outline" :label="$t('mine.invoiceRow')" @press="select('invoice')"/>
       <MineRow icon="i-mdi-hand-back-right-outline" :label="$t('mine.assistRow')" :desc="$t('mine.assistDesc')" @press="select('assist')"/>
     </MineGroup>
+    <MineGroup :title="$t('mobileBusiness.group')">
+      <MineRow icon="i-mdi-storefront-outline" :label="$t('shop.title')" :desc="$t('mobileBusiness.shopDesc')" @press="select('shop')"/>
+      <MineRow icon="i-mdi-shield-check-outline" :label="$t('insurance.application')" :desc="$t('mobileBusiness.insuranceDesc')" @press="select('insurance')"/>
+      <MineRow icon="i-mdi-file-document-outline" :label="$t('case.title')" :desc="$t('mobileBusiness.disputesDesc')" @press="select('disputes')"/>
+      <MineRow icon="i-mdi-cash-refund" :label="$t('refund.title')" :desc="$t('mobileBusiness.refundsDesc')" @press="select('refunds')"/>
+    </MineGroup>
     <MineGroup :title="$t('mine.groupCommunity')">
       <MineRow icon="i-mdi-forum-outline" :label="$t('mine.communityRow')" :desc="$t('mine.communityDesc')" @press="select('community')"/>
       <MineRow icon="i-mdi-bullhorn-outline" :label="$t('mine.announceRow')" :desc="$t('mine.announceDesc')" @press="select('announcements')"/>
     </MineGroup>
     <MineGroup :title="$t('mine.groupInvite')">
       <MineRow icon="i-mdi-account-plus-outline" :label="$t('mine.inviteRewards')" @press="select('invites')"/>
+      <MineRow icon="i-mdi-crown-outline" :label="$t('v15.inviteTier')" @press="select('inviteTier')"/>
       <MineRow icon="i-mdi-crown-outline" :label="$t('mine.myTeam')" @press="select('team')"/>
       <MineRow icon="i-mdi-share-variant" :label="$t('mine.sendInvite')" @press="select('inviteShare')"/>
       <MineRow icon="i-mdi-email-open-outline" :label="$t('mine.joinApply')" @press="select('inviteApply')"/>
     </MineGroup>
     <MineGroup :title="$t('mine.groupOther')">
+      <MineRow icon="i-mdi-view-grid-outline" :label="$t('fast.myServices')" @press="select('services')"/>
       <MineRow v-if="isAdmin" icon="i-mdi-shield-account" :label="$t('mine.adminEntry')" :desc="$t('mine.adminDesc')" @press="select('admin')"/>
       <MineRow icon="i-mdi-palette-swatch-outline" :label="$t('settings.appearance')" :desc="$t('mine.appearanceDesc')" @press="select('appearance')"/>
       <MineRow icon="i-mdi-cog-outline" :label="$t('mine.settingsRow')" :desc="$t('mine.settingsDesc')" @press="select('settings')"/>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ProductPublishingMobile from '../../components/ProductPublishingMobile.vue';
 import {usePublishHubPage} from '../../stores/usePublishHubPage';
-const {prefs,rootStyle,selected,region,busy,notice,demand,trip,post,transportOptions,transportTitle,changeMode,changeRegion,pickDate,transportChange,submit} = usePublishHubPage();
+const {prefs,rootStyle,selected,region,busy,notice,error,unconfirmed,sessionScope,acknowledgeUnconfirmed,login,demand,trip,post,transportOptions,transportTitle,changeMode,changeRegion,pickDate,transportChange,submit} = usePublishHubPage();
 </script>
 <template>
 <view class="publish-page" :class="{'kx-care':prefs.care,'kx-dark':prefs.theme==='dark','kx-reduce-motion':prefs.reduceMotion}" :style="rootStyle">
@@ -12,26 +12,29 @@ const {prefs,rootStyle,selected,region,busy,notice,demand,trip,post,transportOpt
   <view class="choice" :class="{selected:selected==='product'}" @click="changeMode('product')"><view class="choice-icon">▣</view><view class="choice-copy"><view>{{ $t('product.title') }}</view><text>{{ $t('product.help') }}</text></view><view class="choice-radio"/></view>
   <view class="choice" :class="{selected:selected==='life'}" @click="changeMode('life')"><view class="choice-icon">♡</view><view class="choice-copy"><view>{{ $t('portal.publish.life') }}</view><text>{{ $t('portal.publish.lifeDesc') }}</text></view><view class="choice-radio"/></view>
  </view>
- <ProductPublishingMobile v-if="selected==='product'"/>
+ <ProductPublishingMobile v-if="selected==='product'" :key="sessionScope"/>
  <view v-else class="editor-card">
   <template v-if="selected!=='life'"><view class="label">{{ $t('portal.publish.region') }}</view><view class="region-options"><view class="region-option" :class="{active:region==='domestic'}" @click="changeRegion('domestic')">{{ $t('portal.square.domestic') }}</view><view class="region-option" :class="{active:region==='international'}" @click="changeRegion('international')">{{ $t('portal.square.international') }}</view></view></template>
   <template v-if="selected==='demand'">
-   <view class="label">{{ $t('portal.publish.demandTitle') }} *</view><input v-model="demand.title" class="field" maxlength="200" :placeholder="$t('portal.publish.demandTitle')"/>
-   <view class="label">{{ $t('portal.publish.demandDescription') }}</view><textarea v-model="demand.description" class="field description" maxlength="4000" :placeholder="$t('portal.publish.demandDescription')"/>
-   <view class="label">{{ $t('portal.publish.city') }}</view><input v-model="demand.city" class="field" maxlength="64" :placeholder="$t('portal.publish.city')"/>
-   <view class="label">{{ $t('portal.publish.budget') }}</view><input v-model="demand.expectPrice" class="field" type="digit" :placeholder="$t('portal.publish.budget')"/>
+   <view class="label">{{ $t('portal.publish.demandTitle') }} *</view><input :disabled="busy||unconfirmed" v-model="demand.title" class="field" maxlength="200" :placeholder="$t('portal.publish.demandTitle')"/>
+   <view class="label">{{ $t('portal.publish.demandDescription') }}</view><textarea :disabled="busy||unconfirmed" v-model="demand.description" class="field description" maxlength="4000" :placeholder="$t('portal.publish.demandDescription')"/>
+   <view class="label">{{ $t('portal.publish.city') }}</view><input :disabled="busy||unconfirmed" v-model="demand.city" class="field" maxlength="64" :placeholder="$t('portal.publish.city')"/>
+   <view class="label">{{ $t('portal.publish.budget') }}</view><input :disabled="busy||unconfirmed" v-model="demand.expectPrice" class="field" type="digit" :placeholder="$t('portal.publish.budget')"/>
   </template>
   <template v-else-if="selected==='trip'">
-   <view class="label">{{ $t('portal.publish.origin') }} *</view><input v-model="trip.originCity" maxlength="64" class="field" :placeholder="$t('portal.publish.origin')"/>
-   <view class="label">{{ $t('portal.publish.destination') }} *</view><input v-model="trip.destination" maxlength="128" class="field" :placeholder="$t('portal.publish.destination')"/>
-   <view class="form-row"><view class="form-column"><view class="label">{{ $t('portal.publish.depart') }} *</view><picker mode="date" @change="pickDate('departDate',$event)"><view class="field select-field">{{trip.departDate||$t('portal.publish.depart')}}</view></picker></view><view class="form-column"><view class="label">{{ $t('portal.publish.return') }} *</view><picker mode="date" @change="pickDate('returnDate',$event)"><view class="field select-field">{{trip.returnDate||$t('portal.publish.return')}}</view></picker></view></view>
-   <view class="form-row"><view class="form-column"><view class="label">{{ $t('portal.publish.transport') }}</view><picker :range="transportOptions.map(transportTitle)" :value="transportOptions.indexOf(trip.transportMode)" @change="transportChange"><view class="field select-field">{{transportTitle(trip.transportMode)}}</view></picker></view><view class="form-column"><view class="label">{{ $t('portal.publish.capacity') }}</view><input v-model="trip.capacityQty" class="field" type="number"/></view></view>
+   <view class="label">{{ $t('portal.publish.origin') }} *</view><input :disabled="busy||unconfirmed" v-model="trip.originCity" maxlength="64" class="field" :placeholder="$t('portal.publish.origin')"/>
+   <view class="label">{{ $t('portal.publish.destination') }} *</view><input :disabled="busy||unconfirmed" v-model="trip.destination" maxlength="128" class="field" :placeholder="$t('portal.publish.destination')"/>
+   <view class="form-row"><view class="form-column"><view class="label">{{ $t('portal.publish.depart') }} *</view><picker :disabled="busy||unconfirmed" mode="date" @change="pickDate('departDate',$event)"><view class="field select-field">{{trip.departDate||$t('portal.publish.depart')}}</view></picker></view><view class="form-column"><view class="label">{{ $t('portal.publish.return') }} *</view><picker :disabled="busy||unconfirmed" mode="date" @change="pickDate('returnDate',$event)"><view class="field select-field">{{trip.returnDate||$t('portal.publish.return')}}</view></picker></view></view>
+   <view class="form-row"><view class="form-column"><view class="label">{{ $t('portal.publish.transport') }}</view><picker :disabled="busy||unconfirmed" :range="transportOptions.map(transportTitle)" :value="transportOptions.indexOf(trip.transportMode)" @change="transportChange"><view class="field select-field">{{transportTitle(trip.transportMode)}}</view></picker></view><view class="form-column"><view class="label">{{ $t('portal.publish.capacity') }}</view><input :disabled="busy||unconfirmed" v-model="trip.capacityQty" class="field" type="number"/></view></view>
    <view class="hint">{{ $t('portal.publish.tripEligibility') }}</view>
   </template>
-  <template v-else><view class="label">{{ $t('portal.publish.life') }}</view><textarea v-model="post.caption" class="field description" maxlength="4000" :placeholder="$t('portal.publish.lifeDesc')"/></template>
+  <template v-else><view class="hint">{{$t('portal.publish.textOnly')}}</view><view class="label">{{ $t('portal.publish.life') }}</view><textarea :disabled="busy||unconfirmed" v-model="post.caption" class="field description" maxlength="4000" :placeholder="$t('portal.publish.lifeDesc')"/></template>
   <view class="hint">{{ $t('portal.publish.note') }}</view>
-  <button class="submit" :disabled="busy" @click="submit">{{busy?$t('portal.chat.sending'):$t('portal.publish.submit')}}</button>
-  <view v-if="notice" class="notice">{{ $t(notice) }}</view>
+  <button class="submit" :disabled="busy||unconfirmed" @click="submit">{{busy?$t('portal.chat.sending'):$t('portal.publish.submit')}}</button>
+  <view v-if="notice" class="notice" role="status">{{ $t(notice) }}</view>
+  <view v-if="error" class="notice" role="alert">{{error}}</view>
+  <button v-if="unconfirmed" class="submit" @click="acknowledgeUnconfirmed">{{$t('portal.publish.checkedRecords')}}</button>
+  <button v-if="notice==='portal.publish.login'" class="submit" @click="login">{{$t('portal.publish.goLogin')}}</button>
   <view class="review-note">{{ $t('portal.publish.review') }}</view>
  </view>
 </view>

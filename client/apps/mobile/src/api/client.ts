@@ -1,5 +1,5 @@
 import {t,getLocale,uiErrorMessage} from '@kuaixie/i18n';
-import {createApiClient,ApiError,getBearer,type Transport,type TransportRequest} from '@kuaixie/sdk';
+import {createApiClient,ApiError,getBearer,subscribeSession,type Transport,type TransportRequest} from '@kuaixie/sdk';
 /** H5: empty base uses Vite rewrite to kuaixietech-v1/server :8080. WeChat/App have no proxy. */
 let baseUrl=import.meta.env.VITE_API_BASE_URL||'';
 // #ifdef MP-WEIXIN || APP-PLUS
@@ -19,10 +19,46 @@ export const api=createApiClient(uniTransport,{baseUrl,getToken:getBearer,getLoc
 export function showError(e:unknown){const detail=uiErrorMessage(e);uni.showModal({title:t('common.apiCallFailure'),content:detail.slice(0,500),showCancel:false})}
 export {navigate} from '../router';
 
-export async function uploadPrivateImage(purpose:string,options?:{onSelected?:(path:string)=>void;beforeUpload?:()=>boolean}):Promise<import('@kuaixie/sdk').UploadedDocument>{const session=getBearer();if(options?.beforeUpload?.()===false)throw new Error(t('productMedia.sessionChanged'));const selected=await uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera']});const path=selected.tempFilePaths[0];if(!path)throw new Error(t('upload.cancelled'));if(getBearer()!==session)throw new Error(t('upload.sessionChanged'));if(options?.beforeUpload?.()===false)throw new Error(t('productMedia.sessionChanged'));options?.onSelected?.(path);if(getBearer()!==session)throw new Error(t('upload.sessionChanged'));const target=api.files.uploadTarget(purpose);return new Promise((resolve,reject)=>{uni.uploadFile({url:javaUrl(target.url),filePath:path,name:'file',header:target.headers,timeout:45000,success:response=>{try{if(response.statusCode<200||response.statusCode>=300)throw new ApiError('UPLOAD_SERVICE_UNAVAILABLE',response.statusCode);const data=JSON.parse(response.data);if(!data.id)throw new Error('UPLOAD_SERVICE_UNAVAILABLE');resolve(data)}catch(e){reject(e)}},fail:()=>reject(new ApiError('API_NETWORK_ERROR',0))})})}
-export async function viewPrivateDocument(id:string,mime='application/pdf'){const target=api.files.uploadTarget('store_license');const url=target.url.replace(/\/uploads\?.*$/,'/uploads/'+encodeURIComponent(id)+'/content');return new Promise<void>((resolve,reject)=>{uni.downloadFile({url:javaUrl(url),header:target.headers,success:response=>{if(response.statusCode!==200){reject(new Error(t('upload.unavailable')));return}if(mime.startsWith('image/')){uni.previewImage({urls:[response.tempFilePath],success:()=>resolve(),fail:reject})}else{uni.openDocument({filePath:response.tempFilePath,showMenu:false,fileType:'pdf',success:()=>resolve(),fail:reject})}},fail:reject})})}
+// A token can return to the same value after a logout/login. Epochs still invalidate old native callbacks.
+let fileSessionEpoch=0;
+subscribeSession(()=>{fileSessionEpoch++});
+function fileSession(){const token=getBearer(),epoch=fileSessionEpoch;return ()=>getBearer()===token&&fileSessionEpoch===epoch}
+function requireFileSession(current:()=>boolean){if(!current())throw new Error(t('upload.sessionChanged'))}
+function fileFailure(current:()=>boolean,error:unknown){return current()?error:new Error(t('upload.sessionChanged'))}
 
-export async function downloadPrivateFile(id:string,purpose='store_license'):Promise<string>{const target=api.files.uploadTarget(purpose);const url=target.url.replace(/\/uploads\?.*$/,'/uploads/'+encodeURIComponent(id)+'/content');return new Promise((resolve,reject)=>{uni.downloadFile({url:javaUrl(url),header:target.headers,success:response=>{if(response.statusCode!==200){reject(new ApiError('UPLOAD_SERVICE_UNAVAILABLE',response.statusCode));return}resolve(response.tempFilePath)},fail:()=>reject(new ApiError('API_NETWORK_ERROR',0))})})}
+export async function uploadPrivateImage(purpose:string,options?:{onSelected?:(path:string)=>void;beforeUpload?:()=>boolean}):Promise<import('@kuaixie/sdk').UploadedDocument>{
+ const current=fileSession();
+ if(options?.beforeUpload?.()===false)throw new Error(t('productMedia.sessionChanged'));
+ const selected=await uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera']});
+ requireFileSession(current);
+ const path=selected.tempFilePaths[0];if(!path)throw new Error(t('upload.cancelled'));
+ if(options?.beforeUpload?.()===false)throw new Error(t('productMedia.sessionChanged'));
+ options?.onSelected?.(path);requireFileSession(current);
+ const target=api.files.uploadTarget(purpose);
+ return new Promise((resolve,reject)=>{uni.uploadFile({url:javaUrl(target.url),filePath:path,name:'file',header:target.headers,timeout:45000,
+  success:response=>{try{requireFileSession(current);if(response.statusCode<200||response.statusCode>=300)throw new ApiError('UPLOAD_SERVICE_UNAVAILABLE',response.statusCode);const data=JSON.parse(response.data);if(typeof data.id!=='string'||!data.id)throw new Error('UPLOAD_SERVICE_UNAVAILABLE');resolve(data)}catch(e){reject(e)}},
+  fail:()=>reject(fileFailure(current,new ApiError('API_NETWORK_ERROR',0)))
+ })});
+}
+export async function viewPrivateDocument(id:string,mime='application/pdf'){
+ const current=fileSession();
+ const path=await downloadPrivateFile(id);requireFileSession(current);
+ return new Promise<void>((resolve,reject)=>{
+  const done=()=>{try{requireFileSession(current);resolve()}catch(e){reject(e)}};
+  const fail=(e:unknown)=>reject(fileFailure(current,e));
+  requireFileSession(current);
+  if(mime.startsWith('image/'))uni.previewImage({urls:[path],success:done,fail});
+  else uni.openDocument({filePath:path,showMenu:false,fileType:'pdf',success:done,fail});
+ });
+}
+export async function downloadPrivateFile(id:string,purpose='store_license'):Promise<string>{
+ const current=fileSession(),target=api.files.uploadTarget(purpose);
+ const url=target.url.replace(/\/uploads\?.*$/,'/uploads/'+encodeURIComponent(id)+'/content');
+ return new Promise((resolve,reject)=>{uni.downloadFile({url:javaUrl(url),header:target.headers,
+  success:response=>{try{requireFileSession(current);if(response.statusCode!==200)throw new ApiError('UPLOAD_SERVICE_UNAVAILABLE',response.statusCode);if(!response.tempFilePath)throw new Error(t('upload.unavailable'));resolve(response.tempFilePath)}catch(e){reject(e)}},
+  fail:()=>reject(fileFailure(current,new ApiError('API_NETWORK_ERROR',0)))
+ })});
+}
 
 /** Public images use the same origin/API rewrite as other native requests, without authentication in the URL. */
 export function publicMediaUrl(path:string){return javaUrl(api.files.publicUrl(path))}

@@ -15,8 +15,8 @@ function open(url: string){uni.navigateTo({url})}
 function press(type: 'product' | 'demand' | 'trip' | 'order'){
  if(chosen(type) && dead()) return;
  const id = chosen(type) ? linkedId() : '';
- if(type === 'product') open(id ? '/pages/my-products/index?id=' + encodeURIComponent(id) : '/pages/my-products/index');
- else if(type === 'demand') open(id ? '/pages/demand-detail/index?id=' + encodeURIComponent(id) : '/pages/demand-detail/index');
+ if(type === 'product') open(id ? '/pages/product-detail/index?id=' + encodeURIComponent(id) : '/pages/catalog/index');
+ else if(type === 'demand'){if(id)open('/pages/demand-detail/index?id='+encodeURIComponent(id));else uni.switchTab({url:'/pages/index/index'})}
  else if(type === 'trip') open(id ? '/pages/trip-detail/index?id=' + encodeURIComponent(id) : '/pages/trips/index');
  else open('/pages/my-orders/index');
 }

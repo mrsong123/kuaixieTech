@@ -45,7 +45,7 @@ onMounted(()=>{if((props.role||'buyer')==='buyer')void p.loadRecords()});
       <view v-if="p.eventsLoading.value" class="op-muted">{{t('account.loading')}}</view>
       <view v-for="event in p.events.value" :key="event.id" class="escrow-event">
         <view>{{formatDate(event.createdAt)}}</view>
-        <view>{{event.detail}}</view>
+        <view>{{t(event.action==='wallet_refunded'?'escrowRefund.walletRecorded':'escrowRefund.eventRecorded')}}</view>
       </view>
       <view v-if="!p.events.value.length&&!p.eventsLoading.value" class="op-muted">{{t('escrowRefund.noEvents')}}</view>
       <button v-if="p.moreEvents.value" :disabled="p.eventsLoading.value" @click="p.loadEvents(p.eventsId.value,true)">{{t('escrowRefund.more')}}</button>

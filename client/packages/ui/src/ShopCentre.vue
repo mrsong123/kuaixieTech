@@ -5,8 +5,8 @@ import {t,formatAmount,formatDate,uiErrorMessage} from '@kuaixie/i18n';
 import ShopOrders from './ShopOrders.vue';
 import {useShop,shopStatusKey} from './useShop';
 const props=defineProps<{client:ApiClient;admin?:boolean}>();const p=useShop(props.client,async(a,b)=>window.confirm(a+'\n'+b),'web',!!props.admin),product=ref(''),selectedOrders=ref<{id:string;name:string}|null>(null);
-async function upload(event:Event){const input=event.target as HTMLInputElement,file=input.files?.[0];if(!file)return;await p.run(async()=>{const result=await props.client.files.upload(file,file.name,'store_license');p.application.licenseUploadId=result.id});input.value=''}
-async function download(id:string){try{const bytes=await props.client.files.download(id),url=URL.createObjectURL(new Blob([bytes],{type:'application/octet-stream'}));const a=document.createElement('a');a.href=url;a.download='license-'+id;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){p.error.value=uiErrorMessage(e)}}
+async function upload(event:Event){const input=event.target as HTMLInputElement,file=input.files?.[0];if(!file)return;await p.run(async()=>{const result=await props.client.files.upload(file,file.name,'store_license');if(p.isCurrent())p.application.licenseUploadId=result.id});input.value=''}
+async function download(id:string){try{if(!p.isCurrent())return;const bytes=await props.client.files.download(id);if(!p.isCurrent())return;const url=URL.createObjectURL(new Blob([bytes],{type:'application/octet-stream'}));const a=document.createElement('a');a.href=url;a.download='license-'+id;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){if(p.isCurrent())p.error.value=uiErrorMessage(e)}}
 onMounted(()=>{void p.load();if(!props.admin)void p.loadProducts()});
 </script>
 <template><section class="shop-centre business-card"><h2>{{t('shop.title')}}</h2><p>{{t('shop.boundary')}}</p><p v-if="p.error.value" role="alert">{{p.error.value}}</p><p v-if="p.notice.value" role="status">{{p.notice.value}}</p><button :disabled="p.loading.value||p.busy.value" @click="p.load()">{{t('common.retry')}}</button>

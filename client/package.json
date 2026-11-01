@@ -53,7 +53,13 @@
     "test:shop-orders": "node scripts/verify-shop-orders.mjs",
     "test:coupler-settings": "node scripts/verify-coupler-settings.mjs",
     "test:product-media": "node scripts/verify-product-media.mjs",
-    "test:escrow-refunds": "node scripts/verify-escrow-refunds.mjs"
+    "test:escrow-refunds": "node scripts/verify-escrow-refunds.mjs",
+    "test:publish-composer": "node scripts/verify-publish-composer.mjs",
+    "test:shop-session": "node scripts/verify-shop-session.mjs",
+    "test:insurance-session": "node scripts/verify-insurance-session.mjs",
+    "test:native-file-session": "node scripts/verify-native-file-session.mjs",
+    "test:wallet-session": "node scripts/verify-wallet-session.mjs",
+    "test:mobile-business": "node scripts/verify-mobile-business.mjs"
   },
   "devDependencies": {
     "typescript": "~5.9.3"

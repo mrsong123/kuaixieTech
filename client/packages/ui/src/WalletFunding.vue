@@ -26,12 +26,12 @@ const qr=computed(()=>{if(p.payment.value?.checkout?.kind!=='qr_text')return '';
    <p>{{$t('pay.rate')}}: 1 CNY = {{p.quote.value.rate}} {{p.quote.value.paymentCurrency}} · {{$t('pay.fxMarkup')}}: {{(p.quote.value.spreadBps/100).toFixed(2)}}%</p>
    <p>{{$t('pay.issuerFees')}}</p><p>{{$t('pay.rateAsOf')}}: {{p.quote.value.rateAsOf}}</p><p>{{$t('pay.expires')}}: {{p.quote.value.expiresAt}}</p>
   </div>
-  <button v-if="(p.quote.value||p.pending.value)&&!p.payment.value" :disabled="p.busy.value" @click="p.confirm">{{$t(p.pending.value?'v15.retry':'pay.confirm')}}</button>
+  <button v-if="(p.quote.value||p.pending.value)&&!p.payment.value" :disabled="p.busy.value" @click="p.confirm()">{{$t(p.pending.value?'v15.retry':'pay.confirm')}}</button>
   <div v-if="p.payment.value" class="quote">
    <p>{{$t(paymentStateKey(p.payment.value.status))}} · {{p.payment.value.paymentAmount}} {{p.payment.value.paymentCurrency}}</p>
    <img v-if="qr" :src="qr" :alt="$t('pay.scan')"/>
    <a v-if="p.payment.value.status!=='paid'&&p.payment.value.checkout?.kind==='redirect'" :href="p.payment.value.checkout.value" target="_blank" rel="noopener noreferrer">{{$t('pay.openCheckout')}}</a>
-   <button :disabled="p.busy.value" @click="p.refresh">{{$t('pay.refresh')}}</button>
+   <button :disabled="p.busy.value" @click="p.refresh()">{{$t('pay.refresh')}}</button>
    <button v-if="p.payment.value.status==='paid'" @click="p.again">{{$t('pay.newPayment')}}</button>
    <p>{{$t('pay.verifiedOnly')}}</p>
   </div>
