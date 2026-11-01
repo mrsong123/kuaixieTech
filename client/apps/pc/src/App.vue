@@ -8,6 +8,8 @@ import ProductsView from '@/views/ProductsView.vue';
 import TripsView from '@/views/TripsView.vue';
 import RouteView from '@/views/RouteView.vue';
 import CommunityView from '@/views/CommunityView.vue';
+import BusinessView from '@/views/BusinessView.vue';
+import WorkbenchView from '@/views/WorkbenchView.vue';
 import BusinessCenterView from '@/views/BusinessCenterView.vue';
 const site=useSiteStore();
 provideSiteStore(site);
@@ -18,9 +20,11 @@ const {page,sessionScope}=site;
     <SiteHeader />
     <HomeView v-if="page==='home'" />
     <ProductsView v-else-if="page==='products'" />
-    <TripsView v-else-if="page==='trips'" />
-    <RouteView v-else-if="page==='route'" />
-    <CommunityView v-else-if="page==='community'" />
+    <TripsView v-else-if="page==='trips'" :key="sessionScope"/>
+    <RouteView v-else-if="page==='route'" :key="sessionScope"/>
+    <CommunityView v-else-if="page==='community'" :key="sessionScope"/>
+    <BusinessView v-else-if="page==='business'" :key="sessionScope"/>
+    <WorkbenchView v-else-if="page==='workspace'" :key="sessionScope"/>
     <BusinessCenterView v-else :key="sessionScope"/>
     <SiteOverlays />
   </div>

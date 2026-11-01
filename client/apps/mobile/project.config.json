@@ -1,0 +1,16 @@
+{
+  "description": "UniApp 微信发行工程；先在 client 运行 pnpm build:mp-weixin，再导入本目录。开发模式直接导入 dist/dev/mp-weixin。",
+  "projectname": "kuaixie-mobile",
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "dist/build/mp-weixin/",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "postcss": false,
+    "minified": true
+  }
+}

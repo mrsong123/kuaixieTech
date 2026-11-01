@@ -3,7 +3,23 @@ export type AdminTabKey=
   |'overview'|'carrierKyc'|'buyerKyc'|'enterpriseKyc'|'trips'|'proofRecipes'|'products'|'categories'|'errorLogs'
   |'paymentRefunds'|'shops'|'orders'|'cancels'|'disputes'|'support'|'invoices'|'violations'|'privacyPool'|'pools'|'demands'|'notifyQueue'|'withdrawals'|'community'
   |'distribution'|'users'|'finance'|'invite'|'broadcast'|'channelConfigs'|'locales';
-export type Section=AdminTabKey|'settings'|'all'|'businessCoverage';
+export type Section=AdminTabKey|'settings'|'all'|'businessCoverage'|'integrations'|'business';
+
+export const TODO_QUEUES:{stat:string;tab:AdminTabKey;labelKey:string}[]=[
+  {stat:'todo_carrier_kyc',tab:'carrierKyc',labelKey:'admin.tab.carrierKyc'},
+  {stat:'todo_buyer_kyc',tab:'buyerKyc',labelKey:'admin.tab.buyerKyc'},
+  {stat:'todo_trips',tab:'trips',labelKey:'admin.tab.trips'},
+  {stat:'todo_products',tab:'products',labelKey:'admin.tab.products'},
+  {stat:'todo_disputes',tab:'disputes',labelKey:'admin.tab.disputes'},
+  {stat:'todo_cancels',tab:'cancels',labelKey:'admin.tab.cancels'},
+  {stat:'todo_pools',tab:'pools',labelKey:'admin.tab.pools'},
+  {stat:'todo_demands',tab:'demands',labelKey:'admin.tab.demands'},
+  {stat:'todo_support',tab:'support',labelKey:'admin.tab.support'},
+  {stat:'todo_invoices',tab:'invoices',labelKey:'admin.tab.invoices'},
+  {stat:'todo_violations',tab:'violations',labelKey:'admin.tab.violations'},
+  {stat:'risk_orders',tab:'orders',labelKey:'admin.tab.orders'},
+];
+
 
 export const ADMIN_GROUPS:{key:AdminGroupKey;labelKey:string;tabs:{key:AdminTabKey;labelKey:string;badge?:string}[]}[]=[
   {key:'core',labelKey:'admin.group.core',tabs:[{key:'overview',labelKey:'admin.tab.overview'}]},

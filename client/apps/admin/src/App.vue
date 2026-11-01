@@ -10,16 +10,18 @@ import AdminTopbar from '@/components/AdminTopbar.vue';
 import AdminPageHeader from '@/components/AdminPageHeader.vue';
 import AdminFooter from '@/components/AdminFooter.vue';
 import SettingsView from '@/views/SettingsView.vue';
+import IntegrationsView from '@/views/IntegrationsView.vue';
+import BusinessView from '@/views/BusinessView.vue';
 import OperationsView from '@/views/OperationsView.vue';
 import ConsoleView from '@/views/ConsoleView.vue';
 import BusinessCoverageView from '@/views/BusinessCoverageView.vue';
 import LoginView from '@/views/LoginView.vue';
 const admin=useAdminStore();provideAdminStore(admin);
-const {section,token,go}=admin;
+const {section,token,go,sessionScope}=admin;
 </script>
 <template>
  <LoginView v-if="!token"/>
- <div v-else class="admin-shell">
+ <div v-else :key="sessionScope" class="admin-shell">
    <AdminSidebar />
    <div class="admin-main">
      <AdminTopbar />
@@ -27,6 +29,8 @@ const {section,token,go}=admin;
        <AdminPageHeader />
        <nav v-if="section==='shops'||section==='disputes'||section==='paymentRefunds'" class="workflow-tabs"><button v-for="tab in ADMIN_GROUPS.find(g=>g.key==='trade')?.tabs||[]" :key="tab.key" :class="{active:section===tab.key}" @click="go(tab.key)">{{$t(tab.labelKey)}}</button></nav>
        <SettingsView v-if="section==='settings'" />
+       <IntegrationsView v-else-if="section==='integrations'"/>
+       <BusinessView v-else-if="section==='business'"/>
        <BusinessCoverageView v-else-if="section==='businessCoverage'"/>
        <OperationsView v-else-if="section==='all'" />
        <PaymentRefunds v-else-if="section==='paymentRefunds'" :client="admin.api" admin/>

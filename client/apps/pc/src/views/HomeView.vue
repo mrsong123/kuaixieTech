@@ -1,20 +1,191 @@
 <script setup lang="ts">
-import {computed,onMounted,ref} from 'vue';
-import {getBearer,squareReaches,squareReachTitle,tripReach,type SquareReach,categoryCountryCodes,catalogMatch,squareTripMatches,squareDemandMatches,productCountryMatches,tripAvailability,type PublicDemand,type SquareRegion,type VerifiedPortalRole} from '@kuaixie/sdk';
-import {formatAmount,formatDate,transportLabel,uiErrorMessage} from '@kuaixie/i18n';
+import {ArrowUpRight, ArrowRight, MapPin, PackageOpen} from 'lucide-vue-next';
+import {transportLabel} from '@kuaixie/i18n';
+import {tripAvailability} from '@kuaixie/sdk';
 import {useSiteContext} from '../stores/context';
-const {api,trips,products,categories,search,selectedItem,refresh,nav}=useSiteContext();
-const demands=ref<PublicDemand[]>([]),role=ref<VerifiedPortalRole|null>(null),active=ref<'trips'|'demands'>('trips'),region=ref<SquareRegion>('all'),direction=ref('all'),reach=ref<SquareReach|''>(''),country=ref(''),busy=ref(false),error=ref('');
-const countryCodes=computed(()=>[...new Set(categories.value.flatMap(categoryCountryCodes))].sort());
-const visibleTrips=computed(()=>trips.value.filter(item=>squareTripMatches(item,search.value,region.value,direction.value)&&(!reach.value||tripReach(item.trip_type)===reach.value)));
-const visibleDemands=computed(()=>demands.value.filter(item=>squareDemandMatches(item,search.value,region.value)&&(!reach.value||tripReach(item.trip_type)===reach.value)));
-const matchingProducts=computed(()=>products.value.filter(item=>catalogMatch(item,search.value,null)&&productCountryMatches(item,categories.value,country.value)));
-async function load(){if(busy.value)return;busy.value=true;error.value='';await refresh();try{demands.value=await api.portal.demands(100);if(getBearer()){role.value=await api.portal.verifiedRole();if(role.value.user_role==='carrier'&&role.value.carrier_verify_status==='approved')active.value='demands';else if(role.value.user_role==='buyer')active.value='trips'}}catch(e){error.value=uiErrorMessage(e)}finally{busy.value=false}}
-onMounted(()=>{void load()});
+const {trips, demands, nav, date, money, selectedItem} = useSiteContext();
 </script>
-<template><main class="business-layout"><section class="business-card"><h1>{{$t('prototype.nav.square')}}</h1><p>{{$t(role?.user_role==='carrier'&&role.carrier_verify_status==='approved'?'portal.square.roleCarrier':role?.user_role==='buyer'?'portal.square.roleBuyer':'portal.square.rolesUnavailable')}}</p>
- <nav class="business-tabs"><button @click="nav('products')">{{$t('pc.nav.products')}}</button><button @click="nav('publish')">{{$t('portal.publish.title')}}</button><button @click="nav('me')">{{$t('fast.myServices')}}</button><button :disabled="busy" @click="load">{{$t('common.retry')}}</button></nav>
- <label>{{$t('home.searchPlaceholder')}}<input v-model="search" :placeholder="$t('home.searchPlaceholder')"/></label><div class="business-tabs"><button :aria-pressed="active==='trips'" @click="active='trips'">{{$t('pc.nav.trips')}}</button><button :aria-pressed="active==='demands'" @click="active='demands'">{{$t('portal.publish.demand')}}</button><select v-model="reach" :aria-label="$t('portal.publish.region')"><option value="">{{$t('common.all')}}</option><option v-for="scope in squareReaches" :key="scope" :value="scope">{{$t(squareReachTitle(scope))}}</option></select><select v-model="direction" :aria-label="$t('square.direction')"><option value="all">{{$t('common.all')}}</option><option value="outbound">{{$t('square.outbound')}}</option><option value="inbound">{{$t('square.inbound')}}</option></select></div><p v-if="error" role="alert">{{error}}</p>
- <template v-if="active==='trips'"><article v-for="row in visibleTrips" :key="row.id" class="business-item"><h3>{{row.destination}}</h3><p>{{formatDate(row.depart_date)}} → {{formatDate(row.return_date)}} · {{transportLabel(row.transport_mode)}}</p><p>{{$t('m2.trip.remaining')}} · {{tripAvailability(row)??$t('common.notProvided')}}</p><button @click="selectedItem=row">{{$t('account.details')}}</button></article></template>
- <template v-else><article v-for="row in visibleDemands" :key="row.id" class="business-item"><h3>{{row.title}}</h3><p>{{row.description}}</p><p>{{row.city}} · {{formatAmount(row.expect_price,'CNY')}}</p><a :href="'#services/pk-quotes?demandId='+encodeURIComponent(row.id)">{{$t('fast.flow.pk_quotes')}}</a></article></template>
- <h2>{{$t('pc.nav.products')}}</h2><select v-model="country" :aria-label="$t('prototype.plaza.countryAll')"><option value="">{{$t('prototype.plaza.countryAll')}}</option><option v-for="code in countryCodes" :key="code">{{code}}</option></select><div class="business-grid"><a v-for="item in matchingProducts" :key="item.id" :href="'#services/product-detail?id='+encodeURIComponent(item.id)"><strong>{{item.name}}</strong><p>{{formatAmount(item.price,'CNY')}}</p></a></div></section></main></template>
+<template>
+<main class="hall">
+  <section class="hall-hero">
+    <div class="container hall-hero-grid">
+      <div class="hall-copy">
+        <p class="hall-kicker">{{ $t('site.kicker') }}</p>
+        <h1>{{ $t('site.hero') }}</h1>
+        <p class="hall-lead">{{ $t('site.lead') }}</p>
+        <div class="hall-actions">
+          <button class="hall-cta" type="button" @click="nav('trips')">{{ $t('site.ctaTrips') }} <ArrowUpRight :size="18"/></button>
+          <button class="hall-ghost" type="button" @click="nav('route')">{{ $t('site.ctaDemand') }} <ArrowRight :size="17"/></button>
+        </div>
+      </div>
+      <aside class="hall-pass" aria-hidden="true">
+        <span class="hall-pass-stamp">KX</span>
+        <p class="hall-pass-label">{{ $t('site.pass') }}</p>
+        <div class="hall-pass-route">
+          <b>{{ $t('site.from') }}</b>
+          <i></i>
+          <b>{{ $t('site.to') }}</b>
+        </div>
+        <ol class="hall-pass-steps">
+          <li>{{ $t('site.how1t') }}</li>
+          <li>{{ $t('site.how2t') }}</li>
+          <li>{{ $t('site.how3t') }}</li>
+          <li>{{ $t('site.how4t') }}</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <h2>{{ $t('site.how') }}</h2>
+    </header>
+    <ol class="hall-how">
+      <li>
+        <span>01</span>
+        <b>{{ $t('site.how1t') }}</b>
+        <p>{{ $t('site.how1d') }}</p>
+      </li>
+      <li>
+        <span>02</span>
+        <b>{{ $t('site.how2t') }}</b>
+        <p>{{ $t('site.how2d') }}</p>
+      </li>
+      <li>
+        <span>03</span>
+        <b>{{ $t('site.how3t') }}</b>
+        <p>{{ $t('site.how3d') }}</p>
+      </li>
+      <li>
+        <span>04</span>
+        <b>{{ $t('site.how4t') }}</b>
+        <p>{{ $t('site.how4d') }}</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <div>
+        <h2>{{ $t('site.live') }}</h2>
+        <p>{{ $t('site.liveHint') }}</p>
+      </div>
+      <button class="hall-ghost" type="button" @click="nav('trips')">{{ $t('pc.nav.trips') }} <ArrowRight :size="16"/></button>
+    </header>
+    <div v-if="!trips.length" class="hall-empty">
+      <PackageOpen :size="22"/>
+      <p>{{ $t('site.liveEmpty') }}</p>
+    </div>
+    <ul v-else class="hall-trips">
+      <li v-for="item in trips.slice(0,4)" :key="item.id">
+        <button type="button" @click="selectedItem=item">
+          <MapPin :size="16"/>
+          <strong>{{ item.origin_city || $t('m2.common.notProvided') }} → {{ item.destination || $t('m2.common.notProvided') }}</strong>
+          <span>{{ date(item.depart_date) }}</span>
+          <span>{{ transportLabel(item.transport_mode) }}</span>
+          <span>{{ tripAvailability(item) ?? $t('m2.trip.capacityUnknown') }}</span>
+          <em>{{ money(item.fee_value) }}</em>
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <div>
+        <h2>{{ $t('site.demands') }}</h2>
+        <p>{{ $t('site.demandsHint') }}</p>
+      </div>
+      <button class="hall-ghost" type="button" @click="nav('route')">{{ $t('pc.nav.route') }} <ArrowRight :size="16"/></button>
+    </header>
+    <div v-if="!demands.length" class="hall-empty">
+      <PackageOpen :size="22"/>
+      <p>{{ $t('site.demandsEmpty') }}</p>
+    </div>
+    <ul v-else class="hall-trips">
+      <li v-for="item in demands.slice(0,4)" :key="item.id">
+        <button type="button" @click="selectedItem=item">
+          <MapPin :size="16"/>
+          <strong>{{ item.title }}</strong>
+          <span>{{ item.city || $t('m2.common.notProvided') }}</span>
+          <em>{{ money(item.expect_price) }}</em>
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <h2>{{ $t('site.roles') }}</h2>
+    </header>
+    <div class="hall-roles">
+      <article>
+        <h3>{{ $t('site.buyerT') }}</h3>
+        <p>{{ $t('site.buyerD') }}</p>
+        <button class="hall-ghost" type="button" @click="nav('route')">{{ $t('site.ctaDemand') }}</button>
+      </article>
+      <article>
+        <h3>{{ $t('site.carrierT') }}</h3>
+        <p>{{ $t('site.carrierD') }}</p>
+        <button class="hall-ghost" type="button" @click="nav('trips')">{{ $t('portal.publish.trip') }}</button>
+      </article>
+      <article>
+        <h3>{{ $t('site.shopT') }}</h3>
+        <p>{{ $t('site.shopD') }}</p>
+        <button class="hall-ghost" type="button" @click="nav('products')">{{ $t('pc.nav.products') }}</button>
+      </article>
+    </div>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <h2>{{ $t('pc.hall.escrowTitle') }}</h2>
+    </header>
+    <p class="hall-lead">{{ $t('pc.hall.escrowBody') }}</p>
+  </section>
+
+  <section class="container hall-block hall-trust">
+    <h2>{{ $t('site.trust') }}</h2>
+    <ul>
+      <li>{{ $t('site.trust1') }}</li>
+      <li>{{ $t('site.trust2') }}</li>
+      <li>{{ $t('site.trust3') }}</li>
+    </ul>
+  </section>
+
+  <section class="container hall-block">
+    <header class="hall-head">
+      <div>
+        <h2>{{ $t('site.entryTitle') }}</h2>
+        <p>{{ $t('site.entryHint') }}</p>
+      </div>
+    </header>
+    <div class="entry-grid">
+      <article>
+        <h3>{{ $t('site.entryOrder') }}</h3>
+        <span>{{ $t('community.pendingUpload') }}</span>
+      </article>
+      <article>
+        <h3>{{ $t('site.entryMp') }}</h3>
+        <span>{{ $t('site.entryUnset') }}</span>
+      </article>
+      <article>
+        <h3>{{ $t('site.entryAndroid') }}</h3>
+        <span>{{ $t('site.entryUnset') }}</span>
+      </article>
+      <article>
+        <h3>{{ $t('site.entryIos') }}</h3>
+        <span>{{ $t('site.entryUnset') }}</span>
+      </article>
+    </div>
+  </section>
+</main>
+</template>
+<style scoped>
+.hall-roles article{display:grid;gap:12px;align-content:start}
+.entry-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.entry-grid article{border:1px solid #17140f;background:#f7efd8;padding:14px;min-height:180px;display:grid;place-items:center;gap:8px}
+.entry-grid img{width:140px;height:140px}
+.entry-grid h3{margin:0;font-size:13px}
+@media(max-width:800px){.entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>

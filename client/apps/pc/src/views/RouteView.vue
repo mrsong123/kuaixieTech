@@ -1,20 +1,42 @@
 <script setup lang="ts">
-import {ArrowUpRight,ArrowRight,ArrowLeft,Search,MapPin,Navigation,PackageOpen,ShieldCheck,ChevronRight,Route,Gift,Heart,Compass,Play,ShoppingBag,Clock3,Users,Check,AlertCircle,RefreshCw,Tag,SlidersHorizontal,Globe2,Menu, X, Zap, Fingerprint, Settings2} from 'lucide-vue-next';import {t, formatAmount, formatDate, transportLabel, localizedField, setLocale, getLocale, operationLabel, groupLabel, uiErrorMessage} from '@kuaixie/i18n';
-import {tripAvailability} from '@kuaixie/sdk';
-import ApiWorkbench from '@kuaixie/ui/ApiWorkbench.vue';
-import PreferencesPanel from '@kuaixie/ui/PreferencesPanel.vue';
-import VoiceDraft from '@kuaixie/ui/VoiceDraft.vue';
-import ComparisonPanel from '@kuaixie/ui/ComparisonPanel.vue';
+import {MapPin, PackageOpen, RefreshCw} from 'lucide-vue-next';
+import {transportLabel} from '@kuaixie/i18n';
+import PublishEntryForm from '../components/PublishEntryForm.vue';
 import {useSiteContext} from '../stores/context';
-const {locale,showDisplaySettings,changeLocale,api,page,menu,products,trips,categories,busy,loadError,search,activeCategory,tripSort,selectedItem,credentials,showAuth,toast,heroStats,navItems,nav,displayName,img,filtered,money,date,message,refresh,changeTripSort,selectedProduct,selectedTrip,selectedCategoryName,useToken}=useSiteContext();
+const {api,sessionScope,trips,demands,listedTrips,listedDemands,tripSort,changeTripSort,date,money,selectedItem,refresh,busy,showAuth,nav}=useSiteContext();
 </script>
 <template>
-<main  class="container inner-page route-page">
-    <div class="page-intro"><span class="section-kicker">{{ $t('text.39378b53bdba') }}</span><h1>{{ $t('text.ad2c728dd59f') }}</h1><p>{{ $t('text.1ea9a98e0758') }}</p></div>
-    <section class="panel" style="max-width:850px;margin:35px auto;padding:36px">
-      <div class="panel-heading"><span class="step-marker">✓</span><div><h2>{{ $t('text.f97b88721f60') }}</h2><p>{{ $t('text.6d14c2777925') }}</p></div></div>
-      <div class="action-row"><button class="btn-green" @click="nav('trips')">{{ $t('text.0bdaaf9d5d39') }}</button><button class="btn-outline" @click="nav('products')">{{ $t('text.cecba109ff9a') }}</button></div>
-      <div class="info-strip" style="margin-top:30px"><ShieldCheck :size="20"/>{{ $t('text.8150d2ba9fc2') }}</div>
-    </section>
-  </main>
+<main class="container inner-page">
+  <div class="page-intro">
+    <span class="section-kicker">{{ $t('site.kicker') }}</span>
+    <h1>{{ $t('site.demands') }}</h1>
+    <p>{{ $t('site.demandsHint') }}</p>
+  </div>
+  <PublishEntryForm :key="sessionScope" :client="api" kind="demand" @login="showAuth=true" @published="refresh"/>
+  <div class="trips-heading">
+    <h3>{{ $t('site.demands') }} <small>{{ listedDemands.length }}</small></h3>
+    <button class="btn-outline" type="button" :disabled="busy" @click="refresh"><RefreshCw :size="16"/>{{ $t('text.5982c44c18df') }}</button>
+  </div>
+  <div v-if="!listedDemands.length" class="empty-panel">
+    <PackageOpen :size="26"/>
+    <b>{{ demands.length ? $t('site.searchEmpty') : $t('site.demandsEmpty') }}</b>
+  </div>
+  <ul v-else class="hall-trips">
+    <li v-for="item in listedDemands" :key="item.id">
+      <button type="button" @click="selectedItem=item">
+        <MapPin :size="16"/>
+        <strong>{{ item.title }}</strong>
+        <span>{{ item.city || $t('m2.common.notProvided') }}</span>
+        <em>{{ money(item.expect_price) }}</em>
+      </button>
+    </li>
+  </ul>
+  <div class="action-row">
+    <button class="hall-ghost" type="button" @click="nav('trips')">{{ $t('pc.nav.trips') }}</button>
+  </div>
+</main>
 </template>
+<style scoped>
+.hall-form select{border:1px solid #c9b896;background:#fffaf0;padding:10px 11px}
+.hall-form .check{display:flex;align-items:center;gap:8px}
+</style>

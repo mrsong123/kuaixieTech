@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import {ChevronRight,Globe2,KeyRound,Menu,Search} from 'lucide-vue-next';
+import {onMounted,onUnmounted,ref} from 'vue';
+import {Globe2,KeyRound,Menu} from 'lucide-vue-next';
 import {useAdminContext} from '../stores/context';
-const {locale,changeLocale,section,sidebarOpen,nav,config,go}=useAdminContext();
+const {locale,changeLocale,sidebarOpen,sectionTitle,go}=useAdminContext();
+const now=ref(new Date());
+let tick=0;
+onMounted(()=>{tick=window.setInterval(()=>{now.value=new Date()},1000)});
+onUnmounted(()=>window.clearInterval(tick));
+function clock(){
+  return now.value.toLocaleString(locale.value==='en-US'?'en-GB':'zh-CN',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
 </script>
 <template>
 <header class="topbar">
   <div class="topbar-left">
     <button class="sidebar-toggle" @click="sidebarOpen=!sidebarOpen"><Menu/></button>
-    <span>{{ $t('text.1bf3defde730') }}</span>
-    <ChevronRight :size="15"/>
-    <strong>{{ $t(nav.find(x=>x[0]===section)?.[1] || config.title) }}</strong>
+    <strong>{{ sectionTitle }}</strong>
+    <span class="desk-clock">{{ clock() }}</span>
   </div>
   <div class="topbar-right">
     <label class="locale-control">
@@ -19,9 +26,8 @@ const {locale,changeLocale,section,sidebarOpen,nav,config,go}=useAdminContext();
         <option value="en-US">{{ $t('common.lang.en') }}</option>
       </select>
     </label>
-    <span class="api-online"><span/>{{ $t('text.36b78b53be7c') }}</span>
-    <button class="topbar-button" @click="go('all')"><Search :size="17"/>{{ $t('text.a39dbed39da2') }}</button>
-    <button class="avatar-button" @click="go('settings')"><KeyRound :size="17"/></button>
+    <span class="api-online"><span/>{{ $t('admin.desk.session') }}</span>
+    <button class="topbar-button" @click="go('settings')"><KeyRound :size="16"/>{{ $t('admin.nav.settings') }}</button>
   </div>
 </header>
 </template>

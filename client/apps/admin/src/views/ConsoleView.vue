@@ -3,9 +3,9 @@ import {computed,ref,watch} from 'vue';
 import {t,uiErrorMessage} from '@kuaixie/i18n';
 import SupportAgentPanel from '../components/SupportAgentPanel.vue';
 import PortalModerationPanel from '../components/PortalModerationPanel.vue';
-import {ADMIN_GROUPS,type AdminGroupKey,type AdminTabKey} from '../console/tabs';
+import {ADMIN_GROUPS} from '../console/tabs';
 import {useAdminContext} from '../stores/context';
-const {api,section,stats,statsError,busy,go,loadStats}=useAdminContext();
+const {api,section,stats,statsError,busy,loadStats}=useAdminContext();
 const rows=ref<Record<string,unknown>[]>([]);
 const loadError=ref('');
 const loading=ref(false);
@@ -31,12 +31,8 @@ const recipeNote=ref('');
 const commissions=ref<Record<string,unknown>[]>([]);
 const tiers=ref<Record<string,unknown>[]>([]);
 const evidenceText=ref('');
+const openKey=ref('');
 
-const group=computed<AdminGroupKey>(()=>{
-  const g=ADMIN_GROUPS.find(x=>x.tabs.some(tb=>tb.key===section.value));
-  return g?.key??'core';
-});
-const tabs=computed(()=>ADMIN_GROUPS.find(g=>g.key===group.value)?.tabs??[]);
 const isConsole=computed(()=>ADMIN_GROUPS.some(g=>g.tabs.some(tb=>tb.key===section.value)));
 const listKind=computed(()=>{
   const s=section.value;
@@ -44,7 +40,6 @@ const listKind=computed(()=>{
   if(s==='broadcast') return 'adminLogs';
   return s as string;
 });
-function badge(key?:string){if(!key||!stats.value)return 0;return Number((stats.value as Record<string,unknown>)[key]??0)}
 function cell(row:Record<string,unknown>,k:string){const v=row[k];if(v==null)return '—';if(typeof v==='object')return JSON.stringify(v);return String(v)}
 function ask(title:string,fallback=''){const v=window.prompt(title,fallback);return v==null?null:v.trim()}
 function requireNote(){const n=ask(t('admin.console.noteRequired'));if(!n)throw new Error(t('admin.console.noteRequired'));return n}
@@ -86,25 +81,48 @@ async function refresh(){
   try{rows.value=await api.rpc('admin_console_list',{kind,limit:80,keyword:keyword.value}) as Record<string,unknown>[]}
   catch(e){loadError.value=uiErrorMessage(e);rows.value=[]}finally{loading.value=false}
 }
-watch(()=>section.value,()=>{keyword.value='';notice.value='';void refresh()},{immediate:true});
-const todoJump:[string,AdminTabKey][]=[
-  ['todo_carrier_kyc','carrierKyc'],['todo_buyer_kyc','buyerKyc'],['todo_trips','trips'],
-  ['todo_disputes','disputes'],['todo_cancels','cancels'],['todo_pools','pools'],['todo_demands','demands'],
-  ['todo_support','support'],['todo_invoices','invoices'],['todo_violations','violations'],['risk_orders','orders'],
-];
+watch(()=>section.value,()=>{keyword.value='';notice.value='';openKey.value='';void refresh()},{immediate:true});
 const moneyKeys=['gmv_total','gmv_week','service_fee_mtd','commission_mtd'];
 const countKeys=['users_total','users_week','carriers_approved','buyers_verified','trips_active','orders_open','orders_done'];
-function metric(k:string){return t('v15.adminMetric.'+k)}
+function metric(k:string){return t(k==='todo_products'?'admin.metric.pendingProducts':'v15.adminMetric.'+k)}
 function scopeLabel(s:string){return t('admin.console.scope.'+s)}
+const COLUMNS:Record<string,string[]>={
+  carrierKyc:['nickname','phone','carrier_verify_status','city'],
+  buyerKyc:['nickname','phone','buyer_verify_status','city'],
+  enterpriseKyc:['nickname','enterprise_name','enterprise_verify_status'],
+  trips:['origin_city','destination','depart_date','verify_status','visibility'],
+  orders:['order_no','item_name','status','goods_amount'],
+  cancels:['order_id','status','reason'],
+  disputes:['order_id','stage','status'],
+  invoices:['status','amount','title'],
+  demands:['title','city','visibility','status','expect_price'],
+  users:['nickname','phone','user_role','banned_until'],
+  products:['name','shop_kind','shop_name','status','price'],
+  categories:['name','level','active'],
+  community:['caption','status','kind'],
+  pools:['destination','pool_status','depart_date'],
+  withdrawals:['user_id','amount','status'],
+  errorLogs:['kind','status','created_at'],
+  channelConfigs:['name','enabled'],
+  locales:['code','native_name','active'],
+  proofRecipes:['trip_type','transport_mode','active'],
+  finance:['kind','amount','created_at'],
+  notifyQueue:['kind','title','created_at'],
+  privacyPool:['virtual_number','status'],
+  invite:['code','note','used_count'],
+  broadcast:['title','created_at'],
+  violations:['kind','reviewed','created_at'],
+};
+function rowKey(row:Record<string,unknown>){return String(row.id??row.code??row.virtual_number??JSON.stringify(row))}
+function cols(row:Record<string,unknown>){
+  const pref=COLUMNS[String(section.value)]||[];
+  const have=pref.filter(k=>k in row);
+  return have.length?have:Object.keys(row).filter(k=>k!=='id').slice(0,4);
+}
+function toggle(row:Record<string,unknown>){const k=rowKey(row);openKey.value=openKey.value===k?'':k}
 </script>
 <template>
  <div v-if="isConsole" class="console-view">
-  <div class="console-tabs">
-    <button v-for="tb in tabs" :key="tb.key" :class="{on:section===tb.key}" @click="go(tb.key)">
-      {{ $t(tb.labelKey) }}
-      <em v-if="badge(tb.badge)">{{ badge(tb.badge) }}</em>
-    </button>
-  </div>
   <p v-if="notice" class="console-notice">{{ notice }}</p>
   <pre v-if="evidenceText" class="row-card">{{ evidenceText }}</pre>
   <p v-if="loadError" class="console-error">{{ loadError }}</p>
@@ -113,15 +131,12 @@ function scopeLabel(s:string){return t('admin.console.scope.'+s)}
   <template v-if="section==='overview'">
     <p v-if="statsError" class="console-error">{{ statsError }}</p>
     <div v-if="stats" class="stat-grid">
-      <div v-for="k in countKeys" :key="k" class="stat-card"><span>{{ metric(k) }}</span><strong>{{ stats[k] ?? 0 }}</strong></div>
+      <div v-for="k in countKeys" :key="k" class="stat-card"><span>{{ metric(k) }}</span><strong>{{ stats[k] ?? '—' }}</strong></div>
     </div>
     <div v-if="stats" class="stat-grid">
-      <div v-for="k in moneyKeys" :key="k" class="stat-card"><span>{{ metric(k) }}</span><strong>{{ stats[k] ?? 0 }}</strong></div>
+      <div v-for="k in moneyKeys" :key="k" class="stat-card"><span>{{ metric(k) }}</span><strong>{{ stats[k] ?? '—' }}</strong></div>
     </div>
-    <section class="surface">
-      <div class="surface-title"><div><h2>{{ $t('admin.console.todo') }}</h2></div><button class="soft-button" :disabled="busy" @click="loadStats">{{ $t('admin.console.refresh') }}</button></div>
-      <button v-for="[k,tab] in todoJump" :key="k" class="todo-row" @click="go(tab)"><span>{{ metric(k) }}</span><b>{{ badge(k) }}</b></button>
-    </section>
+    <button class="soft-button" :disabled="busy" @click="loadStats">{{ $t('admin.console.refresh') }}</button>
   </template>
 
   <SupportAgentPanel v-else-if="section==='support'"/>
@@ -181,10 +196,23 @@ function scopeLabel(s:string){return t('admin.console.scope.'+s)}
     </section>
 
     <p v-if="!rows.length && !loading" class="console-muted">{{ $t('admin.console.empty') }}</p>
-    <article v-for="row in rows" :key="String(row.id??row.code??row.virtual_number??JSON.stringify(row))" class="row-card">
-      <div class="kv-grid">
-        <div v-for="(v,k) in row" :key="String(k)" class="kv"><span>{{ k }}</span><b>{{ cell(row,String(k)) }}</b></div>
-      </div>
+    <table v-if="rows.length" class="desk-table">
+      <thead>
+        <tr>
+          <th v-for="k in cols(rows[0])" :key="k">{{ k }}</th>
+          <th>{{ $t('admin.desk.cases') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="row in rows" :key="rowKey(row)">
+          <tr :class="{'case-open':openKey===rowKey(row)}" @click="toggle(row)">
+            <td v-for="k in cols(rows[0])" :key="k">{{ cell(row,k) }}</td>
+            <td>
+              <button class="soft-button" type="button">{{ openKey===rowKey(row)?$t('admin.desk.close'):$t('admin.desk.open') }}</button>
+            </td>
+          </tr>
+          <tr v-if="openKey===rowKey(row)">
+            <td :colspan="cols(rows[0]).length+1" class="case-actions" @click.stop>
       <div class="act-row">
         <template v-if="section==='carrierKyc' && row.carrier_verify_status==='pending'">
           <button class="primary-button" @click="run(()=>api.rpc('admin_set_carrier_verify',{userId:row.id,approve:true,note:''}))">{{ $t('admin.console.approve') }}</button>
@@ -203,6 +231,10 @@ function scopeLabel(s:string){return t('admin.console.scope.'+s)}
           <button class="danger-button" @click="run(()=>api.rpc('admin_set_trip_verify',{tripId:row.id,approve:false,note:t('admin.console.reject')}))">{{ $t('admin.console.reject') }}</button>
         </template>
         <button v-if="section==='orders'" class="soft-button" @click="run(()=>showEvidence(row.id))">{{ $t('admin.console.reviewChain') }}</button>
+        <template v-if="section==='products' && row.status==='pending'">
+          <button class="primary-button" @click="run(()=>api.rpc('admin_set_product_status',{id:row.id,approve:true,note:''}))">{{ $t('admin.console.approve') }}</button>
+          <button class="danger-button" @click="run(()=>api.rpc('admin_set_product_status',{id:row.id,approve:false,note:requireNote()}))">{{ $t('admin.console.reject') }}</button>
+        </template>
         <button v-if="section==='products' && row.status==='on'" class="danger-button" @click="run(()=>api.rpc('admin_force_off_shelf',{id:row.id}))">{{ $t('admin.console.forceOff') }}</button>
         <button v-if="section==='categories' && row.active" class="danger-button" @click="run(()=>api.rpc('admin_deactivate_category',{id:row.id}))">{{ $t('admin.console.deactivate') }}</button>
         <button v-if="section==='proofRecipes'" class="soft-button" @click="run(()=>api.rpc('admin_toggle_recipe',{id:row.id,active:!row.active}))">{{ $t('admin.console.toggleRecipe') }}</button>
@@ -220,6 +252,10 @@ function scopeLabel(s:string){return t('admin.console.scope.'+s)}
           <button class="primary-button" @click="run(()=>api.rpc('admin_force_form_pool',{tripId:row.id}))">{{ $t('admin.console.forceForm') }}</button>
           <button class="danger-button" @click="run(()=>api.rpc('admin_dissolve_pool',{tripId:row.id,reason:requireNote()}))">{{ $t('admin.console.dissolve') }}</button>
         </template>
+        <template v-if="section==='demands' && row.status==='open' && row.visibility==='hidden'">
+          <button class="primary-button" @click="run(()=>api.rpc('admin_set_demand_visibility',{demandId:row.id,approve:true,note:''}))">{{ $t('admin.console.approve') }}</button>
+          <button class="danger-button" @click="run(()=>api.rpc('admin_set_demand_visibility',{demandId:row.id,approve:false,note:requireNote()}))">{{ $t('admin.console.reject') }}</button>
+        </template>
         <button v-if="section==='demands' && (row.status==='open'||row.status==='awarded_pending')" class="danger-button" @click="run(()=>api.rpc('admin_close_demand',{demandId:row.id,reason:requireNote()}))">{{ $t('admin.console.closeDemand') }}</button>
         <button v-if="section==='community' && row.status!=='removed'" class="danger-button" @click="run(()=>api.rpc('admin_remove_post',{postId:row.id,reason:requireNote()}))">{{ $t('admin.console.removePost') }}</button>
         <button v-if="section==='errorLogs' && row.status!=='resolved'" class="soft-button" @click="run(()=>api.rpc('admin_resolve_error',{id:row.id}))">{{ $t('admin.console.resolveLog') }}</button>
@@ -235,7 +271,11 @@ function scopeLabel(s:string){return t('admin.console.scope.'+s)}
           <button class="soft-button" @click="run(()=>api.rpc('admin_grant_points',{userId:row.id,points:requireAmount('admin.console.grantPoints'),note:requireNote()}))">{{ $t('admin.console.grantPoints') }}</button>
         </template>
       </div>
-    </article>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
   </template>
  </div>
 </template>

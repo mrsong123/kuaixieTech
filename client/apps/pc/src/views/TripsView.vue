@@ -1,13 +1,43 @@
 <script setup lang="ts">
-import {ArrowUpRight,ArrowRight,ArrowLeft,Search,MapPin,Navigation,PackageOpen,ShieldCheck,ChevronRight,Route,Gift,Heart,Compass,Play,ShoppingBag,Clock3,Users,Check,AlertCircle,RefreshCw,Tag,SlidersHorizontal,Globe2,Menu, X, Zap, Fingerprint, Settings2} from 'lucide-vue-next';import {t, formatAmount, formatDate, transportLabel, localizedField, setLocale, getLocale, operationLabel, groupLabel, uiErrorMessage} from '@kuaixie/i18n';
-import {tripAvailability} from '@kuaixie/sdk';
-import ApiWorkbench from '@kuaixie/ui/ApiWorkbench.vue';
-import PreferencesPanel from '@kuaixie/ui/PreferencesPanel.vue';
-import VoiceDraft from '@kuaixie/ui/VoiceDraft.vue';
-import ComparisonPanel from '@kuaixie/ui/ComparisonPanel.vue';
+import {Clock3, Navigation, PackageOpen, RefreshCw} from 'lucide-vue-next';
+import {transportLabel} from '@kuaixie/i18n';
+import PublishEntryForm from '../components/PublishEntryForm.vue';
 import {useSiteContext} from '../stores/context';
-const {locale,showDisplaySettings,changeLocale,api,page,menu,products,trips,categories,busy,loadError,search,activeCategory,tripSort,selectedItem,credentials,showAuth,toast,heroStats,navItems,nav,displayName,img,filtered,money,date,message,refresh,changeTripSort,selectedProduct,selectedTrip,selectedCategoryName,useToken}=useSiteContext();
+const {api,sessionScope,trips,demands,listedTrips,listedDemands,tripSort,changeTripSort,date,money,selectedItem,refresh,busy,showAuth,nav}=useSiteContext();
 </script>
 <template>
-<main  class="container inner-page"><div class="page-intro"><span class="section-kicker">{{ $t('text.38a7df21dc0c') }}</span><h1>{{ $t('text.6a5deeb24523') }}</h1><p>{{ $t('text.599850ca539a') }}</p></div><div class="trips-heading"><label class="trip-sort">{{ $t('m2.trip.detail') }}<select v-model="tripSort" @change="changeTripSort"><option value="rank">{{ $t('m2.trip.sort.rank') }}</option><option value="latest">{{ $t('m2.trip.sort.latest') }}</option><option value="score">{{ $t('m2.trip.sort.score') }}</option></select></label><h3>{{ $t('text.011bb2025c96') }} <small>{{trips.length}} {{ $t('text.bce2ef61514a') }}</small></h3><button class="btn-outline" @click="refresh"><RefreshCw :size="16"/>{{ $t('text.5982c44c18df') }}</button></div><div v-if="!trips.length" class="empty-panel"><Route/><b>{{ $t('text.07994c4db3fd') }}</b><p>{{ $t('text.715d39404821') }}</p></div><div v-else class="trip-list"><article v-for="t in trips" :key="t.id" class="trip-card"><div class="trip-icon"><Navigation :size="24"/></div><div class="trip-main"><small>{{ $t('text.e7d87e2c786e') }} {{transportLabel(t.transport_mode)}}</small><h3>{{t.destination||$t('text.a83c1a23ae9c')}}</h3><div class="trip-meta"><span><Clock3 :size="14"/>{{date(t.depart_date)}}</span><span><PackageOpen :size="14"/>{{ $t('text.ff7645b2750f') }} {{t.remaining_slots??$t('m2.trip.capacityUnknown')}}</span></div></div><div class="trip-right"><span class="trip-status">{{ $t('text.c263de092844') }}</span><button @click="selectedItem=t">{{ $t('text.84754713c45b') }} <ChevronRight :size="16"/></button></div></article></div><div class="info-strip"><ShieldCheck :size="19"/>{{ $t('text.4a2db31a8c51') }}</div></main>
+<main class="container inner-page">
+  <div class="page-intro">
+    <span class="section-kicker">{{ $t('site.kicker') }}</span>
+    <h1>{{ $t('portal.publish.trip') }}</h1>
+    <p>{{ $t('portal.publish.tripDesc') }}</p>
+  </div>
+  <PublishEntryForm :key="sessionScope" :client="api" kind="trip" @login="showAuth=true" @published="refresh"/>
+  <div class="trips-heading">
+    <label class="trip-sort">{{ $t('m2.trip.detail') }}
+      <select v-model="tripSort" @change="changeTripSort">
+        <option value="rank">{{ $t('m2.trip.sort.rank') }}</option>
+        <option value="latest">{{ $t('m2.trip.sort.latest') }}</option>
+        <option value="score">{{ $t('m2.trip.sort.score') }}</option>
+      </select>
+    </label>
+    <h3>{{ $t('pc.nav.trips') }} <small>{{ listedTrips.length }}</small></h3>
+    <button class="btn-outline" type="button" @click="refresh"><RefreshCw :size="16"/>{{ $t('text.5982c44c18df') }}</button>
+  </div>
+  <div v-if="!listedTrips.length" class="empty-panel"><PackageOpen/><b>{{ trips.length ? $t('site.searchEmpty') : $t('site.liveEmpty') }}</b></div>
+  <div v-else class="trip-list">
+    <article v-for="item in listedTrips" :key="item.id" class="trip-card">
+      <div class="trip-icon"><Navigation :size="24"/></div>
+      <div class="trip-main">
+        <small>{{ transportLabel(item.transport_mode) }}</small>
+        <h3>{{ item.origin_city || $t('m2.common.notProvided') }} → {{ item.destination || $t('m2.common.notProvided') }}</h3>
+        <div class="trip-meta"><span><Clock3 :size="14"/>{{ date(item.depart_date) }}</span></div>
+      </div>
+      <div class="trip-right"><button type="button" @click="selectedItem=item">{{ $t('m2.catalog.detail') }}</button></div>
+    </article>
+  </div>
+</main>
 </template>
+<style scoped>
+.hall-form select{border:1px solid #c9b896;background:#fffaf0;padding:10px 11px}
+</style>

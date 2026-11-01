@@ -1,6 +1,6 @@
 import {businessServices} from '@kuaixie/sdk';
-export type Page='home'|'products'|'trips'|'route'|'community'|'workspace'|'publish'|'messages'|'me'|`services/${string}`;
-const pages:Page[]=['home','products','trips','route','community','workspace','publish','messages','me'];
+export type Page='home'|'products'|'trips'|'route'|'community'|'workspace'|'publish'|'messages'|'me'|'business'|`services/${string}`;
+const pages:Page[]=['home','products','trips','route','community','workspace','publish','messages','me','business'];
 const services=new Set<string>([...businessServices.map(item=>item.id),'wallet-ledger','legal-doc','product-detail','shop-detail']);
 export function routeFromHash():Page {
  const hash=typeof location!=='undefined'?location.hash.slice(1):'home';
